@@ -13,9 +13,11 @@
   <ItemGroup>
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\graphics.c" />
+    <ClCompile Include="sprite.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\graphics.h" />
+    <ClInclude Include="sprite.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FDED120-6E7E-4B36-A32B-C84298D67EDE}</ProjectGuid>

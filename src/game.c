@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     NextFrame();
     SDL_PumpEvents();
     keys = SDL_GetKeyboardState(NULL);
-    if(keys[SDLK_ESCAPE])done = 1;
+    if(keys[SDL_SCANCODE_ESCAPE])done = 1;
   }while(!done);
   exit(0);		/*technically this will end the program, but the compiler likes all functions that can return a value TO return a value*/
   return 0;
