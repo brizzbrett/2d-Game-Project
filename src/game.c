@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "graphics.h"
+#include "sprite.h"
 #include <string>
 
 extern SDL_Surface *screen;
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
 
 void CleanUpAll()
 {
-  CloseSprites();
+  sprite_CloseSystem();
   /*any other cleanup functions can be added here*/ 
 }
 

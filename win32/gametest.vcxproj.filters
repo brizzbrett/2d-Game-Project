@@ -21,7 +21,7 @@
     <ClCompile Include="..\src\graphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sprite.c">
+    <ClCompile Include="..\src\sprite.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="..\src\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sprite.h">
+    <ClInclude Include="..\src\sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
