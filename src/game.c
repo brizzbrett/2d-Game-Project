@@ -51,24 +51,25 @@ int main(int argc, char *argv[])
 
 void CleanUpAll()
 {
-  sprite_CloseSystem();
+	sprite_CloseSystem();
   /*any other cleanup functions can be added here*/ 
 }
 
 void Init_All()
 {
 	float bgcolor[] = {1,1,1,1};
-  Init_Graphics(
+	sprite_InitSystem();
+	Init_Graphics(
 	"Game Test",
-    800,
-    400,
-    800,
-    400,
+	800,
+	400,
+	800,
+	400,
 	bgcolor,
-    0);
+	0);
 
-  InitMouse();
-  atexit(CleanUpAll);
+	InitMouse();
+	atexit(CleanUpAll);
 }
 
 int getImagePathFromFile(char *filepath,char * filename)

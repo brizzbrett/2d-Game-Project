@@ -52,8 +52,8 @@ Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
 {
 	int i;
 	SDL_Surface *temp;
-	SDL_Texture *tempText;
-	for(i = 0; i < numSprites; i++)
+	SDL_Texture *tempTex;
+	for(i = 0; i < numSprites; ++i)
 	{
 		if(strncmp(file,spriteList[i].filename,128)==0)
 		{
@@ -85,8 +85,8 @@ Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
 
 	SDL_SetColorKey(temp, SDL_TRUE , SDL_MapRGB(temp->format, 255,255,255));
 
-	tempText = SDL_CreateTextureFromSurface(renderer,temp);
-	if(tempText == NULL)
+	tempTex = SDL_CreateTextureFromSurface(renderer,temp);
+	if(tempTex == NULL)
 	{
 		fprintf(stderr,"unable to load a vital sprite as texture: %s\n",SDL_GetError());
 		exit(0);
@@ -94,13 +94,13 @@ Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
 
 	SDL_FreeSurface(temp);
 
-	spriteList[i].image = tempText;
+	spriteList[i].image = tempTex;
+	spriteList[i].refCount++;
 	strncpy(spriteList[i].filename,file,128);
-
 	spriteList[i].fpl = 16;
 	spriteList[i].frameW = fw;
 	spriteList[i].frameH = fh;
-	spriteList[i].refCount++;
+	
 
 	return &spriteList[i];	
 }
