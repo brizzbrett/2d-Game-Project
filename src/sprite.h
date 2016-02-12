@@ -5,6 +5,8 @@
 #include <SDL.h>
 #include "SDL_image.h"
 
+
+/** @brief	Defines an alias representing the sprite t. */
 typedef struct Sprite_T
 {
 	int refCount;

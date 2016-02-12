@@ -18,6 +18,13 @@ void addCoordinateToFile(char *filepath,int x, int y);
 
 /*this program must be run from the directory directly below images and src, not from within src*/
 /*notice the default arguments for main.  SDL expects main to look like that, so don't change it*/
+
+/**
+ * @brief	Main entry-point for this application.
+ * @param	argc	Number of command-line arguments.
+ * @param	argv	Array of command-line argument strings.
+ * @return	Exit-code for the process - 0 for success, else an error code.
+ */
 int main(int argc, char *argv[])
 {
   SDL_Surface *temp = NULL;
@@ -49,12 +56,16 @@ int main(int argc, char *argv[])
   return 0;
 }
 
+
+/** @brief	Clean up all. */
 void CleanUpAll()
 {
 	sprite_CloseSystem();
   /*any other cleanup functions can be added here*/ 
 }
 
+
+/** @brief	Initialises all. */
 void Init_All()
 {
 	float bgcolor[] = {1,1,1,1};

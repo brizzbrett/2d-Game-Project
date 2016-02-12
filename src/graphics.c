@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "graphics.h"
 #include "sprite.h"
+#include "simple_logger.h"
 
 #define MaxSprites    255
 
@@ -41,6 +42,16 @@ static Uint32 __gt_amask;
 
 void gt_graphics_close();
 
+/**
+ * @brief	Initialises the graphics.
+ * @param [in,out]	windowName	If non-null, name of the window.
+ * @param	viewWidth		  	Width of the view.
+ * @param	viewHeight		  	Height of the view.
+ * @param	renderWidth		  	Width of the render.
+ * @param	renderHeight	  	Height of the render.
+ * @param	bgcolor			  	The bgcolor.
+ * @param	fullscreen		  	The fullscreen.
+ */
 void Init_Graphics(
 	char *windowName,
     int viewWidth,
@@ -133,11 +144,14 @@ void Init_Graphics(
 }
 
 
+/** @brief	Resets the buffer. */
 void ResetBuffer()
 {
 	SDL_RenderPresent(__gt_graphics_renderer);
 }
 
+
+/** @brief	Next frame. */
 void NextFrame()
 {
   Uint32 Then;
@@ -148,6 +162,8 @@ void NextFrame()
   FrameDelay(33); /*this will make your frame rate about 30 frames per second.  If you want 60 fps then set it to about 15 or 16*/
 }
 
+
+/** @brief	Gt graphics close. */
 void gt_graphics_close()
 {
     if (__gt_graphics_texture)
@@ -176,18 +192,16 @@ void gt_graphics_close()
     __gt_graphics_texture = NULL;
     __gt_graphics_temp_buffer = NULL;
 }
-/*
-  InitSpriteList is called when the program is first started.
-  It just sets everything to zero and sets all pointers to NULL.
-  It should never be called again.
-*/
 
-
-
-/*
-	This will draw a pixel on the surface that is past at the x and y coordinates of the color given;
-*/
-
+/**
+ * @brief	Draw pixel.
+ * @param [in,out]	screen	If non-null, the screen.
+ * @param	R			  	The Uint8 to process.
+ * @param	G			  	The Uint8 to process.
+ * @param	B			  	The Uint8 to process.
+ * @param	x			  	The x coordinate.
+ * @param	y			  	The y coordinate.
+ */
 void DrawPixel(SDL_Surface *screen, Uint8 R, Uint8 G, Uint8 B, int x, int y)
 {
     Uint32 color = SDL_MapRGB(screen->format, R, G, B);
@@ -245,7 +259,13 @@ void DrawPixel(SDL_Surface *screen, Uint8 R, Uint8 G, Uint8 B, int x, int y)
     }
 }
 
-
+/**
+ * @brief	Getpixels.
+ * @param [in,out]	surface	If non-null, the surface.
+ * @param	x			   	The x coordinate.
+ * @param	y			   	The y coordinate.
+ * @return	An Uint32.
+ */
 Uint32 getpixel(SDL_Surface *surface, int x, int y)
 {
     /* Here p is the address to the pixel we want to retrieve*/
@@ -278,6 +298,14 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y)
 /*
  * Set the pixel at (x, y) to the given value
  * NOTE: The surface must be locked before calling this!
+ */
+
+/**
+ * @brief	Putpixels.
+ * @param [in,out]	surface	If non-null, the surface.
+ * @param	x			   	The x coordinate.
+ * @param	y			   	The y coordinate.
+ * @param	pixel		   	The pixel.
  */
 void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
@@ -320,6 +348,10 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
   This is a very handy function in game programming.
 */
 
+/**
+ * @brief	Frame delay.
+ * @param	delay	The delay.
+ */
 void FrameDelay(Uint32 delay)
 {
     static Uint32 pass = 100;
@@ -331,6 +363,11 @@ void FrameDelay(Uint32 delay)
 
 /*sets an sdl surface to all color.*/
 
+/**
+ * @brief	Blank screen.
+ * @param [in,out]	buf	If non-null, the buffer.
+ * @param	color	   	The color.
+ */
 void BlankScreen(SDL_Surface *buf,Uint32 color)
 {
     SDL_LockSurface(buf);
@@ -345,6 +382,14 @@ void BlankScreen(SDL_Surface *buf,Uint32 color)
  * special case) or the new color.
  */
 
+/**
+ * @brief	Sets a color.
+ * @param	color	 	The color.
+ * @param	newcolor1	The first newcolor.
+ * @param	newcolor2	The second newcolor.
+ * @param	newcolor3	The third newcolor.
+ * @return	An Uint32.
+ */
 Uint32 SetColor(Uint32 color, int newcolor1,int newcolor2, int newcolor3)
 {
     Uint8 r,g,b;
@@ -537,127 +582,146 @@ Uint32 SetColor(Uint32 color, int newcolor1,int newcolor2, int newcolor3)
  * enumerated color
  */
 
+/**
+ * @brief	Index color.
+ * @param	color	The color.
+ * @return	An Uint32.
+ */
 Uint32 IndexColor(int color)
 {
-    switch(color)
-    {
-    case Red:
-        return Red_;
-    case Green:
-        return Green_;
-    case Blue:
-        return Blue_;
-    case Yellow:
-        return Yellow_;
-    case Orange:
-        return Orange_;
-    case Violet:
-        return Violet_;
-    case Brown:
-        return Brown_;
-    case Grey:
-        return Grey_;
-    case DarkRed:
-        return DarkRed_;
-    case DarkGreen:
-        return DarkGreen_;
-    case DarkBlue:
-        return DarkBlue_;
-    case DarkYellow:
-        return DarkYellow_;
-    case DarkOrange:
-        return DarkOrange_;
-    case DarkViolet:
-        return DarkViolet_;
-    case DarkBrown:
-        return DarkBrown_;
-    case DarkGrey:
-        return DarkGrey_;
-    case LightRed:
-        return LightRed_;
-    case LightGreen:
-        return LightGreen_;
-    case LightBlue:
-        return LightBlue_;
-    case LightYellow:
-        return LightYellow_;
-    case LightOrange:
-        return LightOrange_;
-    case LightViolet:
-        return LightViolet_;
-    case LightBrown:
-        return LightBrown_;
-    case LightGrey:
-        return LightGrey_;
-    case Black:
-        return Black_;
-    case White:
-        return White_;
-    case Tan:
-        return Tan_;
-    case Gold:
-        return Gold_;
-    case Silver:
-        return Silver_;
-    case YellowGreen:
-        return YellowGreen_;
-    case Cyan:
-        return Cyan_;
-    case Magenta:
-        return Magenta_;
-    }
-    return Black_;
+	switch(color)
+	{
+	case Red:
+		return Red_;
+	case Green:
+		return Green_;
+	case Blue:
+		return Blue_;
+	case Yellow:
+		return Yellow_;
+	case Orange:
+		return Orange_;
+	case Violet:
+		return Violet_;
+	case Brown:
+		return Brown_;
+	case Grey:
+		return Grey_;
+	case DarkRed:
+		return DarkRed_;
+	case DarkGreen:
+		return DarkGreen_;
+	case DarkBlue:
+		return DarkBlue_;
+	case DarkYellow:
+		return DarkYellow_;
+	case DarkOrange:
+		return DarkOrange_;
+	case DarkViolet:
+		return DarkViolet_;
+	case DarkBrown:
+		return DarkBrown_;
+	case DarkGrey:
+		return DarkGrey_;
+	case LightRed:
+		return LightRed_;
+	case LightGreen:
+		return LightGreen_;
+	case LightBlue:
+		return LightBlue_;
+	case LightYellow:
+		return LightYellow_;
+	case LightOrange:
+		return LightOrange_;
+	case LightViolet:
+		return LightViolet_;
+	case LightBrown:
+		return LightBrown_;
+	case LightGrey:
+		return LightGrey_;
+	case Black:
+		return Black_;
+	case White:
+		return White_;
+	case Tan:
+		return Tan_;
+	case Gold:
+		return Gold_;
+	case Silver:
+		return Silver_;
+	case YellowGreen:
+		return YellowGreen_;
+	case Cyan:
+		return Cyan_;
+	case Magenta:
+		return Magenta_;
+	}
+	return Black_;
 }
 /*
  * and now bringing it all together, we swap the pure colors in the sprite out
  * and put the new colors in.  This maintains any of the artist's shading and
  * detail, but still lets us have that old school palette swapping.  
  */
+
+/**
+ * @brief	Swap sprite.
+ * @param [in,out]	sprite	If non-null, the sprite.
+ * @param	color1		  	The first color.
+ * @param	color2		  	The second color.
+ * @param	color3		  	The third color.
+ */
 void SwapSprite(SDL_Surface *sprite,int color1,int color2,int color3)
 {
-    int x, y;
-    Uint32 pixel;
-   /*First the precautions, that are tedious, but necessary*/
-    if(color1 == -1)return;
-    if(sprite == NULL)return;
-    if ( SDL_LockSurface(sprite) < 0 )
-    {
-        fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
-        exit(1);
-    }
-   /*now step through our sprite, pixel by pixel*/
-    for(y = 0;y < sprite->h ;y++)
-    {
-        for(x = 0;x < sprite->w ;x++)
-        {                           
-             pixel = getpixel(sprite,x,y);/*and swap it*/
-             putpixel(sprite,x,y,SetColor(pixel,color1,color2,color3));
-        }
-    }
-    SDL_UnlockSurface(sprite);
+	int x, y;
+	Uint32 pixel;
+	/*First the precautions, that are tedious, but necessary*/
+	if(color1 == -1)return;
+	if(sprite == NULL)return;
+	if ( SDL_LockSurface(sprite) < 0 )
+	{
+		fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
+		exit(1);
+	}
+	/*now step through our sprite, pixel by pixel*/
+	for(y = 0;y < sprite->h ;y++)
+	{
+		for(x = 0;x < sprite->w ;x++)
+		{                           
+				pixel = getpixel(sprite,x,y);/*and swap it*/
+				putpixel(sprite,x,y,SetColor(pixel,color1,color2,color3));
+		}
+	}
+	SDL_UnlockSurface(sprite);
 }
 
 /*mouse handling functions*/
 /*this only handles the drawing and animation of.  Assuming you have a 16 by 16  tiled sprite sheet.  This will not handle input*/
+
+
+/** @brief	Initialises the mouse. */
 void InitMouse()
 {
-  Msprite = sprite_Load(__gt_graphics_renderer,"images/mouse.png",16, 16);
-  if(Msprite == NULL)fprintf(stdout,"mouse didn't load: %s\n", SDL_GetError());
-  Mouse.state = 0;
-  Mouse.shown = 0;
-  Mouse.frame = 0;
+	Msprite = sprite_Load(__gt_graphics_renderer,"images/mouse.png",16, 16);
+	if(Msprite == NULL)fprintf(stdout,"mouse didn't load: %s\n", SDL_GetError());
+	Mouse.state = 0;
+	Mouse.shown = 0;
+	Mouse.frame = 0;
 }
 
     /*draws to the screen immediately before the blit, after all
      it wouldn't be a very good mouse if it got covered up by the
      game content*/
+
+
+/** @brief	Draw mouse. */
 void DrawMouse()
 {
-  int mx,my;
-  SDL_GetMouseState(&mx,&my);
-  if(Msprite != NULL) sprite_Draw(Msprite,Mouse.frame, __gt_graphics_renderer,mx,my);
-  Mouse.frame = (Mouse.frame + 1)%16;
- Mouse.x = mx;
- Mouse.y = my;
+	int mx,my;
+	SDL_GetMouseState(&mx,&my);
+	if(Msprite != NULL) sprite_Draw(Msprite,Mouse.frame, __gt_graphics_renderer,mx,my);
+	Mouse.frame = (Mouse.frame + 1)%16;
+	Mouse.x = mx;
+	Mouse.y = my;
 }
 
