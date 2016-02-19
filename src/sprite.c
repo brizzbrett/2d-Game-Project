@@ -2,13 +2,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "graphics.h"
 
-Sprite *spriteList = NULL;
+
+static Sprite *spriteList = NULL;
 int spriteMax = 1000;
 int numSprites = 0;
 
-
-/** @brief	Sprite initialise system. */
+/**   
+ * @brief	Initialises the Sprite System by allocating a block of memory. 
+ */
 void sprite_InitSystem()
 {
 	int i;
@@ -33,51 +36,61 @@ void sprite_InitSystem()
 }
 
 /**
- * @brief	Sprite free.
- * @param [in,out]	sprite	If non-null, the sprite.
+ * @brief	Frees up the memory allocated by the pointer to the sprite pointer.
+ * @param	**sprite	If not null, a pointer to the sprite pointer.
  */
-void sprite_Free(Sprite *sprite)
+void sprite_Free(Sprite **sprite)
 {
-	sprite->refCount--;
-	if(sprite->refCount == 0)
+	Sprite *target = *sprite;
+	
+	if(!sprite)return;
+	if(!*sprite)return;
+	if(target->refCount == 0)
 	{
-		strcpy(sprite->filename,"\0");
+		strcpy(target->filename,"\0");
 
-		if(sprite->image != NULL)
-			SDL_DestroyTexture(sprite->image);
+		if(target->image != NULL)
+			SDL_DestroyTexture(target->image);
 
-		sprite->image = NULL;
+		target->image = NULL;
 	}
+	target->refCount--;
+	*sprite = NULL;
 }
 
 
-/** @brief	Sprite close system. */
+/**   
+ * @brief	Closes the Sprite System by freeing any memory used by the system
+ */
 void sprite_CloseSystem()
 {
 	int i;
-	for(i = 0; i < spriteMax; i++)
+	for(i = 0; i < numSprites; i++)
 	{
-		sprite_Free(&spriteList[i]);
+		SDL_DestroyTexture(spriteList[i].image);
 	}
 
 	numSprites = 0;
 
-	memset(spriteList,0,sizeof(Sprite)*spriteMax);
+	memset(spriteList,0,sizeof(Sprite)*numSprites);
+	free(spriteList);
+	spriteList = NULL;
 }
 
 /**
- * @brief	Sprite load.
- * @param [in,out]	renderer	If non-null, the renderer.
- * @param	file				The file.
- * @param	fw					The firmware.
- * @param	fh					The fh.
- * @return	null if it fails, else a Sprite*.
+ * @brief	Loads a new empty Sprite
+ * @param	file	The file that holds the spritesheet for the sprite.
+ * @param	fw  	The frame width.
+ * @param	fh  	The frame height.
+ * @return	the new Sprite.
  */
-Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
+Sprite *sprite_Load(char file[], int fw, int fh)
 {
 	int i;
 	SDL_Surface *temp;
 	SDL_Texture *tempTex;
+
+	if(!spriteList)return NULL;
 
 	for(i = 0; i < numSprites; ++i)
 	{
@@ -108,12 +121,12 @@ Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
 	if(temp == NULL)
 	{
 		fprintf(stderr,"unable to load a vital sprite: %s\n",SDL_GetError());
-		exit(0);
+		return NULL;
 	}
 
 	SDL_SetColorKey(temp, SDL_TRUE , SDL_MapRGB(temp->format, 255,255,255));
 
-	tempTex = SDL_CreateTextureFromSurface(renderer,temp);
+	tempTex = SDL_CreateTextureFromSurface(Graphics_GetActiveRenderer(),temp);
 	if(tempTex == NULL)
 	{
 		fprintf(stderr,"unable to load a vital sprite as texture: %s\n",SDL_GetError());
@@ -126,33 +139,32 @@ Sprite *sprite_Load(SDL_Renderer *renderer, char file[], int fw, int fh)
 	spriteList[i].refCount++;
 	strncpy(spriteList[i].filename,file,128);
 	spriteList[i].fpl = 16;
-	spriteList[i].frameW = fw;
-	spriteList[i].frameH = fh;
+	spriteList[i].frameSize.x = fw;
+	spriteList[i].frameSize.y = fh;
 	
 	return &spriteList[i];	
 }
 
 /**
- * @brief	Sprite draw.
- * @param [in,out]	sprite  	If non-null, the sprite.
- * @param	frame				The frame.
- * @param [in,out]	renderer	If non-null, the renderer.
- * @param	drawX				The draw x coordinate.
- * @param	drawY				The draw y coordinate.
+ * @brief	Draws a sprite to the screen
+ * @param	*sprite  			If not null, the sprite being drawn.
+ * @param	frame				The frame of the spritesheet being rendered.
+ * @param	*renderer			If not null, the renderer being drawn to.
+ * @param	pos					The position on the screen the sprite will show up.
  */
-void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, int drawX, int drawY)
+void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 {
 	SDL_Rect src,dest;
 
-	src.x = frame%sprite->fpl * sprite->frameW;
-	src.y = frame/sprite->fpl * sprite->frameH;
-	src.w = sprite->frameW;
-	src.h = sprite->frameH;
+	src.x = frame%sprite->fpl * sprite->frameSize.x;
+	src.y = frame/sprite->fpl * sprite->frameSize.y;
+	src.w = sprite->frameSize.x;
+	src.h = sprite->frameSize.y;
 
-	dest.x = drawX;
-	dest.y = drawY;
-	dest.w = sprite->frameW;
-	dest.h = sprite->frameH;
+	dest.x = pos.x;
+	dest.y = pos.y;
+	dest.w = sprite->frameSize.x;
+	dest.h = sprite->frameSize.y;
 
 	SDL_RenderCopy(renderer,sprite->image, &src, &dest);
 }

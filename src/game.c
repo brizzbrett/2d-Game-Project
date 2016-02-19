@@ -3,11 +3,13 @@
 #include "SDL_image.h"
 #include "graphics.h"
 #include "sprite.h"
+#include "Vector.h"
+#include "Entity.h"
 #include <string>
 
-extern SDL_Surface *screen;
-extern SDL_Surface *buffer; /*pointer to the draw buffer*/
-extern SDL_Rect Camera;
+extern SDL_Surface *screen; /**<pointer to the draw screen*/
+extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
+extern SDL_Rect Camera; /**<Camera*/
 
 void Init_All();
 
@@ -27,33 +29,34 @@ void addCoordinateToFile(char *filepath,int x, int y);
  */
 int main(int argc, char *argv[])
 {
-  SDL_Surface *temp = NULL;
-  int done;
-  int tx = 0,ty = 0;
-  const Uint8 *keys;
-  char imagepath[512];
-  Init_All();
-  if (getImagePathFromFile(imagepath,"config.ini") == 0)
-  {
-    temp = IMG_Load(imagepath);/*notice that the path is part of the filename*/
-  }
-  if(temp != NULL)
-    SDL_BlitSurface(temp,NULL,buffer,NULL);
-  SDL_FreeSurface(temp);
+	SDL_Surface *temp = NULL;
+	int done;
+	int tx = 0,ty = 0;
+	const Uint8 *keys;
+	char imagepath[512];
+	SDL_Rect srcRect={1,0,800,600};
+	int i = 0;
+	Init_All();
 
-  done = 0;
-  do
-  {
-	fprintf(stdout,"looping...\n");
-    ResetBuffer ();
-    DrawMouse();
-    NextFrame();
-    SDL_PumpEvents();
-    keys = SDL_GetKeyboardState(NULL);
-    if(keys[SDL_SCANCODE_ESCAPE])done = 1;
-  }while(!done);
-  exit(0);		/*technically this will end the program, but the compiler likes all functions that can return a value TO return a value*/
-  return 0;
+	temp = IMG_Load("images/bgtest.png");
+	if(temp != NULL)
+	{
+		fprintf(stdout, "temp image successfully loaded\n");
+		SDL_BlitSurface(temp,NULL,buffer,NULL);
+	}
+	Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
+	SDL_FreeSurface(temp);
+	done = 0;
+	do
+	{
+		ResetBuffer();
+		NextFrame();
+		SDL_PumpEvents();
+		keys = SDL_GetKeyboardState(NULL);
+		if(keys[SDL_SCANCODE_ESCAPE])done = 1;
+	}while(!done);
+	exit(0);		/*technically this will end the program, but the compiler likes all functions that can return a value TO return a value*/
+	return 0;
 }
 
 
@@ -61,6 +64,7 @@ int main(int argc, char *argv[])
 void CleanUpAll()
 {
 	sprite_CloseSystem();
+	Entity_CloseSystem();
   /*any other cleanup functions can be added here*/ 
 }
 
@@ -70,16 +74,8 @@ void Init_All()
 {
 	float bgcolor[] = {1,1,1,1};
 	sprite_InitSystem();
-	Init_Graphics(
-	"Game Test",
-	800,
-	400,
-	800,
-	400,
-	bgcolor,
-	0);
-
-	InitMouse();
+	Entity_InitSystem(100);
+	Graphics_Init("Game Test",800,400,800,400,bgcolor,0);
 	atexit(CleanUpAll);
 }
 

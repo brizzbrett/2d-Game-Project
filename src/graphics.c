@@ -1,76 +1,49 @@
-#include <string>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+
 #include "graphics.h"
-#include "sprite.h"
 #include "simple_logger.h"
 
-#define MaxSprites    255
+SDL_Surface *buffer;		/**<pointer to the background image buffer*/
+SDL_Surface *videobuffer;	/**<pointer to the draw buffer*/
+SDL_Rect Camera;			/**<x & y are the coordinates for the background map, w and h are of the screen*/
+Uint32 NOW;					/**<the current time since program started*/
 
-struct
-{
-	Uint32 state;
-	Uint32 shown;
-	Uint32 frame;
-	Uint16  x, y;
-}Mouse;
+static SDL_Window   *   __graphics_main_window = NULL;
+static SDL_Renderer *   __graphics_renderer = NULL;
+static SDL_Texture  *   __graphics_texture = NULL;
+static SDL_Surface  *   __graphics_surface = NULL;
+static SDL_Surface  *   __graphics_temp_buffer = NULL;
 
-SDL_Window *window; /*pointer to the window handler */
-SDL_Surface *buffer; /*pointer to the background image buffer*/
-SDL_Surface *videobuffer; /*pointer to the draw buffer*/
-SDL_Rect Camera; /*x & y are the coordinates for the background map, w and h are of the screen*/
-Sprite SpriteList[MaxSprites];
-Sprite *Msprite;
-int NumSprites;
-Uint32 NOW;					/*the current time since program started*/
+/**timing*/
+static Uint32 graphics_frame_delay = 30;
+static Uint32 graphics_now = 0;
+static Uint32 graphics_then = 0;
+static Uint8 graphics_print_fps = 1;
+static float graphics_fps = 0; 
 
-static SDL_Window   *   __gt_graphics_main_window = NULL;
-static SDL_Renderer *   __gt_graphics_renderer = NULL;
-static SDL_Texture  *   __gt_graphics_texture = NULL;
-static SDL_Surface  *   __gt_graphics_surface = NULL;
-static SDL_Surface  *   __gt_graphics_temp_buffer = NULL;
+/**some data on the video settings that can be useful for a lot of functions*/
+static int bitdepth;
+static Uint32 rmask;
+static Uint32 gmask;
+static Uint32 bmask;
+static Uint32 amask;
 
+void Graphics_Close();
 
-/*some data on the video settings that can be useful for a lot of functions*/
-static int __gt_bitdepth;
-static Uint32 __gt_rmask;
-static Uint32 __gt_gmask;
-static Uint32 __gt_bmask;
-static Uint32 __gt_amask;
-
-void gt_graphics_close();
-
-/**
- * @brief	Initialises the graphics.
- * @param [in,out]	windowName	If non-null, name of the window.
- * @param	viewWidth		  	Width of the view.
- * @param	viewHeight		  	Height of the view.
- * @param	renderWidth		  	Width of the render.
- * @param	renderHeight	  	Height of the render.
- * @param	bgcolor			  	The bgcolor.
- * @param	fullscreen		  	The fullscreen.
- */
-void Init_Graphics(
-	char *windowName,
-    int viewWidth,
-    int viewHeight,
-    int renderWidth,
-    int renderHeight,
-    float bgcolor[4],
-    int fullscreen)
+void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,float bgcolor[4],int fullscreen)
 {
     Uint32 flags = 0;
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        printf("Unable to initilaize SDL system: %s",SDL_GetError());
+        slog("Unable to initilaize SDL system: %s",SDL_GetError());
         return;
     }
     atexit(SDL_Quit);
     if (fullscreen)
     {
-        if (renderWidth == 0)
+        if (renderW == 0)
         {
             flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
@@ -79,649 +52,188 @@ void Init_Graphics(
             flags |= SDL_WINDOW_FULLSCREEN;
         }
     }
-    __gt_graphics_main_window = SDL_CreateWindow(windowName,
+    __graphics_main_window = SDL_CreateWindow(windowName,
                              SDL_WINDOWPOS_UNDEFINED,
                              SDL_WINDOWPOS_UNDEFINED,
-                             renderWidth, renderHeight,
+                             renderW, renderH,
                              flags);
 
-    if (!__gt_graphics_main_window)
+    if (!__graphics_main_window)
     {
-        printf("failed to create main window: %s",SDL_GetError());
-        gt_graphics_close();
+        slog("failed to create main window: %s",SDL_GetError());
+        Graphics_Close();
         return;
     }
     
-    __gt_graphics_renderer = SDL_CreateRenderer(__gt_graphics_main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-    if (!__gt_graphics_renderer)
+    __graphics_renderer = SDL_CreateRenderer(__graphics_main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    if (!__graphics_renderer)
     {
-        printf("failed to create renderer: %s",SDL_GetError());
-        gt_graphics_close();
+        slog("failed to create renderer: %s",SDL_GetError());
+        Graphics_Close();
         return;
     }
     
-    SDL_SetRenderDrawColor(__gt_graphics_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(__gt_graphics_renderer);
-    SDL_RenderPresent(__gt_graphics_renderer);
+    SDL_SetRenderDrawColor(__graphics_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(__graphics_renderer);
+    SDL_RenderPresent(__graphics_renderer);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(__gt_graphics_renderer, renderWidth, renderHeight);
+    SDL_RenderSetLogicalSize(__graphics_renderer, renderW, renderH);
 
-    __gt_graphics_texture = SDL_CreateTexture(
-        __gt_graphics_renderer,
+    __graphics_texture = SDL_CreateTexture(
+        __graphics_renderer,
         SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STREAMING,
-        renderWidth, renderHeight);
-    if (!__gt_graphics_texture)
+        renderW, renderH);
+    if (!__graphics_texture)
     {
-        printf("failed to create screen texture: %s",SDL_GetError());
-        gt_graphics_close();
+        slog("failed to create screen texture: %s",SDL_GetError());
+        Graphics_Close();
         return;
-    }
+    };
     
     SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_ARGB8888,
-                                    &__gt_bitdepth,
-                                    &__gt_rmask,
-                                    &__gt_gmask,
-                                    &__gt_bmask,
-                                    &__gt_amask);
+                                    &bitdepth,
+                                    &rmask,
+                                    &gmask,
+                                    &bmask,
+                                    &amask);
 
     
-    __gt_graphics_surface = SDL_CreateRGBSurface(0, renderWidth, renderHeight, __gt_bitdepth,
-                                        __gt_rmask,
-                                    __gt_gmask,
-                                    __gt_bmask,
-                                    __gt_amask);
-    
-    if (!__gt_graphics_surface)
+    __graphics_surface = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,
+                                        rmask,
+                                    gmask,
+                                    bmask,
+                                    amask);
+    buffer = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,
+                                                 rmask,
+                                                 gmask,
+                                                 bmask,
+                                                 amask);    
+    if (!__graphics_surface)
     {
-        printf("failed to create screen surface: %s",SDL_GetError());
-        gt_graphics_close();
+        slog("failed to create screen surface: %s",SDL_GetError());
+        Graphics_Close();
         return;
     }
         
-    atexit(gt_graphics_close);
-    printf("graphics initialized");
+    atexit(Graphics_Close);
+    slog("graphics initialized\n");
 }
 
-
-/** @brief	Resets the buffer. */
-void ResetBuffer()
+void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,int y)
 {
-	SDL_RenderPresent(__gt_graphics_renderer);
-}
-
-
-/** @brief	Next frame. */
-void NextFrame()
-{
-  Uint32 Then;
-  SDL_UpdateWindowSurface(window);				/*update the screen using the videobuffer*/
-  Then = NOW;									/*these next few lines  are used to show how long each frame takes to update.  */
-  NOW = SDL_GetTicks();
-/*  fprintf(stdout,"Ticks passed this frame: %i\n", NOW - Then);*/
-  FrameDelay(33); /*this will make your frame rate about 30 frames per second.  If you want 60 fps then set it to about 15 or 16*/
-}
-
-
-/** @brief	Gt graphics close. */
-void gt_graphics_close()
-{
-    if (__gt_graphics_texture)
+    SDL_Rect dstRect;
+    SDL_Point point = {1,1};
+    int w,h;
+    if (!__graphics_texture)
     {
-        SDL_DestroyTexture(__gt_graphics_texture);
+        slog("Graphics_RenderSurfaceToScreen: no texture available");
+        return;
     }
-    if (__gt_graphics_renderer)
+    if (!surface)
     {
-        SDL_DestroyRenderer(__gt_graphics_renderer);
+        slog("Graphics_RenderSurfaceToScreen: no surface provided");
+        return;
     }
-    if (__gt_graphics_main_window)
+    SDL_QueryTexture(__graphics_texture,
+                     NULL,
+                     NULL,
+                     &w,
+                     &h);
+    /*check if resize is needed*/
+    if ((surface->w > w)||(surface->h > h))
     {
-        SDL_DestroyWindow(__gt_graphics_main_window);
-    }
-    if (__gt_graphics_surface)
-    {
-        SDL_FreeSurface(__gt_graphics_surface);
-    }
-    if (__gt_graphics_temp_buffer)
-    {
-        SDL_FreeSurface(__gt_graphics_temp_buffer);
-    }
-    __gt_graphics_surface = NULL;
-    __gt_graphics_main_window = NULL;
-    __gt_graphics_renderer = NULL;
-    __gt_graphics_texture = NULL;
-    __gt_graphics_temp_buffer = NULL;
-}
-
-/**
- * @brief	Draw pixel.
- * @param [in,out]	screen	If non-null, the screen.
- * @param	R			  	The Uint8 to process.
- * @param	G			  	The Uint8 to process.
- * @param	B			  	The Uint8 to process.
- * @param	x			  	The x coordinate.
- * @param	y			  	The y coordinate.
- */
-void DrawPixel(SDL_Surface *screen, Uint8 R, Uint8 G, Uint8 B, int x, int y)
-{
-    Uint32 color = SDL_MapRGB(screen->format, R, G, B);
-
-    if ( SDL_MUSTLOCK(screen) )
-    {
-        if ( SDL_LockSurface(screen) < 0 )
+        SDL_DestroyTexture(__graphics_texture);
+        __graphics_texture = SDL_CreateTexture(__graphics_renderer,
+                                                   __graphics_surface->format->format,
+                                                   SDL_TEXTUREACCESS_STREAMING, 
+                                                   surface->w,
+                                                   surface->h);
+        if (!__graphics_texture)
         {
+            slog("Graphics_RenderSurfaceToScreen: failed to allocate more space for the screen texture!");
             return;
         }
     }
-    switch (screen->format->BytesPerPixel)
+    SDL_SetTextureBlendMode(__graphics_texture,SDL_BLENDMODE_BLEND);        
+    SDL_UpdateTexture(__graphics_texture,
+                      &srcRect,
+                      surface->pixels,
+                      surface->pitch);
+    dstRect.x = x;
+    dstRect.y = y;
+    dstRect.w = srcRect.w;
+    dstRect.h = srcRect.h;
+    SDL_RenderCopy(__graphics_renderer,
+                     __graphics_texture,
+                     &srcRect,
+                     &dstRect);
+}
+
+
+void ResetBuffer()
+{
+    
+}
+
+void Graphics_FrameDelay()
+{
+    Uint32 diff;
+    graphics_then = graphics_now;
+    graphics_now = SDL_GetTicks();
+    diff = (graphics_now - graphics_then);
+    if (diff < graphics_frame_delay)
     {
-        case 1:
-        { /* Assuming 8-bpp */
-            Uint8 *bufp;
-
-            bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
-            *bufp = color;
-        }
-        break;
-
-        case 2:
-        { /* Probably 15-bpp or 16-bpp */
-            Uint16 *bufp;
-
-            bufp = (Uint16 *)screen->pixels + y*screen->pitch/2 + x;
-            *bufp = color;
-        }
-        break;
-
-        case 3:
-        { /* Slow 24-bpp mode, usually not used */
-            Uint8 *bufp;
-
-            bufp = (Uint8 *)screen->pixels + y*screen->pitch + x;
-            *(bufp+screen->format->Rshift/8) = R;
-            *(bufp+screen->format->Gshift/8) = G;
-            *(bufp+screen->format->Bshift/8) = B;
-        }
-        break;
-
-        case 4:
-        { /* Probably 32-bpp */
-            Uint32 *bufp;
-
-            bufp = (Uint32 *)screen->pixels + y*screen->pitch/4 + x;
-            *bufp = color;
-        }
-        break;
+        SDL_Delay(graphics_frame_delay - diff);
     }
-    if ( SDL_MUSTLOCK(screen) )
+    graphics_fps = 500.0/MAX(SDL_GetTicks() - graphics_then,0.001);
+    if (graphics_print_fps)
     {
-        SDL_UnlockSurface(screen);
+        slog("FPS: %f",graphics_fps);
     }
 }
 
-/**
- * @brief	Getpixels.
- * @param [in,out]	surface	If non-null, the surface.
- * @param	x			   	The x coordinate.
- * @param	y			   	The y coordinate.
- * @return	An Uint32.
- */
-Uint32 getpixel(SDL_Surface *surface, int x, int y)
+void NextFrame()
 {
-    /* Here p is the address to the pixel we want to retrieve*/
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * surface->format->BytesPerPixel;
+  SDL_RenderPresent(__graphics_renderer);
+  Graphics_FrameDelay();
+}
 
-    switch(surface->format->BytesPerPixel)
+void Graphics_Close()
+{
+    if (__graphics_texture)
     {
-    case 1:
-        return *p;
-
-    case 2:
-        return *(Uint16 *)p;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
-
-    case 4:
-        return *(Uint32 *)p;
-
-    default:
-        return 0;       /*shouldn't happen, but avoids warnings*/
+        SDL_DestroyTexture(__graphics_texture);
     }
-}
-
-
-
-/*
- * Set the pixel at (x, y) to the given value
- * NOTE: The surface must be locked before calling this!
- */
-
-/**
- * @brief	Putpixels.
- * @param [in,out]	surface	If non-null, the surface.
- * @param	x			   	The x coordinate.
- * @param	y			   	The y coordinate.
- * @param	pixel		   	The pixel.
- */
-void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
-{
-    /* Here p is the address to the pixel we want to set */
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * surface->format->BytesPerPixel;
-
-    switch(surface->format->BytesPerPixel)
+    if (__graphics_renderer)
     {
-    case 1:
-        *p = pixel;
-        break;
-
-    case 2:
-        *(Uint16 *)p = pixel;
-        break;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-            p[0] = (pixel >> 16) & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = pixel & 0xff;
-        } else {
-            p[0] = pixel & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = (pixel >> 16) & 0xff;
-        }
-        break;
-
-    case 4:
-        *(Uint32 *)p = pixel;
-        break;
+        SDL_DestroyRenderer(__graphics_renderer);
     }
-}
-
-
-/*
-  makes sure a minimum number of ticks is waited between frames
-  this is to ensure that on faster machines the game won't move so fast that
-  it will look terrible.
-  This is a very handy function in game programming.
-*/
-
-/**
- * @brief	Frame delay.
- * @param	delay	The delay.
- */
-void FrameDelay(Uint32 delay)
-{
-    static Uint32 pass = 100;
-    Uint32 dif;
-    dif = SDL_GetTicks() - pass;
-    if(dif < delay)SDL_Delay( delay - dif);
-    pass = SDL_GetTicks();
-}
-
-/*sets an sdl surface to all color.*/
-
-/**
- * @brief	Blank screen.
- * @param [in,out]	buf	If non-null, the buffer.
- * @param	color	   	The color.
- */
-void BlankScreen(SDL_Surface *buf,Uint32 color)
-{
-    SDL_LockSurface(buf);
-    memset(buf->pixels, (Uint8)color,buf->format->BytesPerPixel * buf->w *buf->h);
-    SDL_UnlockSurface(buf);
-}
-/*
- * This is the beginning of my Palette swapping scheme.  It checks the value
- * of the color it is given to see if the given color is PURE red, PURE green,
- * or PURE blue.  If it is, it takes the value as a percentage to apply to
- * the new color.  It returns either the old color untouched (if it wasn't a 
- * special case) or the new color.
- */
-
-/**
- * @brief	Sets a color.
- * @param	color	 	The color.
- * @param	newcolor1	The first newcolor.
- * @param	newcolor2	The second newcolor.
- * @param	newcolor3	The third newcolor.
- * @return	An Uint32.
- */
-Uint32 SetColor(Uint32 color, int newcolor1,int newcolor2, int newcolor3)
-{
-    Uint8 r,g,b;
-    Uint8 intensity;
-    int newcolor;
-    SDL_GetRGB(color, videobuffer->format, &r, &g, &b);
-    if((r == 0) && (g == 0)&&(b !=0))
+    if (__graphics_main_window)
     {
-        intensity = b;
-        newcolor = newcolor3;
+        SDL_DestroyWindow(__graphics_main_window);
     }
-    else if((r ==0)&&(b == 0)&&(g != 0))
+    if (__graphics_surface)
     {
-        intensity = g;
-        newcolor = newcolor2;
+        SDL_FreeSurface(__graphics_surface);
     }
-    else if((g == 0)&&(b == 0)&&(r != 0))
+    if (__graphics_temp_buffer)
     {
-        intensity = r;
-        newcolor = newcolor1;
+        SDL_FreeSurface(__graphics_temp_buffer);
     }
-    else return color;
-    switch(newcolor)
-    {
-        case Red:
-            r = intensity;
-            g = 0;
-            b = 0;
-            break;
-        case Green:
-            r = 0;
-            g = intensity;
-            b = 0;
-            break;
-        case Blue:
-            r = 0;
-            g = 0;
-            b = intensity;
-            break;
-        case Yellow:
-            r = (Uint8)(intensity * 0.7);
-            g = (Uint8)(intensity * 0.7);
-            b = 0;
-            break;
-        case Orange:
-            r = (Uint8)(intensity * 0.9);
-            g = (Uint8)(intensity * 0.4);
-            b = (Uint8)(intensity * 0.1);
-            break;
-        case Violet:
-            r = (Uint8)(intensity * 0.7);
-            g = 0;
-            b = (Uint8)(intensity * 0.7);
-            break;
-        case Brown:
-            r = (Uint8)(intensity * 0.6);
-            g = (Uint8)(intensity * 0.3);
-            b = (Uint8)(intensity * 0.15);
-            break;
-        case Grey:
-            r = (Uint8)(intensity * 0.5);
-            g = (Uint8)(intensity * 0.5);
-            b = (Uint8)(intensity * 0.5);
-            break;
-        case DarkRed:
-            r = (Uint8)(intensity * 0.5);
-            g = 0;
-            b = 0;
-            break;
-        case DarkGreen:
-            r = 0;
-            g = (Uint8)(intensity * 0.5);
-            b = 0;
-            break;
-        case DarkBlue:
-            r = 0;
-            g = 0;
-            b = (Uint8)(intensity * 0.5);
-            break;
-        case DarkYellow:
-            r = (Uint8)(intensity * 0.4);
-            g = (Uint8)(intensity * 0.4);
-            b = 0;
-            break;
-        case DarkOrange:
-            r = (Uint8)(intensity * 0.6);
-            g = (Uint8)(intensity * 0.2);
-            b = (Uint8)(intensity * 0.1);
-            break;
-        case DarkViolet:
-            r = (Uint8)(intensity * 0.4);
-            g = 0;
-            b = (Uint8)(intensity * 0.4);
-            break;
-        case DarkBrown:
-            r = (Uint8)(intensity * 0.2);
-            g = (Uint8)(intensity * 0.1);
-            b = (Uint8)(intensity * 0.05);
-            break;
-        case DarkGrey:
-            r = (Uint8)(intensity * 0.3);
-            g = (Uint8)(intensity * 0.3);
-            b = (Uint8)(intensity * 0.3);
-            break;
-        case LightRed:
-            r = intensity;
-            g = (Uint8)(intensity * 0.45);
-            b = (Uint8)(intensity * 0.45);
-            break;
-        case LightGreen:
-            r = (Uint8)(intensity * 0.45);
-            g = intensity;
-            b = (Uint8)(intensity * 0.45);
-            break;
-        case LightBlue:
-            r = (Uint8)(intensity * 0.45);
-            b = intensity;
-            g = (Uint8)(intensity * 0.45);
-            break;
-        case LightYellow:
-            r = intensity;
-            g = intensity;
-            b = (Uint8)(intensity * 0.45);
-            break;
-        case LightOrange:
-            r = intensity;
-            g = (Uint8)(intensity * 0.75);
-            b = (Uint8)(intensity * 0.35);
-            break;
-        case LightViolet:
-            r = intensity;
-            g = (Uint8)(intensity * 0.45);
-            b = intensity;
-            break;
-        case LightBrown:
-            r = intensity;
-            g = (Uint8)(intensity * 0.85);
-            b = (Uint8)(intensity * 0.45);
-            break;
-        case LightGrey:
-            r = (Uint8)(intensity * 0.85);
-            g = (Uint8)(intensity * 0.85);
-            b = (Uint8)(intensity * 0.85);
-            break;
-        case Black:
-            r = (Uint8)(intensity * 0.15);
-            g = (Uint8)(intensity * 0.15);
-            b = (Uint8)(intensity * 0.15);
-            break;
-        case White:
-            r = intensity;
-            g = intensity;
-            b = intensity;
-            break;
-        case Tan:
-            r = intensity;
-            g = (Uint8)(intensity * 0.9);
-            b = (Uint8)(intensity * 0.6);
-            break;
-        case Gold:
-            r = (Uint8)(intensity * 0.8);
-            g = (Uint8)(intensity * 0.7);
-            b = (Uint8)(intensity * 0.2);
-            break;
-        case Silver:
-            r = (Uint8)(intensity * 0.95);
-            g = (Uint8)(intensity * 0.95);
-            b = intensity;
-            break;
-        case YellowGreen:
-            r = (Uint8)(intensity * 0.45);
-            g = (Uint8)(intensity * 0.75);
-            b = (Uint8)(intensity * 0.2);
-            break;
-        case Cyan:
-            r = 0;
-            g = (Uint8)(intensity * 0.85);
-            b = (Uint8)(intensity * 0.85);
-            break;
-        case Magenta:
-            r = (Uint8)(intensity * 0.7);
-            g = 0;
-            b = (Uint8)(intensity * 0.7);
-            break;
-    }
-    return SDL_MapRGB(videobuffer->format,r,g,b);
+    __graphics_surface = NULL;
+    __graphics_main_window = NULL;
+    __graphics_renderer = NULL;
+    __graphics_texture = NULL;
+    __graphics_temp_buffer = NULL;
 }
 
-/* This will probably never have to be called, returns the hex code for the
- * enumerated color
- */
-
-/**
- * @brief	Index color.
- * @param	color	The color.
- * @return	An Uint32.
- */
-Uint32 IndexColor(int color)
+SDL_Renderer *Graphics_GetActiveRenderer()
 {
-	switch(color)
-	{
-	case Red:
-		return Red_;
-	case Green:
-		return Green_;
-	case Blue:
-		return Blue_;
-	case Yellow:
-		return Yellow_;
-	case Orange:
-		return Orange_;
-	case Violet:
-		return Violet_;
-	case Brown:
-		return Brown_;
-	case Grey:
-		return Grey_;
-	case DarkRed:
-		return DarkRed_;
-	case DarkGreen:
-		return DarkGreen_;
-	case DarkBlue:
-		return DarkBlue_;
-	case DarkYellow:
-		return DarkYellow_;
-	case DarkOrange:
-		return DarkOrange_;
-	case DarkViolet:
-		return DarkViolet_;
-	case DarkBrown:
-		return DarkBrown_;
-	case DarkGrey:
-		return DarkGrey_;
-	case LightRed:
-		return LightRed_;
-	case LightGreen:
-		return LightGreen_;
-	case LightBlue:
-		return LightBlue_;
-	case LightYellow:
-		return LightYellow_;
-	case LightOrange:
-		return LightOrange_;
-	case LightViolet:
-		return LightViolet_;
-	case LightBrown:
-		return LightBrown_;
-	case LightGrey:
-		return LightGrey_;
-	case Black:
-		return Black_;
-	case White:
-		return White_;
-	case Tan:
-		return Tan_;
-	case Gold:
-		return Gold_;
-	case Silver:
-		return Silver_;
-	case YellowGreen:
-		return YellowGreen_;
-	case Cyan:
-		return Cyan_;
-	case Magenta:
-		return Magenta_;
-	}
-	return Black_;
+    return __graphics_renderer;
 }
-/*
- * and now bringing it all together, we swap the pure colors in the sprite out
- * and put the new colors in.  This maintains any of the artist's shading and
- * detail, but still lets us have that old school palette swapping.  
- */
 
-/**
- * @brief	Swap sprite.
- * @param [in,out]	sprite	If non-null, the sprite.
- * @param	color1		  	The first color.
- * @param	color2		  	The second color.
- * @param	color3		  	The third color.
- */
-void SwapSprite(SDL_Surface *sprite,int color1,int color2,int color3)
+Uint32 Graphics_GetSystemTime()
 {
-	int x, y;
-	Uint32 pixel;
-	/*First the precautions, that are tedious, but necessary*/
-	if(color1 == -1)return;
-	if(sprite == NULL)return;
-	if ( SDL_LockSurface(sprite) < 0 )
-	{
-		fprintf(stderr, "Can't lock screen: %s\n", SDL_GetError());
-		exit(1);
-	}
-	/*now step through our sprite, pixel by pixel*/
-	for(y = 0;y < sprite->h ;y++)
-	{
-		for(x = 0;x < sprite->w ;x++)
-		{                           
-				pixel = getpixel(sprite,x,y);/*and swap it*/
-				putpixel(sprite,x,y,SetColor(pixel,color1,color2,color3));
-		}
-	}
-	SDL_UnlockSurface(sprite);
+    return graphics_now;
 }
-
-/*mouse handling functions*/
-/*this only handles the drawing and animation of.  Assuming you have a 16 by 16  tiled sprite sheet.  This will not handle input*/
-
-
-/** @brief	Initialises the mouse. */
-void InitMouse()
-{
-	Msprite = sprite_Load(__gt_graphics_renderer,"images/mouse.png",16, 16);
-	if(Msprite == NULL)fprintf(stdout,"mouse didn't load: %s\n", SDL_GetError());
-	Mouse.state = 0;
-	Mouse.shown = 0;
-	Mouse.frame = 0;
-}
-
-    /*draws to the screen immediately before the blit, after all
-     it wouldn't be a very good mouse if it got covered up by the
-     game content*/
-
-
-/** @brief	Draw mouse. */
-void DrawMouse()
-{
-	int mx,my;
-	SDL_GetMouseState(&mx,&my);
-	if(Msprite != NULL) sprite_Draw(Msprite,Mouse.frame, __gt_graphics_renderer,mx,my);
-	Mouse.frame = (Mouse.frame + 1)%16;
-	Mouse.x = mx;
-	Mouse.y = my;
-}
-
