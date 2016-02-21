@@ -1,6 +1,10 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
 
+
+/**   
+ * @brief	Degrees to Radians conversion.   
+ */
 #define BRETT_DEGTORAD	0.017453292519943295769236907684886
 
 /**   

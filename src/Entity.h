@@ -16,14 +16,14 @@ typedef struct Entity_S
 	Vec2d vel;
 	Sprite *sprite;
 	int frame;
-	int health, maxHealth;
+	int health, maxHealth, speed, strength;
 	int nextThink;
 	int thinkRate;
-	void (*draw)(struct Entity_S *self);
+	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*think)(struct Entity_S *self);
 	void (*update)(struct Entity_S *self);
 	void (*touch)(struct Entity_S *self);
-	void (*free)(struct Entity_S *self);
+	void (*free)(struct Sprite **sprite);
 
 }Entity;
 
@@ -31,7 +31,7 @@ typedef struct Entity_S
  * @brief	Return a pointer to an empty entity structure
  * @return	Null if it fails, or no more space for entity, else an Entity*.
  */
-Entity *Entity_New();
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p);
 
 /**
  * @brief	Frees the memory allocated by the entity.
@@ -63,7 +63,7 @@ void Entity_ThinkAll();
  * @param	*renderer			The renderer being drawn to.
  * @param	drawPos				The position on the screen the entity is being drawn on.
  */
-void Entity_DrawAll(Entity* ent, int frame, SDL_Renderer *renderer, Vec2d drawPos);
+void Entity_DrawAll();
 
 /**   
  * @brief	The Update function that updates all entities every certain amount of time.  

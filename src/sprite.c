@@ -9,6 +9,7 @@ static Sprite *spriteList = NULL;
 int spriteMax = 1000;
 int numSprites = 0;
 
+void sprite_CloseSystem();
 /**   
  * @brief	Initialises the Sprite System by allocating a block of memory. 
  */
@@ -44,7 +45,8 @@ void sprite_Free(Sprite **sprite)
 	Sprite *target = *sprite;
 	
 	if(!sprite)return;
-	if(!*sprite)return;
+	if(!*sprite)return;	
+	target->refCount--;
 	if(target->refCount == 0)
 	{
 		strcpy(target->filename,"\0");
@@ -54,7 +56,7 @@ void sprite_Free(Sprite **sprite)
 
 		target->image = NULL;
 	}
-	target->refCount--;
+
 	*sprite = NULL;
 }
 
@@ -70,11 +72,10 @@ void sprite_CloseSystem()
 		SDL_DestroyTexture(spriteList[i].image);
 	}
 
-	numSprites = 0;
-
 	memset(spriteList,0,sizeof(Sprite)*numSprites);
 	free(spriteList);
-	spriteList = NULL;
+	spriteList = NULL;	
+	numSprites = 0;
 }
 
 /**
@@ -92,7 +93,7 @@ Sprite *sprite_Load(char file[], int fw, int fh)
 
 	if(!spriteList)return NULL;
 
-	for(i = 0; i < numSprites; ++i)
+	for(i = 0; i < numSprites; i++)
 	{
 		if(strncmp(file,spriteList[i].filename,128)==0)
 		{
@@ -102,13 +103,15 @@ Sprite *sprite_Load(char file[], int fw, int fh)
 		}
 	}
 
+	numSprites++;
+
 	if(numSprites + 1 >= spriteMax)
 	{
 		fprintf(stderr, "Maximum Sprites Reached.\n");
 		exit(1);
 	}
 
-	numSprites++; 
+	 
 
 	for(i = 0;i <= numSprites; i++)
 	{

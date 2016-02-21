@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include "Vector.h"
 #include "Entity.h"
+#include "Player.h"
 #include <string>
 
 extern SDL_Surface *screen; /**<pointer to the draw screen*/
@@ -16,10 +17,6 @@ void Init_All();
 int getImagePathFromFile(char *filepath,char * filename);
 int getCoordinatesFromFile(int *x, int *y,char * filename);
 void addCoordinateToFile(char *filepath,int x, int y);
-
-
-/*this program must be run from the directory directly below images and src, not from within src*/
-/*notice the default arguments for main.  SDL expects main to look like that, so don't change it*/
 
 /**
  * @brief	Main entry-point for this application.
@@ -34,8 +31,11 @@ int main(int argc, char *argv[])
 	int tx = 0,ty = 0;
 	const Uint8 *keys;
 	char imagepath[512];
-	SDL_Rect srcRect={1,0,800,600};
+	SDL_Rect srcRect={0,0,800,600};
 	int i = 0;
+	Player *player;
+	Entity *ent;
+	Vec2d pos;
 	Init_All();
 
 	temp = IMG_Load("images/bgtest.png");
@@ -44,30 +44,33 @@ int main(int argc, char *argv[])
 		fprintf(stdout, "temp image successfully loaded\n");
 		SDL_BlitSurface(temp,NULL,buffer,NULL);
 	}
-	Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
-	SDL_FreeSurface(temp);
+	vec2d_Set(pos,100,100);
+	ent = Entity_New("images/playersheet.png", 27,48, pos);
+	ent->draw = &sprite_Draw;
+
+	player = Player_Load();
 	done = 0;
 	do
 	{
+		SDL_RenderClear(Graphics_GetActiveRenderer());
+		Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
+
+		Entity_ThinkAll();
+		Entity_UpdateAll();
+		Entity_DrawAll();
+
 		ResetBuffer();
 		NextFrame();
 		SDL_PumpEvents();
 		keys = SDL_GetKeyboardState(NULL);
 		if(keys[SDL_SCANCODE_ESCAPE])done = 1;
 	}while(!done);
+
+	SDL_FreeSurface(temp);
+
 	exit(0);		/*technically this will end the program, but the compiler likes all functions that can return a value TO return a value*/
 	return 0;
 }
-
-
-/** @brief	Clean up all. */
-void CleanUpAll()
-{
-	sprite_CloseSystem();
-	Entity_CloseSystem();
-  /*any other cleanup functions can be added here*/ 
-}
-
 
 /** @brief	Initialises all. */
 void Init_All()
@@ -75,8 +78,7 @@ void Init_All()
 	float bgcolor[] = {1,1,1,1};
 	sprite_InitSystem();
 	Entity_InitSystem(100);
-	Graphics_Init("Game Test",800,400,800,400,bgcolor,0);
-	atexit(CleanUpAll);
+	Graphics_Init("Dream a Way Out",800,400,800,400,bgcolor,0);
 }
 
 int getImagePathFromFile(char *filepath,char * filename)

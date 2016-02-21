@@ -12,7 +12,7 @@ Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
  * @brief	Creates a new reference to an Entity.
  * @return	a new Entity.
  */
-Entity *Entity_New()
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
 	for(i = 0; i < numEnt; i++)
@@ -25,7 +25,24 @@ Entity *Entity_New()
 		entList[i].inuse = 1;
 		return &entList[i];
 	}
-	return NULL;
+
+	numEnt++;
+	if(numEnt + 1 >= entMax)
+	{
+		fprintf(stderr, "Maximum Sprites Reached.\n");
+		exit(1);
+	}
+
+	entList[i].inuse = 1;
+	entList[i].pos = p;
+	entList[i].sprite = sprite_Load(file,fw,fh);
+	entList[i].frame = 0;
+	entList[i].health = 0;
+	entList[i].maxHealth = 0;
+	entList[i].nextThink = 0;
+	entList[i].thinkRate = 0;
+
+	return &entList[i];
 }
 
 /**
@@ -34,15 +51,16 @@ Entity *Entity_New()
  */
 void Entity_Free(Entity **ent)
 {
-	Entity *self; /**<alias for *ent*/
+	//Entity *self; /**<alias for *ent*/
 
 	if(!ent)return;
 	if(!*ent)return;
 
-	self = *ent;
-	self->inuse = 0;
+	//self = *ent;
+	(*ent)->inuse = 0;
 
-	sprite_Free(&self->sprite);
+	sprite_Free(&(*ent)->sprite);
+	(*ent)->sprite = NULL;
 
 }
 
@@ -53,12 +71,14 @@ void Entity_CloseSystem()
 {
 	Entity *ent; /**<alias for *ent*/
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
-	for(i = 0; i < entMax ;i++)
+	for(i = 0; i < entMax; i++)
 	{
 		ent= &entList[i];
         Entity_Free(&ent);
 	}
 	free(entList);
+	entList = NULL;	
+	numEnt = 0;
 }
 
 /**
@@ -87,22 +107,21 @@ void Entity_InitSystem(Uint32 ent_Max)
  * @param	*renderer			The renderer being drawn to.
  * @param	drawPos				The position on the screen the entity is being drawn on.
  */
-void Entity_DrawAll(Entity* ent, int frame, SDL_Renderer *renderer, Vec2d drawPos)
+void Entity_DrawAll()
 {
-	SDL_Rect src; /**<source rectangle*/
-	SDL_Rect dest;/**<destination rectangle*/
-
-	src.x = frame%ent->sprite->fpl * ent->sprite->frameSize.x;
-	src.y = frame/ent->sprite->fpl * ent->sprite->frameSize.y;
-	src.w = ent->sprite->frameSize.x;
-	src.h = ent->sprite->frameSize.y;
-
-	dest.x = drawPos.x;
-	dest.y = drawPos.y;
-	dest.w = ent->sprite->frameSize.x;
-	dest.h = ent->sprite->frameSize.y;
-
-	SDL_RenderCopy(renderer,ent->sprite->image, &src, &dest);
+	Uint32 i;
+	for(i = 0; i < entMax; i++)
+	{
+		if(!entList[i].inuse)
+		{
+			continue;
+		}
+		if(!entList[i].draw)
+		{
+			continue;
+		}
+		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+	}
 }
 
 /**   
@@ -137,6 +156,7 @@ void Entity_UpdateAll()
 		{
 			continue;
 		}
+		vec2d_Add(entList[i].pos, entList[i].vel, entList[i].pos);
 		if(!entList[i].update)
 		{
 			continue;

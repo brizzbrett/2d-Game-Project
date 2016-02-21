@@ -33,6 +33,9 @@
     <ClCompile Include="..\src\Entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Player.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\graphics.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
