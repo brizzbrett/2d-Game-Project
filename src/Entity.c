@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "graphics.h"
+#include "simple_logger.h"
 
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 100; /**<static unsigned 32-bit integer of maximum entities*/
@@ -15,7 +16,7 @@ Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
 Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
-	for(i = 0; i < numEnt; i++)
+	for(i = 0; i < entMax; i++)
 	{
 		if(entList[i].inuse)
 		{
@@ -23,26 +24,32 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		}
 		memset(&entList[i],0,sizeof(Entity));
 		entList[i].inuse = 1;
+		numEnt++;
+		if(numEnt > entMax)
+		{
+			fprintf(stderr, "Maximum Sprites Reached.\n");
+			exit(1);
+		}
+
+		entList[i].inuse = 1;
+		entList[i].type = ENTITY;
+		entList[i].pos = p;
+		entList[i].sprite = sprite_Load(file,fw,fh);
+		entList[i].frame = 0;
+		entList[i].health = 0;
+		entList[i].maxHealth = 0;
+		entList[i].nextThink = 0;
+		entList[i].thinkRate = 0;
+
+		entList[i].draw = &sprite_Draw;
+		entList[i].think = NULL;
+		entList[i].update = NULL;
+		entList[i].touch = &Entity_IntersectAll;
+		entList[i].free = &Entity_Free;
+
 		return &entList[i];
 	}
-
-	numEnt++;
-	if(numEnt + 1 >= entMax)
-	{
-		fprintf(stderr, "Maximum Sprites Reached.\n");
-		exit(1);
-	}
-
-	entList[i].inuse = 1;
-	entList[i].pos = p;
-	entList[i].sprite = sprite_Load(file,fw,fh);
-	entList[i].frame = 0;
-	entList[i].health = 0;
-	entList[i].maxHealth = 0;
-	entList[i].nextThink = 0;
-	entList[i].thinkRate = 0;
-
-	return &entList[i];
+	return NULL;
 }
 
 /**
@@ -163,4 +170,41 @@ void Entity_UpdateAll()
 		}
 		entList[i].update(&entList[i]);
 	}
+}
+
+void Entity_IntersectAll(Entity *a)
+{
+	int i;
+	if(!a)return;
+
+	for(i=0; i < entMax; i++)
+	{
+		if(!entList[i].inuse)
+		{
+			continue;
+		}
+		if(a == &entList[i])
+		{
+			continue;
+		}
+		if(Entity_Intersect(a, &entList[i]))
+		{
+			slog("Hitting...");
+			entList[i].touch(&entList[i]);
+		}
+	}
+	return;
+}
+int Entity_Intersect(Entity *a, Entity *b)
+{
+	SDL_Rect aB, bB;
+	if ((!a) || (!b))
+	{
+		return 0;
+	}
+	aB = rect(a->pos.x,a->pos.y,a->bounds.w, a->bounds.h);
+	bB = rect(b->pos.x,b->pos.y,b->bounds.w, b->bounds.h);
+	if(rect_intersect(aB, bB))
+		return 1;
+	return 0;
 }

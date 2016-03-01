@@ -1,6 +1,7 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
 
+#include <SDL.h>
 
 /**   
  * @brief	Degrees to Radians conversion.   
@@ -105,6 +106,23 @@ typedef struct
  * @param	c	The return vector with the new x,y,z,w
  */
 #define vec4d_Add(a,b,c)(c.x=a.x+b.x,c.y=a.y+b.y,c.z=a.z+b.z,c.w=a.w+b.w)
+
+#define vec2d_Subtract(a,b,c)(c.x=a.x-b.x,c.y=a.y-b.y)
+/**
+ * @brief	A macro that defines vector 3D add.
+ * @param	a	The 1st in vector to add.
+ * @param	b	The 2nd in vector to add.
+ * @param	c	The return vector with the new x,y,z
+ */
+#define vec3d_Subtract(a,b,c)(c.x=a.x-b.x,c.y=a.y-b.y,c.z=a.z-b.z)
+/**
+ * @brief	A macro that defines vector 4D add.
+ * @param	a	The 1st in vector to add.
+ * @param	b	The 2nd in vector to add.
+ * @param	c	The return vector with the new x,y,z,w
+ */
+#define vec4d_Subtract(a,b,c)(c.x=a.x-b.x,c.y=a.y-b.y,c.z=a.z-b.z,c.w=a.w-b.w)
+
 /**
  * @brief	Defines 2D vector multiplication.
  * @param	a	The 1st in vector to multiply
@@ -254,5 +272,8 @@ void vec4d_SetAngle(Vec4d *vec_Out, float rad);
  * @param	angle	   	The angle of rotation.
  */
 void vec3d_RotateAboutX(Vec3d *vec, float angle);
+
+SDL_Rect rect(int x, int y, int w, int h);
+int rect_intersect(SDL_Rect a, SDL_Rect b);
 
 #endif

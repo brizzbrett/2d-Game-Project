@@ -1,26 +1,42 @@
 #include "Player.h"
 #include "Entity.h"
 #include "Vector.h"
+#include "simple_logger.h"
+#include "Graphics.h"
 #include <math.h>
+
+extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
 
 Player *player;
 
 Player *Player_Load()
 {
 	Vec2d pos;
-	vec2d_Set(pos,100,100);
-	player = Entity_New("images/playersheet.png", 27,48, pos);
-	player->draw = &sprite_Draw;
-	player->think = &Player_Think;
+	vec2d_Set(pos,775,600);
+	player = Entity_New("images/playersheet.png", 64,64, pos);
+	if(player)
+	{
+		player->think = &Player_Think;
+		player->touch = &Player_Touch;
+		player->update = &Player_Update;
 
-	player->strength = 3;
-	player->speed = 2;
-	player->health = 4;
-	player->maxHealth = 4;
+		player->pos = pos;
+		player->type = PLAYER;
+		player->bounds = rect(player->pos.x-10, player->pos.y-10,player->sprite->frameSize.x-10,player->sprite->frameSize.y-10);
+		player->strength = 3;
+		player->speed = 2;
+		player->health = 4;
+		player->maxHealth = 4;
 
+		return player;
+	}
+	return NULL;
+}
+Player *Player_Get()
+{
 	return player;
 }
-void Player_Think(Player *player)
+void Player_Think(Entity *ent)
 {
 	const Uint8 *keys;
 
@@ -56,5 +72,17 @@ void Player_Think(Player *player)
 		player->vel.x = 0;
 	}
 }
-void Player_Update();
-void Player_Attack();
+void Player_Update(Entity *ent)
+{
+	slog("%i",player->health);
+}
+void Player_Touch(Entity *ent)
+{
+	vec2d_Set(player->vel, 0, 0);
+}
+int You_Died()
+{
+	if(player->health <= 0)
+		return true;
+	return false;
+}

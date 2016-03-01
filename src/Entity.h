@@ -6,26 +6,40 @@
 #include "SDL_image.h"
 #include "sprite.h"
 
+
+enum EntityType
+{
+	PLAYER,
+	ENEMY,
+	BOSS,
+	ITEM,
+	ENTITY,
+};
+
 /**
  * @brief	The entity structure
  */
 typedef struct Entity_S
 {
 	int inuse;
+	EntityType type;
 	Vec2d pos;
 	Vec2d vel;
 	Sprite *sprite;
+	SDL_Rect bounds;
 	int frame;
-	int health, maxHealth, speed, strength;
+	float health;
+	int maxHealth, speed, strength;
 	int nextThink;
 	int thinkRate;
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*think)(struct Entity_S *self);
 	void (*update)(struct Entity_S *self);
 	void (*touch)(struct Entity_S *self);
-	void (*free)(struct Sprite **sprite);
+	void (*free)(struct Entity_S **self);
 
 }Entity;
+
 
 /**
  * @brief	Return a pointer to an empty entity structure
@@ -70,4 +84,7 @@ void Entity_DrawAll();
  */
 void Entity_UpdateAll();
 
+void Entity_IntersectAll(Entity *a);
+
+int Entity_Intersect(Entity *a, Entity *b);
 #endif
