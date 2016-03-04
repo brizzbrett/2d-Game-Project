@@ -13,7 +13,7 @@ enum EntityType
 	ENEMY,
 	BOSS,
 	ITEM,
-	ENTITY,
+	OTHER,
 };
 
 /**
@@ -23,20 +23,30 @@ typedef struct Entity_S
 {
 	int inuse;
 	EntityType type;
+	int id;
+
 	Vec2d pos;
 	Vec2d vel;
+
 	Sprite *sprite;
+
 	SDL_Rect bounds;
+
 	int frame;
+
 	float health;
 	int maxHealth, speed, strength;
+
 	int nextThink;
 	int thinkRate;
+
+	struct Entity_S *owner;
+	struct Entity_S *target;
+
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*think)(struct Entity_S *self);
 	void (*update)(struct Entity_S *self);
 	void (*touch)(struct Entity_S *self);
-	void (*free)(struct Entity_S **self);
 
 }Entity;
 
@@ -87,4 +97,6 @@ void Entity_UpdateAll();
 void Entity_IntersectAll(Entity *a);
 
 int Entity_Intersect(Entity *a, Entity *b);
+
+Entity *Entity_GetByID(int id);
 #endif

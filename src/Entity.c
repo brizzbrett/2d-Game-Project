@@ -31,8 +31,13 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 			exit(1);
 		}
 
+		entList[i].draw = &sprite_Draw;
+		entList[i].think = NULL;
+		entList[i].update = NULL;
+		entList[i].touch = &Entity_IntersectAll;
+
 		entList[i].inuse = 1;
-		entList[i].type = ENTITY;
+		entList[i].type = OTHER;
 		entList[i].pos = p;
 		entList[i].sprite = sprite_Load(file,fw,fh);
 		entList[i].frame = 0;
@@ -40,12 +45,6 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		entList[i].maxHealth = 0;
 		entList[i].nextThink = 0;
 		entList[i].thinkRate = 0;
-
-		entList[i].draw = &sprite_Draw;
-		entList[i].think = NULL;
-		entList[i].update = NULL;
-		entList[i].touch = &Entity_IntersectAll;
-		entList[i].free = &Entity_Free;
 
 		return &entList[i];
 	}
@@ -58,7 +57,6 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
  */
 void Entity_Free(Entity **ent)
 {
-	//Entity *self; /**<alias for *ent*/
 
 	if(!ent)return;
 	if(!*ent)return;
@@ -68,6 +66,7 @@ void Entity_Free(Entity **ent)
 
 	sprite_Free(&(*ent)->sprite);
 	(*ent)->sprite = NULL;
+	*ent = NULL;
 
 }
 
@@ -94,8 +93,6 @@ void Entity_CloseSystem()
  */
 void Entity_InitSystem(Uint32 ent_Max)
 {
-	int i;
-
 	if(entMax == 0)
 	{
 		printf("Max Entity == 0\n");
@@ -207,4 +204,28 @@ int Entity_Intersect(Entity *a, Entity *b)
 	if(rect_intersect(aB, bB))
 		return 1;
 	return 0;
+}
+Entity *Entity_GetByID(int id)
+{
+	Uint32 i;
+	for(i=0; i < numEnt; i++)
+	{
+		if(entList[i].id == id)
+		{
+			return &entList[i];
+		}
+	}
+	return NULL;
+}
+Entity *Entity_GetByType(EntityType type)
+{
+	Uint32 i;
+	for(i=0; i < numEnt; i++)
+	{
+		if(entList[i].type == type)
+		{
+			return &entList[i];
+		}
+	}
+	return NULL;
 }

@@ -7,9 +7,8 @@ typedef Entity Player;
 
 Player *Player_Load();
 Player *Player_Get();
-void Player_Think(Entity *ent);
-void Player_Update(Entity *ent);
-void Player_Touch(Entity *ent);
-int You_Died();
+void Player_Think(Player *player);
+void Player_Update(Player * player);
+void Player_Touch(Player *player);
 
 #endif

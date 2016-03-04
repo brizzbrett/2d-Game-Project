@@ -5,11 +5,36 @@
 
 typedef Entity Glop;
 
+/**
+ * @brief	Glop load.
+ *
+ * @return	null if it fails, else a Glop*.
+ */
 
 Glop *Glop_Load();
-void Glop_Think(Entity *ent);
-void Glop_Update(Entity *ent);
-void Glop_Touch(Entity *ent);
-void Glop_Attack();
+
+/**
+ * @brief	Glop think.
+ *
+ * @param [in,out]	glop	If non-null, the glop.
+ */
+
+void Glop_Think(Glop *glop);
+
+/**
+ * @brief	Glop update.
+ *
+ * @param [in,out]	glop	If non-null, the glop.
+ */
+
+void Glop_Update(Glop *glop);
+
+/**
+ * @brief	Glop touch.
+ *
+ * @param [in,out]	glop	If non-null, the glop.
+ */
+
+void Glop_Touch(Glop *glop);
 
 #endif

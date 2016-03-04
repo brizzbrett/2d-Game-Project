@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	int tx = 0,ty = 0;
 	const Uint8 *keys;
 	char imagepath[512];
-	SDL_Rect srcRect={0,0,1600,800};
+	SDL_Rect srcRect={0,0,1600,900};
 	int i = 0;
 	Player *player;
 	Player *player2;
@@ -56,27 +56,15 @@ int main(int argc, char *argv[])
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
 
-		if(You_Died())
-		{
-			temp = IMG_Load("images/youdied.png");
+		Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
 
-			SDL_BlitSurface(temp,NULL,buffer,NULL);
-
-			Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
-			Entity_Free(&player);
-			Entity_Free(&glop);
-		}
-		else
-		{
-			Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
-		}
+		Room_DrawAll();
 
 		Entity_ThinkAll();
 		Entity_UpdateAll();
 		Entity_DrawAll();
 		Entity_IntersectAll(player);
 
-		ResetBuffer();
 		NextFrame();
 		SDL_PumpEvents();
 		keys = SDL_GetKeyboardState(NULL);
@@ -95,7 +83,8 @@ void Init_All()
 	float bgcolor[] = {1,1,1,1};
 	sprite_InitSystem();
 	Entity_InitSystem(100);
-	Graphics_Init("Dream a Way Out",1600,800,1600,800,bgcolor,0);
+	Node_InitSystem();
+	Graphics_Init("Dream a Way Out",1600,900,1600,900,bgcolor,0);
 	Level_Load();
 }
 

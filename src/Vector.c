@@ -113,7 +113,7 @@ float vec4d_GetLength(Vec4d vec)
 }
 
 /**
- * @brief	Vector 4D normalize.
+ * @brief	Vector 2D normalize.
  * @param	*vec		If not null, the input vector being normalized.
  */
 void vec2d_Normalize(Vec2d *vec)
@@ -133,7 +133,7 @@ void vec2d_Normalize(Vec2d *vec)
 }
 
 /**
- * @brief	Vector 4D normalize.
+ * @brief	Vector 3D normalize.
  * @param	*vec		If not null, the input vector being normalized.
  */
 void vec3d_Normalize(Vec3d *vec)

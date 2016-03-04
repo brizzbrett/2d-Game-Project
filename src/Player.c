@@ -5,12 +5,9 @@
 #include "Graphics.h"
 #include <math.h>
 
-extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
-
-Player *player;
-
 Player *Player_Load()
 {
+	Player *player;
 	Vec2d pos;
 	vec2d_Set(pos,775,600);
 	player = Entity_New("images/playersheet.png", 64,64, pos);
@@ -20,6 +17,7 @@ Player *Player_Load()
 		player->touch = &Player_Touch;
 		player->update = &Player_Update;
 
+		player->id = 0;
 		player->pos = pos;
 		player->type = PLAYER;
 		player->bounds = rect(player->pos.x-10, player->pos.y-10,player->sprite->frameSize.x-10,player->sprite->frameSize.y-10);
@@ -28,15 +26,15 @@ Player *Player_Load()
 		player->health = 4;
 		player->maxHealth = 4;
 
+		player->owner = NULL;
+		player->target = NULL;
+
 		return player;
 	}
 	return NULL;
 }
-Player *Player_Get()
-{
-	return player;
-}
-void Player_Think(Entity *ent)
+
+void Player_Think(Player *player)
 {
 	const Uint8 *keys;
 
@@ -72,17 +70,11 @@ void Player_Think(Entity *ent)
 		player->vel.x = 0;
 	}
 }
-void Player_Update(Entity *ent)
+void Player_Update(Player *player)
 {
 	slog("%i",player->health);
 }
-void Player_Touch(Entity *ent)
+void Player_Touch(Player *player)
 {
 	vec2d_Set(player->vel, 0, 0);
-}
-int You_Died()
-{
-	if(player->health <= 0)
-		return true;
-	return false;
 }
