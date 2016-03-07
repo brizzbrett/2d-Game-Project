@@ -6,7 +6,7 @@
 
 
 static Sprite *spriteList = NULL;
-int spriteMax = 1000;
+int spriteMax = 10000;
 int numSprites = 0;
 
 void sprite_CloseSystem();

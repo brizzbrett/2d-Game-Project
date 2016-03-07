@@ -5,11 +5,11 @@
 #include "Graphics.h"
 #include <math.h>
 
-Player *Player_Load()
+Player *Player_Load(int x, int y)
 {
 	Player *player;
 	Vec2d pos;
-	vec2d_Set(pos,775,600);
+	vec2d_Set(pos,x,y);
 	player = Entity_New("images/playersheet.png", 64,64, pos);
 	if(player)
 	{
@@ -22,7 +22,7 @@ Player *Player_Load()
 		player->type = PLAYER;
 		player->bounds = rect(player->pos.x-10, player->pos.y-10,player->sprite->frameSize.x-10,player->sprite->frameSize.y-10);
 		player->strength = 3;
-		player->speed = 2;
+		player->speed = 3;
 		player->health = 4;
 		player->maxHealth = 4;
 
@@ -72,7 +72,7 @@ void Player_Think(Player *player)
 }
 void Player_Update(Player *player)
 {
-	slog("%i",player->health);
+	vec2d_Add(player->pos, player->vel, player->pos);
 }
 void Player_Touch(Player *player)
 {

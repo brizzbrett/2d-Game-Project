@@ -11,7 +11,7 @@ typedef Entity Glop;
  * @return	null if it fails, else a Glop*.
  */
 
-Glop *Glop_Load();
+Glop *Glop_Load(int id, int x, int y);
 
 /**
  * @brief	Glop think.

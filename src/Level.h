@@ -54,7 +54,7 @@ typedef struct Node_S
 		Node_S *bottom;
 	};
 
-	SDL_Rect hall;
+	SDL_Rect link;
 
 	void (*drawroom)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*drawhall)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
@@ -137,4 +137,5 @@ void Node_CloseSystem();
  */
 void Node_InitSystem();
 
+void LinkedRooms();
 #endif

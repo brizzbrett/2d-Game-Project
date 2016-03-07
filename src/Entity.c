@@ -4,9 +4,10 @@
 #include <string.h>
 #include "graphics.h"
 #include "simple_logger.h"
+#include "Camera.h"
 
 static Entity *entList; /**<static global Entity List*/
-static Uint32 entMax = 100; /**<static unsigned 32-bit integer of maximum entities*/
+static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
 Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
 
 /**
@@ -50,7 +51,10 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 	}
 	return NULL;
 }
-
+int Entity_GetNum()
+{
+	return numEnt;
+}
 /**
  * @brief	Frees up the memory allocated to the Entity that is input
  * @param	**ent	If not null, a pointer to the entity pointer.
@@ -124,7 +128,10 @@ void Entity_DrawAll()
 		{
 			continue;
 		}
-		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+		if(Camera_Intersect(Camera_GetActiveCamera(), &entList[i]))
+		{
+			entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+		}
 	}
 }
 
@@ -160,7 +167,7 @@ void Entity_UpdateAll()
 		{
 			continue;
 		}
-		vec2d_Add(entList[i].pos, entList[i].vel, entList[i].pos);
+		
 		if(!entList[i].update)
 		{
 			continue;
@@ -186,7 +193,6 @@ void Entity_IntersectAll(Entity *a)
 		}
 		if(Entity_Intersect(a, &entList[i]))
 		{
-			slog("Hitting...");
 			entList[i].touch(&entList[i]);
 		}
 	}

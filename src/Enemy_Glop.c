@@ -6,10 +6,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-static Vec2d pPos;
-static Vec2d pSize;
-static Vec2d gPos;
-static Vec2d gSize;
 static Vec2d direction;
 static Vec2d velocity;
 
@@ -18,14 +14,13 @@ static Vec2d velocity;
  *
  * @return	null if it fails, else a Glop*.
  */
-Glop *Glop_Load()
+Glop *Glop_Load(int id, int x, int y)
 {
 	Glop *glop;
+	Vec2d gPos;
+	vec2d_Set(gPos,x,y);
 
-	Vec2d pos;
-	vec2d_Set(pos,800,800);
-
-	glop = Entity_New("images/glopsheet.png", 100,100, pos);
+	glop = Entity_New("images/glopsheet.png", 100,100, gPos);
 
 	if(glop)
 	{
@@ -33,7 +28,7 @@ Glop *Glop_Load()
 		glop->touch = &Glop_Touch;
 		glop->update = &Glop_Update;
 
-		glop->id = 1;
+		glop->id = id;
 		glop->type = ENEMY;
 		glop->bounds = rect(glop->pos.x, glop->pos.y, glop->sprite->frameSize.x,glop->sprite->frameSize.y);
 		glop->strength = 3;
@@ -44,10 +39,6 @@ Glop *Glop_Load()
 
 		glop->owner = NULL;
 		glop->target = Entity_GetByID(0);
-		gPos = glop->pos;
-
-		vec2d_Set(gSize,glop->sprite->frameSize.x/2,glop->sprite->frameSize.y/2);
-		vec2d_Set(pSize,glop->target->sprite->frameSize.x/2,glop->target->sprite->frameSize.y/2);
 		return glop;
 	}
 	return NULL;
@@ -60,16 +51,13 @@ Glop *Glop_Load()
  */
 void Glop_Think(Glop *glop)
 {	
-
-
-	vec2d_Add(glop->target->pos,pSize,pPos); 
-	vec2d_Subtract(pPos,gPos,direction);
+	Vec2d pPos;
+	vec2d_Add(glop->target->pos,glop->target->sprite->frameSize,pPos); 
+	vec2d_Subtract(glop->target->pos,glop->pos,direction);
 	vec2d_Normalize(&direction);
 	vec2d_Multiply(glop->vel,direction,velocity);
-	vec2d_Subtract(gPos,gSize,glop->pos);
-	vec2d_Add(gPos,velocity,gPos);
+	vec2d_Add(glop->pos,velocity,glop->pos);
 	
-
 	if (abs(glop->target->pos.y-glop->pos.y) > abs(glop->target->pos.x-glop->pos.x)) 
 	{
 		if ((glop->target->pos.y-glop->pos.y) > 0) 
@@ -119,7 +107,6 @@ void Glop_Touch(Glop *glop)
 	Vec2d force;
 	vec2d_Set(force,50,50);
 	glop->target->health -= .5;
-	slog("%i", glop->target->health);
 	vec2d_Multiply(velocity, force, velocity);
 	vec2d_Add(glop->target->pos,velocity,glop->target->pos);
 }

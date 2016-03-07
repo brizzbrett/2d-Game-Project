@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.c" />
+    <ClCompile Include="..\src\Enemy_Eye.c" />
+    <ClCompile Include="..\src\Enemy_Fire.c" />
     <ClCompile Include="..\src\Enemy_Glop.c" />
     <ClCompile Include="..\src\Entity.c" />
     <ClCompile Include="..\src\game.c" />
@@ -25,6 +27,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Camera.h" />
+    <ClInclude Include="..\src\Enemy_Eye.h" />
+    <ClInclude Include="..\src\Enemy_Fire.h" />
     <ClInclude Include="..\src\Enemy_Glop.h" />
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\graphics.h" />

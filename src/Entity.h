@@ -6,7 +6,6 @@
 #include "SDL_image.h"
 #include "sprite.h"
 
-
 enum EntityType
 {
 	PLAYER,
@@ -99,4 +98,5 @@ void Entity_IntersectAll(Entity *a);
 int Entity_Intersect(Entity *a, Entity *b);
 
 Entity *Entity_GetByID(int id);
+int Entity_GetNum();
 #endif

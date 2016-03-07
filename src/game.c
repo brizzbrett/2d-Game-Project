@@ -1,19 +1,24 @@
 #include <stdlib.h>
+#include <string>
+
 #include "SDL.h"
 #include "SDL_image.h"
+
 #include "graphics.h"
 #include "sprite.h"
 #include "Vector.h"
+
+#include "Camera.h"
+#include "Level.h"
+
 #include "Entity.h"
 #include "Player.h"
 #include "Enemy_Glop.h"
-#include "Camera.h"
-#include "Level.h"
-#include <string>
+#include "Enemy_Eye.h"
 
 extern SDL_Surface *screen; /**<pointer to the draw screen*/
 extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
-extern SDL_Rect Camera; /**<Camera*/
+
 
 void Init_All();
 
@@ -34,11 +39,13 @@ int main(int argc, char *argv[])
 	int tx = 0,ty = 0;
 	const Uint8 *keys;
 	char imagepath[512];
-	SDL_Rect srcRect={0,0,1600,900};
 	int i = 0;
 	Player *player;
-	Player *player2;
-	Glop *glop;
+	Glop *glop = NULL;
+	Glop *glop2 = NULL;
+	Glop *glop4 = NULL;
+	Glop *glop3 = NULL;
+	Eye *eye = NULL;
 
 	Init_All();
 
@@ -49,21 +56,26 @@ int main(int argc, char *argv[])
 		SDL_BlitSurface(temp,NULL,buffer,NULL);
 	}
 
-	player = Player_Load();
-	glop = Glop_Load();
+	player = Player_Load(775,600);
+	glop = Glop_Load(1,100,100);
+	glop2 = Glop_Load(2,100,800);
+	glop3 = Glop_Load(3,1500,100);
+	glop4 = Glop_Load(4, 1500,800);
+
+	eye = Eye_Load(5,775,100);
 	done = 0;
 	do
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
-
-		Graphics_RenderSurfaceToScreen(temp,srcRect,0,0);
+		
+		Graphics_RenderSurfaceToScreen(temp,Camera_GetActiveCamera(),Camera_GetPosition().x,Camera_GetPosition().y);
 
 		Room_DrawAll();
 
 		Entity_ThinkAll();
 		Entity_UpdateAll();
-		Entity_DrawAll();
-		Entity_IntersectAll(player);
+		Camera_IntersectAll(player);
+		Entity_IntersectAll(player);	
 
 		NextFrame();
 		SDL_PumpEvents();
@@ -82,10 +94,11 @@ void Init_All()
 {
 	float bgcolor[] = {1,1,1,1};
 	sprite_InitSystem();
-	Entity_InitSystem(100);
+	Entity_InitSystem(1000);
 	Node_InitSystem();
 	Graphics_Init("Dream a Way Out",1600,900,1600,900,bgcolor,0);
 	Level_Load();
+	LinkedRooms();
 }
 
 int getImagePathFromFile(char *filepath,char * filename)

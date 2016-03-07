@@ -1,11 +1,12 @@
 #include "Level.h"
 #include "Graphics.h"
 #include <string.h>
+#include "simple_logger.h"
 
 Node *head;
-FILE *fpt;
 Node *NList;
-Node *leafList;
+Room *r;
+Room *roomList;
 Uint32 length = 0;
 Uint32 nodeMax = 100;
 Uint32 numNodes = 0;
@@ -135,11 +136,11 @@ void Node_RecursiveSubDivide(Node *n, int count)
 	if(n->right)
 	{
 		Node_RecursiveSubDivide(n->right, count-1);
-	}	
+	}
 	n->room = Room_Create(n);
 	if(n->left && n->right)
 	{
-		n->hall = Room_Linker(n);
+		n->link = Room_Linker(n);
 	}
 }
 
@@ -210,7 +211,7 @@ void Node_InitSystem()
  */
 Room *Room_New(Node *n, int type, Vec2d pos)
 {
-	Room *r = (Room *)malloc(sizeof(Room));
+	r = (Room *)malloc(sizeof(Room));
 
 	vec2d_Set(r->size, 250, 100);
 	r->pos = pos;
@@ -219,11 +220,18 @@ Room *Room_New(Node *n, int type, Vec2d pos)
 	r->numEnemy = rand() % 9;
 	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
 	r->val = ++length;
-	r->next = n->room;
-	n->room = r;
+	r->next = roomList;
+	slog("Value: %i ", length);
+	roomList = r;
 	return r;
 }
-
+void LinkedRooms()
+{
+	while(roomList->next)
+	{
+		roomList = roomList->next;
+	}
+}
 /**
  * @brief	Room create.
  *
@@ -233,14 +241,13 @@ Room *Room_New(Node *n, int type, Vec2d pos)
  */
 Room *Room_Create(Node *n)
 {	
-	//Room *temp;
-	if (n->left != NULL || n->right != NULL)
+	if (n->left || n->right)
 	{		
-		if (n->left != NULL)
+		if (n->left)
 		{
 			return Room_Create(n->left);
 		}
-		if (n->right != NULL)
+		if (n->right)
 		{
 			return Room_Create(n->right);
 		}
@@ -254,21 +261,21 @@ Room *Room_Create(Node *n)
 
 SDL_Rect Room_Linker(Node *n)
 {
-	SDL_Rect hall;
+	SDL_Rect link;
 	if(n->left->room && n->right->room){
 		if(n->top->pos.x == n->bottom->pos.x)
 		{
-			hall = rect(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y, 10, n->bottom->room->pos.y - (n->top->room->pos.y));//rect((n->left->pos.x+(n->left->width/2-2)),n->left->pos.y+n->left->height,4, 100);//n->right->pos.y-(n->left->pos.y+n->left->height));
+			link = rect(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y, 10, n->bottom->room->pos.y - (n->top->room->pos.y));//rect((n->left->pos.x+(n->left->width/2-2)),n->left->pos.y+n->left->height,4, 100);//n->right->pos.y-(n->left->pos.y+n->left->height));
 		}
 		else if(n->top->pos.y == n->bottom->pos.y)
 		{
-			hall = rect(n->left->room->pos.x+n->left->room->size.x,n->left->room->pos.y+n->left->room->size.y/2-5,n->right->room->pos.x - n->left->room->pos.x, 10);//n->right->pos.y-(n->left->pos.x+n->right->width),4);
+			link = rect(n->left->room->pos.x+n->left->room->size.x,n->left->room->pos.y+n->left->room->size.y/2-5,n->right->room->pos.x - n->left->room->pos.x, 10);//n->right->pos.y-(n->left->pos.x+n->right->width),4);
 		}
 		else
 		{
-			hall = rect(0,0,0,0);
+			link = rect(0,0,0,0);
 		}
-		return hall;
+		return link;
 	}
 	return rect(0,0,0,0);
 }
@@ -310,7 +317,7 @@ void Room_DrawAll()
 			continue;
 		}
 		NList[i].drawroom(NList[i].room->image, 0, Graphics_GetActiveRenderer(), NList[i].room->pos);
-		NList[i].drawhall(sprite_Load("images/hall.png",100,100), 0, Graphics_GetActiveRenderer(), NList[i].room->pos, NList[i].hall);
+		NList[i].drawhall(sprite_Load("images/hall.png",100,100), 0, Graphics_GetActiveRenderer(), NList[i].room->pos, NList[i].link);
 	}
 }
 
@@ -324,9 +331,6 @@ void Level_Load()
 	head->height = 900;
 	srand(time(NULL));
 
-	fpt = fopen("src/testlevel.txt", "w");
-
 	Node_RecursiveSubDivide(head, 5);
-	fclose(fpt);
 }
 
