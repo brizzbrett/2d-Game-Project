@@ -30,6 +30,7 @@ typedef struct Entity_S
 	Sprite *sprite;
 
 	SDL_Rect bounds;
+	SDL_Rect attack;
 
 	int frame;
 

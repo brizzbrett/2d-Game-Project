@@ -109,4 +109,10 @@ void Glop_Touch(Glop *glop)
 	glop->target->health -= .5;
 	vec2d_Multiply(velocity, force, velocity);
 	vec2d_Add(glop->target->pos,velocity,glop->target->pos);
+
+	if(rect_intersect(rect(glop->pos.x, glop->pos.y,100,100), glop->target->attack))
+	{
+		slog("Glop was hit...");
+		Entity_Free(&glop);
+	}
 }

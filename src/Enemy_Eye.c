@@ -56,7 +56,6 @@ void Eye_Think(Eye *eye)
 {	
 	if(SDL_GetTicks() >= eye->nextThink)
 	{
-
 		Weapon_Fire(eye);
 		eye->nextThink = SDL_GetTicks() + eye->thinkRate;
 	}

@@ -5,9 +5,10 @@
 #include "Graphics.h"
 #include <math.h>
 
+Player *player;
 Player *Player_Load(int x, int y)
 {
-	Player *player;
+
 	Vec2d pos;
 	vec2d_Set(pos,x,y);
 	player = Entity_New("images/playersheet.png", 64,64, pos);
@@ -20,11 +21,15 @@ Player *Player_Load(int x, int y)
 		player->id = 0;
 		player->pos = pos;
 		player->type = PLAYER;
-		player->bounds = rect(player->pos.x-10, player->pos.y-10,player->sprite->frameSize.x-10,player->sprite->frameSize.y-10);
+		player->bounds = rect(player->pos.x, player->pos.y,player->sprite->frameSize.x,player->sprite->frameSize.y);
+		player->attack = rect(0,0,0,0);
 		player->strength = 3;
 		player->speed = 3;
 		player->health = 4;
 		player->maxHealth = 4;
+
+		player->thinkRate = 100;
+		player->nextThink = 0;
 
 		player->owner = NULL;
 		player->target = NULL;
@@ -33,7 +38,7 @@ Player *Player_Load(int x, int y)
 	}
 	return NULL;
 }
-
+void Player_Attack();
 void Player_Think(Player *player)
 {
 	const Uint8 *keys;
@@ -69,6 +74,12 @@ void Player_Think(Player *player)
 	{
 		player->vel.x = 0;
 	}
+
+	if(keys[SDL_SCANCODE_Z])
+	{
+		Player_Attack();
+	}
+
 }
 void Player_Update(Player *player)
 {
@@ -77,4 +88,36 @@ void Player_Update(Player *player)
 void Player_Touch(Player *player)
 {
 	vec2d_Set(player->vel, 0, 0);
+}
+void Player_Attack()
+{
+	SDL_Rect attack;
+	Vec2d offset;
+	Vec2d size;
+	
+	if(player)
+	{
+		if(player->frame == 0)
+		{
+			vec2d_Set(offset,40,50);
+			vec2d_Set(size,20,70);
+		}
+		else if(player->frame == 1)
+		{
+			vec2d_Set(offset,40,-20);
+			vec2d_Set(size,20,70);
+		}
+		else if(player->frame == 2)
+		{
+			vec2d_Set(offset,-20,50);
+			vec2d_Set(size,70,20);
+		}
+		else if(player->frame == 3)
+		{
+			vec2d_Set(offset,60, 50);
+			vec2d_Set(size,70,20);
+		}
+		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, size.x,size.y);
+		player->attack = attack;
+	}
 }

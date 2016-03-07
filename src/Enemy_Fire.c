@@ -55,6 +55,10 @@ void Weapon_Update(Shot *shot)
 		return;
 	}
 	vec2d_Add(shot->pos, velocity, shot->pos);
+	if(SDL_GetTicks() >= shot->owner->nextThink)
+	{
+		Entity_Free(&shot);
+	}
 }
 
 void Weapon_Touch(Entity *shot)

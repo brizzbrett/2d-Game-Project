@@ -46,6 +46,10 @@ int main(int argc, char *argv[])
 	Glop *glop4 = NULL;
 	Glop *glop3 = NULL;
 	Eye *eye = NULL;
+	Eye *eye2 = NULL;
+	Eye *eye3 = NULL;
+	Eye *eye4 = NULL;
+	Eye *eye5 = NULL;
 
 	Init_All();
 
@@ -61,8 +65,11 @@ int main(int argc, char *argv[])
 	glop2 = Glop_Load(2,100,800);
 	glop3 = Glop_Load(3,1500,100);
 	glop4 = Glop_Load(4, 1500,800);
-
 	eye = Eye_Load(5,775,100);
+	eye2 = Eye_Load(6,775,800);
+	eye3 = Eye_Load(7,100,450);
+	eye4 = Eye_Load(8,1500,450);
+	eye5 = Eye_Load(8,775,450);
 	done = 0;
 	do
 	{
