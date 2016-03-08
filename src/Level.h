@@ -7,6 +7,8 @@
 #include <time.h>
 #include "Vector.h"
 #include "Sprite.h"
+#include "Entity.h"
+#include "Camera.h"
 #include <SDL.h>
 
 #define RTYPE_START 1
@@ -28,6 +30,7 @@ typedef struct Room_T
 	int numEnemy;
 	int val;
 	struct Room_T *next;
+	Entity *north, *south, *east, *west;
 }Room;
 
 /**
@@ -137,5 +140,7 @@ void Node_CloseSystem();
  */
 void Node_InitSystem();
 
-void LinkedRooms();
+Entity *Door_Load(int x, int y);
+void Door_Think(Entity *door);
+void Door_Touch(Entity *door);
 #endif

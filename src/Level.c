@@ -14,6 +14,7 @@ Uint32 numNodes = 0;
 void Room_Draw2(Node *n);
 SDL_Rect Room_Linker(Node *n);
 void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
+Entity *Door_Load(int x, int y);
 
 /**
  * @brief	Node new.
@@ -219,18 +220,17 @@ Room *Room_New(Node *n, int type, Vec2d pos)
 	r->type = RTYPE_NORMAL;
 	r->numEnemy = rand() % 9;
 	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
+
+	r->north = NULL;
+	r->south = NULL;
+	r->east = NULL;
+	r->west = NULL;
+
 	r->val = ++length;
 	r->next = roomList;
 	slog("Value: %i ", length);
 	roomList = r;
 	return r;
-}
-void LinkedRooms()
-{
-	while(roomList->next)
-	{
-		roomList = roomList->next;
-	}
 }
 /**
  * @brief	Room create.
@@ -262,14 +262,27 @@ Room *Room_Create(Node *n)
 SDL_Rect Room_Linker(Node *n)
 {
 	SDL_Rect link;
+
 	if(n->left->room && n->right->room){
 		if(n->top->pos.x == n->bottom->pos.x)
 		{
-			link = rect(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y, 10, n->bottom->room->pos.y - (n->top->room->pos.y));//rect((n->left->pos.x+(n->left->width/2-2)),n->left->pos.y+n->left->height,4, 100);//n->right->pos.y-(n->left->pos.y+n->left->height));
+			n->top->room->south = Door_Load(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y-10);
+			n->bottom->room->north = Door_Load(n->bottom->room->pos.x+n->bottom->room->size.x/2-5, n->bottom->room->pos.y);
+
+			n->top->room->south->target = n->bottom->room->north;
+			n->bottom->room->north->target = n->top->room->south;	
+
+			link = rect(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y, 10, n->bottom->room->pos.y - (n->top->room->pos.y));
 		}
 		else if(n->top->pos.y == n->bottom->pos.y)
 		{
-			link = rect(n->left->room->pos.x+n->left->room->size.x,n->left->room->pos.y+n->left->room->size.y/2-5,n->right->room->pos.x - n->left->room->pos.x, 10);//n->right->pos.y-(n->left->pos.x+n->right->width),4);
+			n->left->room->east = Door_Load(n->left->room->pos.x+n->left->room->size.x-10,n->left->room->pos.y+n->left->room->size.y/2-5);
+			n->right->room->west = Door_Load(n->right->room->pos.x,n->right->room->pos.y+n->left->room->size.y/2-5);
+
+			n->right->room->west->target = n->left->room->east;
+			n->left->room->east->target = n->right->room->west;
+
+			link = rect(n->left->room->pos.x+n->left->room->size.x,n->left->room->pos.y+n->left->room->size.y/2-5,n->right->room->pos.x - n->left->room->pos.x, 10);
 		}
 		else
 		{
@@ -321,6 +334,43 @@ void Room_DrawAll()
 	}
 }
 
+Entity *Door_Load(int x, int y)
+{
+	Entity *door;
+	Vec2d gPos;
+	vec2d_Set(gPos,x,y);
+
+	door = Entity_New("images/hall.png", 10,10, gPos,Entity_GetByID(0));
+
+	if(door)
+	{
+		door->think = &Door_Think;
+		door->touch = &Door_Touch;
+
+		door->type = OTHER;
+		door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
+
+		door->nextThink = 0;
+		door->thinkRate = 100;
+
+		door->owner = NULL;
+		door->target = NULL;
+		return door;
+	}
+	return NULL;
+}
+void Door_Think(Entity *door)
+{
+	if(SDL_GetTicks() >= door->nextThink)
+	{
+		door->nextThink = SDL_GetTicks() + door->thinkRate;
+	}
+}
+void Door_Touch(Entity *door)
+{
+	Entity_GetByID(0)->pos = door->target->pos;
+	//Camera_SetPosition(Entity_GetByID(0)->pos);
+}
 /**
  * @brief	Level load.
  */

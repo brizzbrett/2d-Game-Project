@@ -11,7 +11,7 @@ typedef Entity Eye;
  * @return	null if it fails, else a Eye*.
  */
 
-Eye *Eye_Load(int id, int x, int y);
+Eye *Eye_Load(int x, int y);
 
 /**
  * @brief	Eye think.

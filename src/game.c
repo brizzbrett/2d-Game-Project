@@ -51,7 +51,21 @@ int main(int argc, char *argv[])
 	Eye *eye4 = NULL;
 	Eye *eye5 = NULL;
 
+
 	Init_All();
+
+	player = Player_Load(775,600);
+	glop = Glop_Load(100,100);
+	glop2 = Glop_Load(100,800);
+	glop3 = Glop_Load(1500,100);
+	glop4 = Glop_Load(1500,800);
+	eye = Eye_Load(775,100);
+	eye2 = Eye_Load(775,800);
+	eye3 = Eye_Load(100,450);
+	eye4 = Eye_Load(1500,450);
+	eye5 = Eye_Load(775,450);
+
+	Level_Load();
 
 	temp = IMG_Load("images/bgtest.png");
 	if(temp != NULL)
@@ -60,16 +74,7 @@ int main(int argc, char *argv[])
 		SDL_BlitSurface(temp,NULL,buffer,NULL);
 	}
 
-	player = Player_Load(775,600);
-	glop = Glop_Load(1,100,100);
-	glop2 = Glop_Load(2,100,800);
-	glop3 = Glop_Load(3,1500,100);
-	glop4 = Glop_Load(4, 1500,800);
-	eye = Eye_Load(5,775,100);
-	eye2 = Eye_Load(6,775,800);
-	eye3 = Eye_Load(7,100,450);
-	eye4 = Eye_Load(8,1500,450);
-	eye5 = Eye_Load(8,775,450);
+
 	done = 0;
 	do
 	{
@@ -104,8 +109,6 @@ void Init_All()
 	Entity_InitSystem(1000);
 	Node_InitSystem();
 	Graphics_Init("Dream a Way Out",1600,900,1600,900,bgcolor,0);
-	Level_Load();
-	LinkedRooms();
 }
 
 int getImagePathFromFile(char *filepath,char * filename)

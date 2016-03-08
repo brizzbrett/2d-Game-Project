@@ -14,7 +14,7 @@ Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
  * @brief	Creates a new reference to an Entity.
  * @return	a new Entity.
  */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p, Entity *link)
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
 	for(i = 0; i < entMax; i++)
@@ -36,7 +36,7 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		entList[i].think = NULL;
 		entList[i].update = NULL;
 		entList[i].touch = &Entity_IntersectAll;
-
+		entList[i].id = i;
 		entList[i].inuse = 1;
 		entList[i].type = OTHER;
 		entList[i].pos = p;
@@ -47,6 +47,7 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		entList[i].nextThink = 0;
 		entList[i].thinkRate = 0;
 
+		entList[i].target = link;
 		return &entList[i];
 	}
 	return NULL;
@@ -205,7 +206,7 @@ int Entity_Intersect(Entity *a, Entity *b)
 	{
 		return 0;
 	}
-	aB = rect(a->pos.x,a->pos.y,a->bounds.w, a->bounds.h);
+	aB = rect(a->pos.x+a->bounds.x,a->pos.y+a->bounds.y,a->bounds.w, a->bounds.h);
 	bB = rect(b->pos.x,b->pos.y,b->bounds.w, b->bounds.h);
 	if(rect_intersect(aB, bB))
 		return 1;

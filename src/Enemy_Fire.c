@@ -1,7 +1,6 @@
 #include "Enemy_Fire.h"
 #include "Camera.h"
-	
-Vec2d direction;
+
 Vec2d velocity;
 Vec2d pPos;
 int offsetX = 0;
@@ -17,7 +16,7 @@ void Weapon_Fire(Entity *entity)
 	{
 		return;
 	}
-	shot = Entity_New("images/shot.png", 100, 100, pos); 
+	shot = Entity_New("images/shot.png", 100, 100, pos,Entity_GetByID(0)); 
 	if(!shot)
 		return;
 	shot->think = &Weapon_Think;
@@ -31,9 +30,9 @@ void Weapon_Fire(Entity *entity)
 	shot->owner = entity; //the entity firing owns this projectile
 
 	pPos = shot->target->pos;	
-	vec2d_Subtract(pPos,shot->pos,direction);
-	vec2d_Normalize(&direction);	
-	vec2d_Multiply(shot->vel,direction,velocity);
+	vec2d_Subtract(pPos,shot->pos,shot->direction);
+	vec2d_Normalize(&shot->direction);	
+	vec2d_Multiply(shot->vel,shot->direction,shot->vel);
 }
 
 void Weapon_Think(Entity *shot)
@@ -54,7 +53,7 @@ void Weapon_Update(Shot *shot)
 	{
 		return;
 	}
-	vec2d_Add(shot->pos, velocity, shot->pos);
+	vec2d_Add(shot->pos, shot->vel, shot->pos);
 	if(SDL_GetTicks() >= shot->owner->nextThink)
 	{
 		Entity_Free(&shot);
@@ -67,6 +66,6 @@ void Weapon_Touch(Entity *shot)
 	vec2d_Set(force,1,1);
 	shot->target->health -= .5;
 	vec2d_Multiply(velocity, force, velocity);
-	vec2d_Add(shot->target->pos,velocity,shot->target->pos);
+	vec2d_Add(shot->target->pos,shot->vel,shot->target->pos);
 	Entity_Free(&shot);
 }

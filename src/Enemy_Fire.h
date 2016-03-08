@@ -7,14 +7,10 @@
 
 typedef Entity Shot;
 
-void Weapon_Fire(Entity *entity);
-
-void Weapon_Think(Entity *spice);
-
-void Weapon_Free(Entity *spice);
-
-void Weapon_Update(Entity *spice);
-
-void Weapon_Touch(Entity *spice);
+void Weapon_Fire(Entity *owner);
+void Weapon_Think(Shot *shot);
+void Weapon_Free(Shot *shot);
+void Weapon_Update(Shot *shot);
+void Weapon_Touch(Shot *shot);
 
 #endif

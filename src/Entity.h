@@ -26,6 +26,11 @@ typedef struct Entity_S
 
 	Vec2d pos;
 	Vec2d vel;
+	Vec2d velocity9;
+	Vec2d direction;
+	Vec2d force;
+	Vec2d offsetNW;
+	Vec2d offsetSE;
 
 	Sprite *sprite;
 
@@ -55,7 +60,7 @@ typedef struct Entity_S
  * @brief	Return a pointer to an empty entity structure
  * @return	Null if it fails, or no more space for entity, else an Entity*.
  */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p);
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p,Entity *link);
 
 /**
  * @brief	Frees the memory allocated by the entity.
