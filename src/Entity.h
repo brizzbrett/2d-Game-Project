@@ -2,9 +2,11 @@
 #define __ENTITY_H__
 
 #include "Vector.h"
+#include "Graphics.h"
 #include <SDL.h>
 #include "SDL_image.h"
 #include "sprite.h"
+#include "simple_logger.h"
 
 enum EntityType
 {
@@ -51,7 +53,7 @@ typedef struct Entity_S
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*think)(struct Entity_S *self);
 	void (*update)(struct Entity_S *self);
-	void (*touch)(struct Entity_S *self);
+	void (*touch)(struct Entity_S *self, struct Entity_S *other);
 
 }Entity;
 
@@ -60,7 +62,7 @@ typedef struct Entity_S
  * @brief	Return a pointer to an empty entity structure
  * @return	Null if it fails, or no more space for entity, else an Entity*.
  */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p,Entity *link);
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p);
 
 /**
  * @brief	Frees the memory allocated by the entity.
@@ -104,5 +106,6 @@ void Entity_IntersectAll(Entity *a);
 int Entity_Intersect(Entity *a, Entity *b);
 
 Entity *Entity_GetByID(int id);
+Entity *Entity_GetByType(EntityType type);
 int Entity_GetNum();
 #endif

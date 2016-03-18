@@ -1,20 +1,18 @@
 #include "Level.h"
-#include "Graphics.h"
 #include <string.h>
-#include "simple_logger.h"
+#include <stdlib.h>
+#include <random>
+#include <cmath>
+#include <time.h>
 
 Node *head;
 Node *NList;
 Room *r;
 Room *roomList;
 Uint32 length = 0;
+int id = 96;
 Uint32 nodeMax = 100;
 Uint32 numNodes = 0;
-
-void Room_Draw2(Node *n);
-SDL_Rect Room_Linker(Node *n);
-void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
-Entity *Door_Load(int x, int y);
 
 /**
  * @brief	Node new.
@@ -32,7 +30,7 @@ Node *Node_New()
 		}
 
 		memset(&NList[i],0,sizeof(Node));
-		NList[i].id = "";
+		NList[i].id = 'a';
 		NList[i].inuse = 1;
 
 		numNodes++;
@@ -69,6 +67,7 @@ void Node_SubDivide(Node *n)
 		return;
 	}
 	n->split = rand() % 2;
+	n->id = ++id;
 	a = Node_New();
 	b = Node_New();
 	a->parent = n;
@@ -138,13 +137,215 @@ void Node_RecursiveSubDivide(Node *n, int count)
 	{
 		Node_RecursiveSubDivide(n->right, count-1);
 	}
-	n->room = Room_Create(n);
-	if(n->left && n->right)
+
+}
+
+
+/**
+ * @brief	Room new.
+ *
+ * @param	type	The type.
+ * @param	pos 	The position.
+ *
+ * @return	null if it fails, else a Room*.
+ */
+Room *Room_New(Node *n, Vec2d pos)
+{
+	r = (Room *)malloc(sizeof(Room));
+
+	vec2d_Set(r->size, 250, 100);
+	r->pos = pos;
+
+	r->type = RTYPE_NORMAL;
+	r->numEnemy = rand() % 9;
+	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
+
+	r->next = roomList;
+	roomList = r;
+	return r;
+}
+
+Entity *Door_New(int x, int y)
+{
+	Entity *door;
+	Vec2d gPos;
+	vec2d_Set(gPos,x,y);
+
+	door = Entity_New("images/hall.png", 10,10, gPos);
+
+	if(door)
 	{
-		n->link = Room_Linker(n);
+		door->touch = &Door_Touch;
+
+		door->type = OTHER;
+		door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
+
+		door->owner = NULL;
+		door->target = NULL;
+		return door;
+	}
+	return NULL;
+}
+
+Room *Room_Get(Node *n)
+{	
+	Room *lRoom = NULL;
+	Room *rRoom = NULL;
+
+	if(n->room)
+	{
+		return n->room;
+	}
+	else
+	{
+		if (n->left)
+		{
+			lRoom = Room_Get(n->left);
+		}
+		if (n->right)
+		{
+			rRoom = Room_Get(n->right);
+		}
+		if(!lRoom && !rRoom)
+		{
+			return NULL;
+		}		
+		else if(!lRoom)
+		{
+			return rRoom;
+		}
+		else
+		{
+			return lRoom;
+		}
 	}
 }
 
+void Room_RecursiveCreateRoom(Node *n)
+{
+	if(n->left || n->right)
+	{		
+		if(n->left)
+		{	
+			Room_RecursiveCreateRoom(n->left);
+		}
+		if(n->right)
+		{
+			Room_RecursiveCreateRoom(n->right);
+		}
+		if(n->left && n->right) // if node has both left and right children, 
+								// traverse these nodes until you get a room from both nodes and link them
+		{
+			Room_Link(Room_Get(n->left), Room_Get(n->right), n->split);
+		}
+	}
+	else
+	{
+		n->room = Room_New(n, n->pos);
+		r->val = ++length;			
+	}
+}
+
+void Room_Link(Room *l, Room *r, int split)
+{
+	if(split == SPLIT_HORIZONTAL) //if parent was split horizontally, 
+								  // create doors in the south of the left room and north of the right room
+	{
+		l->south = Door_New(l->pos.x+l->size.x/2-5,l->pos.y+l->size.y-10);
+		r->north = Door_New(r->pos.x+r->size.x/2-5, r->pos.y);
+
+		l->south->target = r->north;
+		r->north->target = l->south;
+	}
+	else if(split == SPLIT_VERTICAL) //if parent was split vertically, 
+									 // create doors in the east of the left room and west of the right room
+	{	
+		l->east = Door_New(l->pos.x+l->size.x-10,l->pos.y+l->size.y/2-5);
+		r->west = Door_New(r->pos.x,r->pos.y+r->size.y/2-5);
+
+		l->east->target = r->west;
+		r->west->target = l->east;
+	}
+}
+
+/////////////////////////////////////////////////////////
+//					TOUCH FUNCTIONS					   //
+/////////////////////////////////////////////////////////
+
+void Door_Touch(Entity *door, Entity *other)
+{
+	if(other == Entity_GetByID(0))
+	{
+		other->pos = door->target->pos;
+	}
+	//Camera_SetPosition(Entity_GetByID(0)->pos);
+}
+
+/////////////////////////////////////////////////////////
+//					DRAW FUNCTIONS					   //
+/////////////////////////////////////////////////////////
+
+void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r)
+{
+	SDL_Rect src,dest;
+
+	src.x = frame%sprite->fpl * sprite->frameSize.x;
+	src.y = frame/sprite->fpl * sprite->frameSize.y;
+	src.w = sprite->frameSize.x;
+	src.h = sprite->frameSize.y;
+
+	dest = r;
+
+	SDL_RenderCopy(renderer,sprite->image, &src, &dest);
+}
+
+/**
+ * @brief	Room draw all.
+ */
+void Room_DrawAll()
+{
+	Uint32 i;
+	for(i = 0; i < nodeMax; i++)
+	{
+		if(!NList[i].inuse)
+		{
+			continue;
+		}
+		if(!NList[i].drawroom)
+		{
+			continue;
+		}
+		if(!NList[i].drawhall)
+		{
+			continue;
+		}
+		if(!NList[i].room)
+		{
+			continue;
+		}
+		NList[i].drawroom(NList[i].room->image, 0, Graphics_GetActiveRenderer(), NList[i].room->pos);
+		NList[i].drawhall(sprite_Load("images/hall.png",100,100), 0, Graphics_GetActiveRenderer(), NList[i].room->pos, NList[i].link);
+	}
+}
+
+/**
+ * @brief	Level load.
+ */
+void Level_Load()
+{
+	head = Node_New();
+	head->width = 1600;
+	head->height = 900;
+	srand(time(NULL));
+
+	Node_RecursiveSubDivide(head, 5);
+	Room_RecursiveCreateRoom(head);
+
+}
+
+/////////////////////////////////////////////////////////
+//					MEMORY MANAGEMENT				   //
+/////////////////////////////////////////////////////////
 /**
  * @brief	Node free.
  *
@@ -202,87 +403,85 @@ void Node_InitSystem()
 	atexit(Node_CloseSystem);
 }
 
-/**
- * @brief	Room new.
- *
- * @param	type	The type.
- * @param	pos 	The position.
- *
- * @return	null if it fails, else a Room*.
- */
-Room *Room_New(Node *n, int type, Vec2d pos)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////ROOM_LINKER (1st attempt)\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+/*SDL_Rect Room_Linker(Node *n, int split)
 {
-	r = (Room *)malloc(sizeof(Room));
+	SDL_Rect link = rect(0,0,0,0);
+	if(split == SPLIT_VERTICAL)
+	{
+		if(n->split == SPLIT_VERTICAL)
+		{	
+			n->east = Door_New(n->pos.x+250-10,n->pos.y+100/2-5);
+			n->west = Door_New(n->right->pos.x,n->right->pos.y+100/2-5);
 
-	vec2d_Set(r->size, 250, 100);
-	r->pos = pos;
+			n->west->target = n->west;
+			n->west->target = n->west;
 
-	r->type = RTYPE_NORMAL;
-	r->numEnemy = rand() % 9;
-	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
+			//slog("Room %i: Pos: %f, %f", n->left->room->val, n->left->room->east->pos.x, n->left->room->east->pos.y);
+			//slog("Room %i: Pos: %f, %f", n->right->room->val, n->right->room->west->pos.x, n->right->room->west->pos.y);
 
-	r->north = NULL;
-	r->south = NULL;
-	r->east = NULL;
-	r->west = NULL;
-
-	r->val = ++length;
-	r->next = roomList;
-	slog("Value: %i ", length);
-	roomList = r;
-	return r;
-}
-/**
- * @brief	Room create.
- *
- * @param [in,out]	n	If non-null, the Node to process.
- *
- * @return	null if it fails, else a Room*.
- */
-Room *Room_Create(Node *n)
-{	
-	if (n->left || n->right)
-	{		
-		if (n->left)
-		{
-			return Room_Create(n->left);
+			//link = rect(n->left->pos.x+250,n->left->pos.y+100/2-5,n->right->pos.x - n->left->pos.x, 10);
 		}
-		if (n->right)
+		else if(n->split == SPLIT_HORIZONTAL)
 		{
-			return Room_Create(n->right);
+			n->top->south = Door_New(n->top->pos.x+120, n->top->pos.y+100-10);
+			n->bottom->north = Door_New(n->bottom->pos.x+250/2-5, n->bottom->pos.y);
+
+			n->top->south->target = n->bottom->north;
+			n->bottom->north->target = n->top->south;
+
+			//slog("Room %i: Pos: %f, %f", n->top->room->val, n->top->room->south->pos.x, n->top->room->pos.y);
+			//slog("Room %i: Pos: %f, %f", n->bottom->room->val, n->bottom->room->north->pos.x, n->bottom->room->north->pos.y);
+	
+			//link = rect(n->top->pos.x+250/2-5, n->top->pos.y+100, 10, n->bottom->pos.y - (n->top->pos.y));
 		}
 	}
 	else
 	{
-		return Room_New(n,RTYPE_NORMAL, n->pos);
-	}
-	return NULL;
-}
-
-SDL_Rect Room_Linker(Node *n)
-{
-	SDL_Rect link;
-
-	if(n->left->room && n->right->room){
-		if(n->top->pos.x == n->bottom->pos.x)
+		if(n->split == SPLIT_HORIZONTAL)
 		{
-			n->top->room->south = Door_Load(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y-10);
-			n->bottom->room->north = Door_Load(n->bottom->room->pos.x+n->bottom->room->size.x/2-5, n->bottom->room->pos.y);
+			n->south = Door_New(n->pos.x+120, n->pos.y+100-10);
+			n->bottom->north = Door_New(n->bottom->pos.x+250/2-5, n->bottom->pos.y);
 
-			n->top->room->south->target = n->bottom->room->north;
-			n->bottom->room->north->target = n->top->room->south;	
+			n->south->target = n->bottom->north;
+			n->bottom->north->target = n->south;
 
-			link = rect(n->top->room->pos.x+n->top->room->size.x/2-5, n->top->room->pos.y+n->top->room->size.y, 10, n->bottom->room->pos.y - (n->top->room->pos.y));
+			//slog("Room %i: Pos: %f, %f", n->top->room->val, n->top->room->south->pos.x, n->top->room->pos.y);
+			//slog("Room %i: Pos: %f, %f", n->bottom->room->val, n->bottom->room->north->pos.x, n->bottom->room->north->pos.y);
+
+			//link = rect(n->top->pos.x+250/2-5, n->top->pos.y+100, 10, n->bottom->pos.y - (n->top->pos.y));
 		}
-		else if(n->top->pos.y == n->bottom->pos.y)
-		{
-			n->left->room->east = Door_Load(n->left->room->pos.x+n->left->room->size.x-10,n->left->room->pos.y+n->left->room->size.y/2-5);
-			n->right->room->west = Door_Load(n->right->room->pos.x,n->right->room->pos.y+n->left->room->size.y/2-5);
+		else if(n->split == SPLIT_VERTICAL)
+		{	
+			n->left->east = Door_New(n->left->pos.x+250-10,n->left->pos.y+100/2-5);
+			n->right->west = Door_New(n->right->pos.x,n->right->pos.y+100/2-5);
 
-			n->right->room->west->target = n->left->room->east;
-			n->left->room->east->target = n->right->room->west;
+			n->right->west->target = n->left->east;
+			n->left->east->target = n->right->west;
 
-			link = rect(n->left->room->pos.x+n->left->room->size.x,n->left->room->pos.y+n->left->room->size.y/2-5,n->right->room->pos.x - n->left->room->pos.x, 10);
+			//slog("Room %i: Pos: %f, %f", n->left->room->val, n->left->room->east->pos.x, n->left->room->east->pos.y);
+			//slog("Room %i: Pos: %f, %f", n->right->room->val, n->right->room->west->pos.x, n->right->room->west->pos.y);
+
+			//link = rect(n->left->pos.x+250,n->left->pos.y+100/2-5,n->right->pos.x - n->left->pos.x, 10);
 		}
 		else
 		{
@@ -291,96 +490,4 @@ SDL_Rect Room_Linker(Node *n)
 		return link;
 	}
 	return rect(0,0,0,0);
-}
-void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r)
-{
-	SDL_Rect src,dest;
-
-	src.x = frame%sprite->fpl * sprite->frameSize.x;
-	src.y = frame/sprite->fpl * sprite->frameSize.y;
-	src.w = sprite->frameSize.x;
-	src.h = sprite->frameSize.y;
-
-	dest = r;
-
-	SDL_RenderCopy(renderer,sprite->image, &src, &dest);
-}
-/**
- * @brief	Room draw all.
- */
-void Room_DrawAll()
-{
-	Uint32 i;
-	for(i = 0; i < nodeMax; i++)
-	{
-		if(!NList[i].inuse)
-		{
-			continue;
-		}
-		if(!NList[i].drawroom)
-		{
-			continue;
-		}
-		if(!NList[i].drawhall)
-		{
-			continue;
-		}
-		if(!NList[i].room)
-		{
-			continue;
-		}
-		NList[i].drawroom(NList[i].room->image, 0, Graphics_GetActiveRenderer(), NList[i].room->pos);
-		NList[i].drawhall(sprite_Load("images/hall.png",100,100), 0, Graphics_GetActiveRenderer(), NList[i].room->pos, NList[i].link);
-	}
-}
-
-Entity *Door_Load(int x, int y)
-{
-	Entity *door;
-	Vec2d gPos;
-	vec2d_Set(gPos,x,y);
-
-	door = Entity_New("images/hall.png", 10,10, gPos,Entity_GetByID(0));
-
-	if(door)
-	{
-		door->think = &Door_Think;
-		door->touch = &Door_Touch;
-
-		door->type = OTHER;
-		door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
-
-		door->nextThink = 0;
-		door->thinkRate = 100;
-
-		door->owner = NULL;
-		door->target = NULL;
-		return door;
-	}
-	return NULL;
-}
-void Door_Think(Entity *door)
-{
-	if(SDL_GetTicks() >= door->nextThink)
-	{
-		door->nextThink = SDL_GetTicks() + door->thinkRate;
-	}
-}
-void Door_Touch(Entity *door)
-{
-	Entity_GetByID(0)->pos = door->target->pos;
-	//Camera_SetPosition(Entity_GetByID(0)->pos);
-}
-/**
- * @brief	Level load.
- */
-void Level_Load()
-{
-	head = Node_New();
-	head->width = 1600;
-	head->height = 900;
-	srand(time(NULL));
-
-	Node_RecursiveSubDivide(head, 5);
-}
-
+}*/

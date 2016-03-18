@@ -1,8 +1,4 @@
 #include "Player.h"
-#include "Entity.h"
-#include "Vector.h"
-#include "simple_logger.h"
-#include "Graphics.h"
 #include <math.h>
 
 Player *player;
@@ -11,7 +7,7 @@ Player *Player_Load(int x, int y)
 
 	Vec2d pos;
 	vec2d_Set(pos,x,y);
-	player = Entity_New("images/playersheet.png", 100,100, pos, NULL);
+	player = Entity_New("images/playersheet.png", 100,100, pos);
 	if(player)
 	{
 		player->think = &Player_Think;
@@ -21,7 +17,7 @@ Player *Player_Load(int x, int y)
 		player->id = 0;
 		player->pos = pos;
 		player->type = PLAYER;
-		player->bounds = rect(26, 0,48,player->sprite->frameSize.y);
+		player->bounds = rect(30, 5,40,player->sprite->frameSize.y-15);
 		player->attack = rect(0,0,0,0);
 		player->strength = 3;
 		player->speed = 3;
@@ -75,7 +71,7 @@ void Player_Think(Player *player)
 		player->vel.x = 0;
 	}
 
-	if(keys[SDL_SCANCODE_Z])
+	if(keys[SDL_SCANCODE_SPACE])
 	{
 		Player_Attack();
 	}
@@ -88,12 +84,14 @@ void Player_Think(Player *player)
 void Player_Update(Player *player)
 {
 	vec2d_Add(player->pos, player->vel, player->pos);
+	slog("%f", player->health);
+	Entity_IntersectAll(player);
 }
-void Player_Touch(Player *player)
+void Player_Touch(Player *player, Entity *other)
 {
 	Uint32 timer;
 	vec2d_Set(player->vel, 0, 0);
-	timer = SDL_GetTicks()+5;
+	timer = SDL_GetTicks()+100;
 	if(SDL_GetTicks() >= timer)
 	{
 		vec2d_Set(player->vel, 3,3);
@@ -103,7 +101,6 @@ void Player_Attack()
 {
 	SDL_Rect attack;
 	Vec2d offset;
-	Vec2d size;
 	
 	if(player)
 	{
@@ -125,8 +122,6 @@ void Player_Attack()
 		}
 
 		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, 30,30);
-		player->attack = attack;
-		
-		
+		player->attack = attack;	
 	}
 }

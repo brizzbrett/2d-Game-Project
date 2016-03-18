@@ -8,13 +8,14 @@
 #include "sprite.h"
 #include "Vector.h"
 
-#include "Camera.h"
-#include "Level.h"
-
 #include "Entity.h"
 #include "Player.h"
 #include "Enemy_Glop.h"
 #include "Enemy_Eye.h"
+#include "Enemy_Spider.h"
+
+#include "Camera.h"
+#include "Level.h"
 
 extern SDL_Surface *screen; /**<pointer to the draw screen*/
 extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
@@ -38,10 +39,9 @@ int main(int argc, char *argv[])
 	int done;
 	int tx = 0,ty = 0;
 	const Uint8 *keys;
-	char imagepath[512];
 	int i = 0;
 	Player *player;
-	Glop *glop = NULL;
+	Spider *spider = NULL;
 	Glop *glop2 = NULL;
 	Glop *glop4 = NULL;
 	Glop *glop3 = NULL;
@@ -55,13 +55,9 @@ int main(int argc, char *argv[])
 	Init_All();
 
 	player = Player_Load(775,600);
-	glop = Glop_Load(100,100);
+	spider = Spider_Load(100,100);
 	glop2 = Glop_Load(100,800);
 	glop3 = Glop_Load(1500,100);
-	glop4 = Glop_Load(1500,800);
-	eye = Eye_Load(775,100);
-	eye2 = Eye_Load(775,800);
-	eye3 = Eye_Load(100,450);
 	eye4 = Eye_Load(1500,450);
 	eye5 = Eye_Load(775,450);
 
@@ -79,16 +75,13 @@ int main(int argc, char *argv[])
 	do
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
-		
+		Camera_SetPosition(player->pos);
 		Graphics_RenderSurfaceToScreen(temp,Camera_GetActiveCamera(),Camera_GetPosition().x,Camera_GetPosition().y);
 
 		Room_DrawAll();
-
 		Entity_ThinkAll();
 		Entity_UpdateAll();
-		Camera_IntersectAll(player);
-		Entity_IntersectAll(player);	
-
+		
 		NextFrame();
 		SDL_PumpEvents();
 		keys = SDL_GetKeyboardState(NULL);

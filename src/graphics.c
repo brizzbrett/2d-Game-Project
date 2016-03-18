@@ -156,10 +156,7 @@ void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,
         }
     }
     SDL_SetTextureBlendMode(__graphics_texture,SDL_BLENDMODE_BLEND);        
-    SDL_UpdateTexture(__graphics_texture,
-                      &srcRect,
-                      surface->pixels,
-                      surface->pitch);
+    SDL_UpdateTexture(__graphics_texture,&srcRect,surface->pixels,surface->pitch);
     dstRect.x = x;
     dstRect.y = y;
     dstRect.w = srcRect.w;
@@ -168,12 +165,6 @@ void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,
                      __graphics_texture,
                      &srcRect,
                      &dstRect);
-}
-
-
-void ResetBuffer()
-{
-    
 }
 
 void Graphics_FrameDelay()

@@ -2,7 +2,6 @@
 #define __CAMERA_H__
 
 #include <SDL.h>
-#include "Vector.h"
 #include "Entity.h"
 
 SDL_Rect Camera_GetActiveCamera();

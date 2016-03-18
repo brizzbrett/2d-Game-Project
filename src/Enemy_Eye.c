@@ -1,9 +1,6 @@
 #include "Enemy_Eye.h"
-#include "Enemy_Fire.h"
-#include "Entity.h"
-#include "Player.h"
-#include "Vector.h"
-#include "simple_logger.h"
+#include "Pick_Ups.h"
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -18,7 +15,7 @@ Eye *Eye_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	eye = Entity_New("images/Eyesheet.png", 100,100, gPos,Entity_GetByID(0));
+	eye = Entity_New("images/Eyesheet.png", 100,100, gPos);
 
 	if(eye)
 	{
@@ -27,7 +24,7 @@ Eye *Eye_Load(int x, int y)
 		eye->update = &Eye_Update;
 
 		eye->type = ENEMY;
-		eye->bounds = rect(25, 25, 75,75);
+		eye->bounds = rect(25, 25, 50,50);
 		eye->strength = 3;
 		eye->speed = 2;
 		eye->health = 4;
@@ -50,17 +47,17 @@ Eye *Eye_Load(int x, int y)
  */
 void Eye_Think(Eye *eye)
 {	
+	Vec2d vel;
+	vec2d_Set(vel,5,5);
 	vec2d_Subtract(eye->target->pos,eye->pos,eye->direction);
 	if(SDL_GetTicks() >= eye->nextThink)
 	{
 		if((eye->direction.x <= 500 && eye->direction.x >= -500) && (eye->direction.y <= 300 && eye->direction.y >= -300))
 		{
-			Weapon_Fire(eye);
+			Weapon_Fire(eye, vel);
 			eye->nextThink = SDL_GetTicks() + eye->thinkRate;
 		}
-		
 	}
-
 }
 
 /**
@@ -70,7 +67,9 @@ void Eye_Think(Eye *eye)
  */
 void Eye_Update(Eye *eye)
 {
-	vec2d_Set(eye->vel, 1, 1);	
+	int itemPick;
+	Vec2d finalPos;
+	vec2d_Set(eye->vel, 1, 1);
 	if (abs(eye->target->pos.y-eye->pos.y) > abs(eye->target->pos.x-eye->pos.x)) 
 	{
 		if ((eye->target->pos.y-eye->pos.y) > 0) 
@@ -99,9 +98,17 @@ void Eye_Update(Eye *eye)
 	}	
 	if(rect_intersect(rect(eye->pos.x+25, eye->pos.y+25,75,75), eye->target->attack))
 	{
-		slog("Glop was hit...");
+		itemPick = rand() % 30;
+		finalPos = eye->pos;
 		Entity_Free(&eye);
+		if(itemPick % 3 == 0)
+			Pickup_Spawn(Pickup_Heart_New(finalPos));
+		else if(itemPick % 5 == 0)
+			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
+		else
+			Pickup_Spawn(NULL);
 	}
+	Entity_IntersectAll(eye);
 }
 
 /**
@@ -110,11 +117,14 @@ void Eye_Update(Eye *eye)
  * @param [in,out]	eye	If non-null, the eye.
  */
 
-void Eye_Touch(Eye *eye)
+void Eye_Touch(Eye *eye, Entity *other)
 {
 	Vec2d force;
-	vec2d_Set(force,50,50);
-	eye->target->health -= .5;
-	vec2d_Multiply(eye->velocity9, force, eye->velocity9);
-	vec2d_Add(eye->target->pos,eye->velocity9,eye->target->pos);
+	if(other == eye->target)
+	{
+		vec2d_Set(force,15,15);
+		eye->target->health -= .5;
+		vec2d_Multiply(eye->velocity9, force, eye->velocity9);
+		vec2d_Add(eye->target->pos,eye->velocity9,eye->target->pos);
+	}
 }

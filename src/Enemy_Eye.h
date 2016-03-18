@@ -2,6 +2,7 @@
 #define __ENEMY_EYE_H__
 
 #include "Entity.h"
+#include "Enemy_Fire.h"
 
 typedef Entity Eye;
 
@@ -35,6 +36,6 @@ void Eye_Update(Eye *Eye);
  * @param [in,out]	Eye	If non-null, the Eye.
  */
 
-void Eye_Touch(Eye *Eye);
+void Eye_Touch(Eye *Eye, Entity *other);
 
 #endif

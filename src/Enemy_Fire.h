@@ -7,10 +7,10 @@
 
 typedef Entity Shot;
 
-void Weapon_Fire(Entity *owner);
+void Weapon_Fire(Entity *owner, Vec2d vel);
 void Weapon_Think(Shot *shot);
 void Weapon_Free(Shot *shot);
 void Weapon_Update(Shot *shot);
-void Weapon_Touch(Shot *shot);
+void Weapon_Touch(Shot *shot, Entity *other);
 
 #endif

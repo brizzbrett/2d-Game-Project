@@ -35,6 +35,6 @@ void Glop_Update(Glop *glop);
  * @param [in,out]	glop	If non-null, the glop.
  */
 
-void Glop_Touch(Glop *glop);
+void Glop_Touch(Glop *glop, Entity *other);
 
 #endif

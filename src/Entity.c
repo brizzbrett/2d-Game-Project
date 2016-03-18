@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "graphics.h"
-#include "simple_logger.h"
 #include "Camera.h"
 
 static Entity *entList; /**<static global Entity List*/
@@ -14,7 +12,7 @@ Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
  * @brief	Creates a new reference to an Entity.
  * @return	a new Entity.
  */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p, Entity *link)
+Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
 	for(i = 0; i < entMax; i++)
@@ -33,9 +31,6 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p, Entity *link)
 		}
 
 		entList[i].draw = &sprite_Draw;
-		entList[i].think = NULL;
-		entList[i].update = NULL;
-		entList[i].touch = &Entity_IntersectAll;
 		entList[i].id = i;
 		entList[i].inuse = 1;
 		entList[i].type = OTHER;
@@ -47,7 +42,6 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p, Entity *link)
 		entList[i].nextThink = 0;
 		entList[i].thinkRate = 0;
 
-		entList[i].target = link;
 		return &entList[i];
 	}
 	return NULL;
@@ -174,6 +168,7 @@ void Entity_UpdateAll()
 			continue;
 		}
 		entList[i].update(&entList[i]);
+		Camera_IntersectAll(&entList[i]);
 	}
 }
 
@@ -191,10 +186,22 @@ void Entity_IntersectAll(Entity *a)
 		if(a == &entList[i])
 		{
 			continue;
-		}
+		}	
 		if(Entity_Intersect(a, &entList[i]))
 		{
-			entList[i].touch(&entList[i]);
+			if(a->touch)
+			{
+				a->touch(a, &entList[i]);
+			}
+
+			if(!a->inuse)
+			{
+				return;
+			}
+			if(entList[i].touch)
+			{
+				entList[i].touch(&entList[i], a);
+			}
 		}
 	}
 	return;

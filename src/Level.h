@@ -1,22 +1,19 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
-#include <stdlib.h>
-#include <random>
-#include <cmath>
-#include <time.h>
-#include "Vector.h"
-#include "Sprite.h"
 #include "Entity.h"
 #include "Camera.h"
 #include <SDL.h>
 
 #define RTYPE_START 1
 #define RTYPE_NORMAL 2
-#define RTYPE_BOSS 3
+#define RTYPE_KEY 3
+#define RTYPE_KEYDOOR 4
+#define RTYPE_BOSS 5
 
 #define SPLIT_VERTICAL 0
 #define SPLIT_HORIZONTAL 1
+
 
 /**
  * @brief	Defines an alias representing the structure.
@@ -38,9 +35,10 @@ typedef struct Room_T
  */
 typedef struct Node_S
 {
-	char *id;
+	char id;
 	int inuse;
 	Room *room;
+
 	int width;
 	int height;
 	int split;
@@ -59,10 +57,15 @@ typedef struct Node_S
 
 	SDL_Rect link;
 
+	Entity *north,*south,*east,*west;
 	void (*drawroom)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 	void (*drawhall)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
 }Node;
 
+/**
+ * @brief	Level load.
+ */
+void Level_Load();
 /**
  * @brief	Node new.
  *
@@ -78,50 +81,16 @@ Node *Node_New();
  *
  * @return	null if it fails, else a Room*.
  */
-Room *Room_New(int type, Vec2d pos);
+Room *Room_New(Node *n, Vec2d pos);
+Entity *Door_New(int x, int y);
+void Room_Link(Room *l, Room *r, int split);
+void Door_Touch(Entity *door, Entity *other);
 
-/**
- * @brief	Room create.
- *
- * @param [in,out]	n	If non-null, the Node to process.
- *
- * @return	null if it fails, else a Room*.
- */
-Room *Room_Create(Node *n);
-
-/**
- * @brief	Room link.
- *
- * @param [in,out]	left 	If non-null, the left.
- * @param [in,out]	right	If non-null, the right.
- *
- * @return	An int.
- */
-int Room_Link(Node *left, Node *right);
-
-/**
- * @brief	Room draw 2.
- */
-void Room_Draw2();
-
-/**
- * @brief	Room draw.
- *
- * @param [in,out]	sprite  	If non-null, the sprite.
- * @param [in,out]	renderer	If non-null, the renderer.
- * @param	pos					The position.
- */
-void Room_Draw(Sprite *sprite, SDL_Renderer *renderer, Vec2d pos);
-
+void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
 /**
  * @brief	Room draw all.
  */
 void Room_DrawAll();
-
-/**
- * @brief	Level load.
- */
-void Level_Load();
 
 /**
  * @brief	Node free.
@@ -129,18 +98,13 @@ void Level_Load();
  * @param [in,out]	n	If non-null, the Node to process.
  */
 void Node_Free(Node **n);
-
 /**
  * @brief	Node close system.
  */
 void Node_CloseSystem();
-
 /**
  * @brief	Node initialise system.
  */
 void Node_InitSystem();
 
-Entity *Door_Load(int x, int y);
-void Door_Think(Entity *door);
-void Door_Touch(Entity *door);
 #endif
