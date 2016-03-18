@@ -75,8 +75,7 @@ int main(int argc, char *argv[])
 	do
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
-		Camera_SetPosition(player->pos);
-		Graphics_RenderSurfaceToScreen(temp,Camera_GetActiveCamera(),Camera_GetPosition().x,Camera_GetPosition().y);
+		//Graphics_RenderSurfaceToScreen(temp,Camera_GetActiveCamera(),0,0);
 
 		Room_DrawAll();
 		Entity_ThinkAll();

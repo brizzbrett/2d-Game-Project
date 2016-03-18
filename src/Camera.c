@@ -40,18 +40,18 @@ int Camera_Intersect(SDL_Rect camera, Entity *ent)
 		return 1;
 	return 0;
 }
-void Camera_IntersectAll(Entity *entList)
+void Camera_IntersectAll(Entity *ent)
 {
 	int i;
-	if(!entList)return;
+	if(!ent)return;
 
 	for(i=0; i < Entity_GetNum(); i++)
 	{
-		if(!entList[i].inuse)
+		if(!ent->inuse)
 		{
 			continue;
 		}
-		if(Camera_Intersect(_Camera, &entList[i]))
+		if(Camera_Intersect(_Camera, ent))
 		{
 			Entity_DrawAll();
 		}

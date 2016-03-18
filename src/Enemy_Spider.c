@@ -16,7 +16,7 @@ Spider *Spider_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	spider = Entity_New("images/Spidersheet.png", 100,100, gPos);
+	spider = Entity_New("images/Spidersheet.png",128,128, gPos);
 
 	if(spider)
 	{

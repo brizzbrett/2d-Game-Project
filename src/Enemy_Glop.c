@@ -15,7 +15,7 @@ Glop *Glop_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	glop = Entity_New("images/glopsheet.png", 100,100, gPos);
+	glop = Entity_New("images/glopsheet.png",128,128, gPos);
 
 	if(glop)
 	{
@@ -23,7 +23,7 @@ Glop *Glop_Load(int x, int y)
 		glop->update = &Glop_Update;
 
 		glop->type = ENEMY;
-		glop->bounds = rect(10, 10, glop->sprite->frameSize.x-20,glop->sprite->frameSize.y-20);
+		glop->bounds = rect(40, 40, 60,113);
 		glop->strength = 3;
 		glop->speed = 2;
 		glop->health = 4;
@@ -58,10 +58,12 @@ void Glop_Update(Glop *glop)
 		if ((glop->target->pos.y-glop->pos.y) > 0) 
 		{
 			glop->frame = 0;
+			glop->bounds = rect(50, 50, 40,83);
 		} 
 		else if ((glop->target->pos.y-glop->pos.y) < 0) 
 		{
 			glop->frame = 2;
+			glop->bounds = rect(50, 50, 60,83);
 		}
 	} 
 	else
@@ -73,10 +75,12 @@ void Glop_Update(Glop *glop)
 		if ((glop->target->pos.x-glop->pos.x) > 0) 
 		{
 			glop->frame = 3;
+			glop->bounds = rect(40, 40, 60,113);
 		} 
 		else if ((glop->target->pos.x-glop->pos.x) < 0) 
 		{
 			glop->frame = 1;
+			glop->bounds = rect(40, 40, 60,113);
 		}
 	}	
 	if(rect_intersect(rect(glop->pos.x, glop->pos.y,100,100), glop->target->attack))
@@ -104,7 +108,7 @@ void Glop_Touch(Glop *glop, Entity *other)
 {
 	if(other == glop->target)
 	{
-		vec2d_Set(glop->force,15,15);
+		vec2d_Set(glop->force,30,30);
 		glop->target->health -= .5;
 		vec2d_Multiply(glop->velocity9, glop->force, glop->velocity9);
 		vec2d_Add(glop->target->pos,glop->velocity9,glop->target->pos);

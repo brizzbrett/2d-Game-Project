@@ -15,7 +15,7 @@ Eye *Eye_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	eye = Entity_New("images/Eyesheet.png", 100,100, gPos);
+	eye = Entity_New("images/Eyesheet.png", 128,128, gPos);
 
 	if(eye)
 	{

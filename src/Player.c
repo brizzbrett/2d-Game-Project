@@ -7,7 +7,7 @@ Player *Player_Load(int x, int y)
 
 	Vec2d pos;
 	vec2d_Set(pos,x,y);
-	player = Entity_New("images/playersheet.png", 100,100, pos);
+	player = Entity_New("images/playersheet.png", 128,128, pos);
 	if(player)
 	{
 		player->think = &Player_Think;
@@ -17,7 +17,7 @@ Player *Player_Load(int x, int y)
 		player->id = 0;
 		player->pos = pos;
 		player->type = PLAYER;
-		player->bounds = rect(30, 5,40,player->sprite->frameSize.y-15);
+		player->bounds = rect(38, 5,player->sprite->frameSize.x-76,player->sprite->frameSize.y-10);
 		player->attack = rect(0,0,0,0);
 		player->strength = 3;
 		player->speed = 3;
@@ -37,11 +37,29 @@ Player *Player_Load(int x, int y)
 void Player_Attack();
 void Player_Think(Player *player)
 {
-	const Uint8 *keys;
-
+	
+	SDL_Event e;
 	if(!player)return;
 
+	if( SDL_PollEvent( &e ) != 0 )
+	{
+		if(e.type == SDL_MOUSEBUTTONDOWN)
+		{
+			Player_Attack();
+		}
+	}
+	if(SDL_GetTicks() >= player->nextThink)
+	{
+		player->attack = rect(0,0,0,0); 
+		player->nextThink = SDL_GetTicks() + player->thinkRate;
+	}
+}
+void Player_Update(Player *player)
+{
+	const Uint8 *keys;
+
 	keys = SDL_GetKeyboardState(NULL);
+
 	if(keys[SDL_SCANCODE_W])
 	{
 		player->vel.y = -player->speed;
@@ -70,19 +88,6 @@ void Player_Think(Player *player)
 	{
 		player->vel.x = 0;
 	}
-
-	if(keys[SDL_SCANCODE_SPACE])
-	{
-		Player_Attack();
-	}
-	if(SDL_GetTicks() >= player->nextThink)
-	{
-		player->attack = rect(0,0,0,0); 
-		player->nextThink = SDL_GetTicks() + player->thinkRate;
-	}
-}
-void Player_Update(Player *player)
-{
 	vec2d_Add(player->pos, player->vel, player->pos);
 	slog("%f", player->health);
 	Entity_IntersectAll(player);
@@ -110,7 +115,7 @@ void Player_Attack()
 		}
 		else if(player->frame == 2)
 		{
-			vec2d_Set(offset,30,-30);
+			vec2d_Set(offset,30,-50);
 		}
 		else if(player->frame == 1)
 		{
@@ -118,10 +123,10 @@ void Player_Attack()
 		}
 		else if(player->frame == 3)
 		{
-			vec2d_Set(offset,-30, 50);
+			vec2d_Set(offset,-50, 50);
 		}
 
-		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, 30,30);
+		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, 50,50);
 		player->attack = attack;	
 	}
 }
