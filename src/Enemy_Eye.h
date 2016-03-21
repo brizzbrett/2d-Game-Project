@@ -11,7 +11,6 @@ typedef Entity Eye;
  *
  * @return	null if it fails, else a Eye*.
  */
-
 Eye *Eye_Load(int x, int y);
 
 /**
@@ -19,7 +18,6 @@ Eye *Eye_Load(int x, int y);
  *
  * @param [in,out]	Eye	If non-null, the Eye.
  */
-
 void Eye_Think(Eye *Eye);
 
 /**
@@ -27,7 +25,6 @@ void Eye_Think(Eye *Eye);
  *
  * @param [in,out]	Eye	If non-null, the Eye.
  */
-
 void Eye_Update(Eye *Eye);
 
 /**
@@ -35,7 +32,6 @@ void Eye_Update(Eye *Eye);
  *
  * @param [in,out]	Eye	If non-null, the Eye.
  */
-
 void Eye_Touch(Eye *Eye, Entity *other);
 
 #endif

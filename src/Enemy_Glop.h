@@ -10,7 +10,6 @@ typedef Entity Glop;
  *
  * @return	null if it fails, else a Glop*.
  */
-
 Glop *Glop_Load(int x, int y);
 
 /**
@@ -18,7 +17,6 @@ Glop *Glop_Load(int x, int y);
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-
 void Glop_Think(Glop *glop);
 
 /**
@@ -26,7 +24,6 @@ void Glop_Think(Glop *glop);
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-
 void Glop_Update(Glop *glop);
 
 /**
@@ -34,7 +31,6 @@ void Glop_Update(Glop *glop);
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-
 void Glop_Touch(Glop *glop, Entity *other);
 
 #endif

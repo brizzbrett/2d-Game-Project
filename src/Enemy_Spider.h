@@ -7,7 +7,10 @@
 typedef Entity Spider;
 
 /**
- * @brief	Spider load.
+ * @brief	Loads the spider at specified position.
+ *
+ * @param x	The x coordinate.
+ * @param y	The y coordinate.
  *
  * @return	null if it fails, else a Spider*.
  */
@@ -17,9 +20,9 @@ Spider *Spider_Load(int x, int y);
 /**
  * @brief	Spider think.
  *
- * @param [in,out]	Spider	If non-null, the Spider.
+ * @param	*Spider		If non-null, the Spider.
+ *
  */
-
 void Spider_Think(Spider *Spider);
 
 /**
@@ -27,7 +30,6 @@ void Spider_Think(Spider *Spider);
  *
  * @param [in,out]	Spider	If non-null, the Spider.
  */
-
 void Spider_Update(Spider *Spider);
 
 /**
@@ -35,7 +37,6 @@ void Spider_Update(Spider *Spider);
  *
  * @param [in,out]	Spider	If non-null, the Spider.
  */
-
 void Spider_Touch(Spider *Spider, Entity *other);
 
 #endif

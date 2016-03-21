@@ -8,6 +8,9 @@
 #include "sprite.h"
 #include "simple_logger.h"
 
+/**
+ * @brief	EntityType enum
+ */
 enum EntityType
 {
 	PLAYER,
@@ -23,7 +26,7 @@ enum EntityType
 };
 
 /**
- * @brief	The entity structure
+ * @brief	Entity structure for all entities
  */
 typedef struct Entity_S
 {
@@ -102,15 +105,50 @@ void Entity_ThinkAll();
 void Entity_DrawAll();
 
 /**   
- * @brief	The Update function that updates all entities every certain amount of time.  
+ * @brief	The Update function that updates all entities every frame.  
  */
 void Entity_UpdateAll();
 
+/**   
+ * @brief	The Intersect/Touch function that checks all entities for collision every frame.  
+ *
+ * @param	The entity being checked against the rest.
+ */
 void Entity_IntersectAll(Entity *a);
-
+/**   
+ * @brief	The Intersect function that checks if two rects are colliding.  
+ *
+ * @param	*a	The first entity
+ * @param	*b	The second entity
+ *
+ * @return	0 or 1 depending on whether or not the rects collided.
+ */
 int Entity_Intersect(Entity *a, Entity *b);
 
+/**   
+ * @brief	Function that is used to get an Entity by it's ID.  
+ *
+ * @param	id	The id of the entity you're looking for.
+ *
+ * @return	The entity with the id specified.
+ */
 Entity *Entity_GetByID(int id);
+
+/**   
+ * @brief	Function that is used to get an Entity by it's Type.
+ *
+ * @param	The type of entity you're looking for.
+ *
+ * @return The entity with the type specified.
+ */
 Entity *Entity_GetByType(EntityType type);
+
+/**   
+ * @brief	Get's the number of entities currently in the level.  
+ *
+ * @return	The number of entities.
+ */
 int Entity_GetNum();
+
+
 #endif
