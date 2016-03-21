@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include "Camera.h"
 
 /**
  * @brief	Eye load.
@@ -19,7 +20,7 @@ Eye *Eye_Load(int x, int y)
 
 	if(eye)
 	{
-		eye->think = &Eye_Think;
+		eye->think = NULL;
 		eye->touch = &Eye_Touch;
 		eye->update = &Eye_Update;
 
@@ -34,7 +35,7 @@ Eye *Eye_Load(int x, int y)
 		eye->nextThink = 0;
 
 		eye->owner = NULL;
-		eye->target = Entity_GetByID(0);
+		eye->target = Entity_GetByType(PLAYER);
 		return eye;
 	}
 	return NULL;
@@ -69,7 +70,13 @@ void Eye_Update(Eye *eye)
 {
 	int itemPick;
 	Vec2d finalPos;
+
+	if(!eye)return;
+
+	eye->target = Entity_GetByType(PLAYER);
+
 	vec2d_Set(eye->vel, 1, 1);
+	vec2d_Multiply(eye->vel,eye->direction,eye->velocity9);
 	if (abs(eye->target->pos.y-eye->pos.y) > abs(eye->target->pos.x-eye->pos.x)) 
 	{
 		if ((eye->target->pos.y-eye->pos.y) > 0) 
@@ -108,6 +115,15 @@ void Eye_Update(Eye *eye)
 		else
 			Pickup_Spawn(NULL);
 	}
+	if(Camera_Intersect(Camera_GetActiveCamera(), eye))
+	{
+		eye->think = &Eye_Think;
+	}
+	else
+	{
+		if(!eye)return;
+		eye->think = NULL;
+	}
 	Entity_IntersectAll(eye);
 }
 
@@ -122,7 +138,7 @@ void Eye_Touch(Eye *eye, Entity *other)
 	Vec2d force;
 	if(other == eye->target)
 	{
-		vec2d_Set(force,15,15);
+		vec2d_Set(force,1,1);
 		eye->target->health -= .5;
 		vec2d_Multiply(eye->velocity9, force, eye->velocity9);
 		vec2d_Add(eye->target->pos,eye->velocity9,eye->target->pos);

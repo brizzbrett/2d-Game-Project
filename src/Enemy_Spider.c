@@ -20,7 +20,7 @@ Spider *Spider_Load(int x, int y)
 
 	if(spider)
 	{
-		spider->think = &Spider_Think;
+		spider->think = NULL;
 		spider->touch = &Spider_Touch;
 		spider->update = &Spider_Update;
 
@@ -35,7 +35,7 @@ Spider *Spider_Load(int x, int y)
 		spider->nextThink = 0;
 
 		spider->owner = NULL;
-		spider->target = Entity_GetByID(0);
+		spider->target = Entity_GetByType(PLAYER);
 		return spider;
 	}
 	return NULL;
@@ -52,14 +52,18 @@ void Spider_Think(Spider *spider)
 	vec2d_Set(vel,0,0);
 	int randX = rand() % 3 -1;
 	int randY = rand() % 3 -1;
+
+	vec2d_Set(spider->vel, 0.06, 0.06);
+	vec2d_Multiply(spider->vel,spider->direction,spider->vel);
+	vec2d_Add(spider->pos,spider->vel,spider->pos);
+
 	if(SDL_GetTicks() >= spider->nextThink)
 	{
 		Weapon_Fire(spider, vel);
 		vec2d_Set(spider->direction, (randX), (randY));
 
 		vec2d_Normalize(&spider->direction);
-		spider->nextThink = SDL_GetTicks() + spider->thinkRate;
-		
+		spider->nextThink = SDL_GetTicks() + spider->thinkRate;	
 	}		
 
 
@@ -74,10 +78,9 @@ void Spider_Update(Spider *spider)
 {
 	int itemPick;
 	Vec2d finalPos;
-	vec2d_Set(spider->vel, 3, 3);
-	vec2d_Multiply(spider->vel,spider->direction,spider->vel);
-	vec2d_Add(spider->pos,spider->vel,spider->pos);
 
+	if(!spider)return;
+	spider->target = Entity_GetByType(PLAYER);
 	if (abs(spider->target->pos.y-spider->pos.y) > abs(spider->target->pos.x-spider->pos.x)) 
 	{
 		if ((spider->target->pos.y-spider->pos.y) > 0) 
@@ -104,11 +107,11 @@ void Spider_Update(Spider *spider)
 			spider->frame = 1;
 		}
 	}
-	if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 100)
+	if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 200)
 	{
 		spider->direction.x = -spider->direction.x;
 	}
-	if(spider->pos.y <= Camera_GetPosition().y + 100 || spider->pos.y >= Camera_GetSize().y - 100)
+	if(spider->pos.y <= Camera_GetPosition().y + 100 || spider->pos.y >= Camera_GetSize().y - 200)
 	{
 		spider->direction.y = -spider->direction.y;
 	}	
@@ -123,6 +126,15 @@ void Spider_Update(Spider *spider)
 			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
 		else
 			Pickup_Spawn(NULL);
+	}
+	if(Camera_Intersect(Camera_GetActiveCamera(), spider))
+	{
+		spider->think = &Spider_Think;
+	}
+	else
+	{
+		if(!spider)return;
+		spider->think = NULL;
 	}
 	Entity_IntersectAll(spider);
 }
@@ -140,7 +152,7 @@ void Spider_Touch(Spider *spider, Entity *other)
 	{
 		vec2d_Set(force,15,15);
 		spider->target->health -= .5;
-		vec2d_Multiply(spider->velocity9, force, spider->velocity9);
-		vec2d_Add(spider->target->pos,spider->velocity9,spider->target->pos);
+		vec2d_Multiply(spider->target->vel, force, spider->target->velocity9);
+		vec2d_Add(spider->target->pos,-spider->target->velocity9,spider->target->pos);
 	}
 }

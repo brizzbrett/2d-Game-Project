@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string>
+#include <cmath>
 
 #include "SDL.h"
 #include "SDL_image.h"
@@ -37,30 +38,14 @@ int main(int argc, char *argv[])
 {
 	SDL_Surface *temp = NULL;
 	int done;
+	int random;
 	int tx = 0,ty = 0;
 	const Uint8 *keys;
 	int i = 0;
-	Player *player;
-	Spider *spider = NULL;
-	Glop *glop2 = NULL;
-	Glop *glop4 = NULL;
-	Glop *glop3 = NULL;
-	Eye *eye = NULL;
-	Eye *eye2 = NULL;
-	Eye *eye3 = NULL;
-	Eye *eye4 = NULL;
-	Eye *eye5 = NULL;
-
 
 	Init_All();
-
-	player = Player_Load(775,600);
-	spider = Spider_Load(100,100);
-	glop2 = Glop_Load(100,800);
-	glop3 = Glop_Load(1500,100);
-	eye4 = Eye_Load(1500,450);
-	eye5 = Eye_Load(775,450);
-
+	random = rand() % 10;
+	
 	Level_Load();
 
 	temp = IMG_Load("images/bgtest.png");
@@ -75,10 +60,8 @@ int main(int argc, char *argv[])
 	do
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
-		//Graphics_RenderSurfaceToScreen(temp,Camera_GetActiveCamera(),0,0);
 
 		Room_DrawAll();
-		Entity_ThinkAll();
 		Entity_UpdateAll();
 		
 		NextFrame();

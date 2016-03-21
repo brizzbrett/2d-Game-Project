@@ -5,10 +5,19 @@
 #include <cmath>
 #include <time.h>
 
+#include "Enemy_Glop.h"
+#include "Enemy_Eye.h"
+#include "Enemy_Spider.h"
+#include "Player.h"
+#include "Pick_Ups.h"
+
+#define ROOM_WIDTH 1600
+#define ROOM_HEIGHT 900
+
 Node *head;
 Node *NList;
-Room *r;
 Room *roomList;
+Player *p;
 Uint32 length = 0;
 int id = 96;
 Uint32 nodeMax = 100;
@@ -151,21 +160,66 @@ void Node_RecursiveSubDivide(Node *n, int count)
  */
 Room *Room_New(Node *n, Vec2d pos)
 {
-	r = (Room *)malloc(sizeof(Room));
+	Spider *spider[9];
+	int spiderCount = 0;
+	Glop *glop[9];
+	int glopCount = 0;
+	Eye *eye[9];
+	int eyeCount = 0;
+	int randomEnemy = rand() % 3;
+	int randomPlayer = rand() % 5;
+	Vec2d boulderPos;
+	int randomBoulderX = 100;
+	int randomBoulderY = 450;
+	int i;
 
-	vec2d_Set(r->size, 250, 100);
+	Room *r = (Room *)malloc(sizeof(Room));
+
+	vec2d_Set(r->size, ROOM_WIDTH, ROOM_HEIGHT);
 	r->pos = pos;
-
+	r->bounds = rect(r->pos.x+100,r->pos.y+100,r->size.x-200, r->size.x-200);
 	r->type = RTYPE_NORMAL;
-	r->numEnemy = rand() % 9;
+	r->numEnemy = rand() % 8;
 	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
 
+	r->val = length;
+	length++;
 	r->next = roomList;
-	roomList = r;
+	roomList = r;	
+	vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
+	Pickup_Spawn(Boulder_New(boulderPos));
+	if(!p && randomPlayer == 0)
+	{
+		p = Player_Load(r->pos.x+775,r->pos.y+600);
+		Camera_SetPosition(r->pos);
+	}
+	for(i = 0; i < r->numEnemy; i++)
+	{
+		randomEnemy = rand() % 3;
+
+		if(randomEnemy == 0)
+		{
+			spider[spiderCount] = Spider_Load(r->pos.x*((i+1))+1300,r->pos.y+150);
+			spiderCount++;
+		}
+		else if(randomEnemy == 1)
+		{
+
+			eye[eyeCount] = Eye_Load((r->pos.x*(i+1))+750,r->pos.y+450);
+			eyeCount++;
+
+		}
+		else
+		{
+			glop[glopCount] = Glop_Load((r->pos.x*(i+1))+1300,r->pos.y+700);
+			glopCount++;
+		}
+	}
+
 	return r;
 }
 
-Entity *Door_New(int x, int y)
+Entity *Door_New(int x, int y, EntityType type)
 {
 	Entity *door;
 	Vec2d gPos;
@@ -176,8 +230,7 @@ Entity *Door_New(int x, int y)
 	if(door)
 	{
 		door->touch = &Door_Touch;
-
-		door->type = OTHER;
+		door->type = type;
 		door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
 
 		door->owner = NULL;
@@ -220,7 +273,6 @@ Room *Room_Get(Node *n)
 		}
 	}
 }
-
 void Room_RecursiveCreateRoom(Node *n)
 {
 	if(n->left || n->right)
@@ -241,8 +293,7 @@ void Room_RecursiveCreateRoom(Node *n)
 	}
 	else
 	{
-		n->room = Room_New(n, n->pos);
-		r->val = ++length;			
+		n->room = Room_New(n, n->pos);		
 	}
 }
 
@@ -251,8 +302,8 @@ void Room_Link(Room *l, Room *r, int split)
 	if(split == SPLIT_HORIZONTAL) //if parent was split horizontally, 
 								  // create doors in the south of the left room and north of the right room
 	{
-		l->south = Door_New(l->pos.x+l->size.x/2-5,l->pos.y+l->size.y-10);
-		r->north = Door_New(r->pos.x+r->size.x/2-5, r->pos.y);
+		l->south = Door_New(l->pos.x+l->size.x/2-5,l->pos.y+l->size.y-70, SDOOR);
+		r->north = Door_New(r->pos.x+r->size.x/2-5, r->pos.y+70,NDOOR);
 
 		l->south->target = r->north;
 		r->north->target = l->south;
@@ -260,25 +311,85 @@ void Room_Link(Room *l, Room *r, int split)
 	else if(split == SPLIT_VERTICAL) //if parent was split vertically, 
 									 // create doors in the east of the left room and west of the right room
 	{	
-		l->east = Door_New(l->pos.x+l->size.x-10,l->pos.y+l->size.y/2-5);
-		r->west = Door_New(r->pos.x,r->pos.y+r->size.y/2-5);
+		l->east = Door_New(l->pos.x+l->size.x-70,l->pos.y+l->size.y/2-5, EDOOR);
+		r->west = Door_New(r->pos.x+70,r->pos.y+r->size.y/2-5, WDOOR);
 
 		l->east->target = r->west;
 		r->west->target = l->east;
 	}
 }
+int Room_Intersect(Room *room, Entity *ent)
+{
+	SDL_Rect aB, bB;
+	room = Room_Get(head);
+	if(!ent)
+	{
+		return 0;
+	}
+	bB = rect(ent->pos.x,ent->pos.y,ent->bounds.w, ent->bounds.h);
+	if(rect_intersect(room->bounds, bB))
+		return 1;
+	return 0;
+}
+void Room_IntersectAll(Entity *ent)
+{
+	int i;
+	if(!ent)return;
 
+	for(i=0; i < Entity_GetNum(); i++)
+	{
+		if(!ent->inuse)
+		{
+			continue;
+		}
+		if(Room_Intersect(Room_Get(head), ent))
+		{
+			
+			//vec2d_Set(ent->vel,0,0);
+		}
+	}
+	return;
+}
 /////////////////////////////////////////////////////////
 //					TOUCH FUNCTIONS					   //
 /////////////////////////////////////////////////////////
 
 void Door_Touch(Entity *door, Entity *other)
 {
-	if(other == Entity_GetByID(0))
+	Vec2d position;
+	if(other == Entity_GetByType(PLAYER))
 	{
-		other->pos = door->target->pos;
+		if(door->target->type == NDOOR)
+		{
+			vec2d_Set(position, Camera_GetPosition().x, door->target->pos.y-70);
+			other->pos.y = door->target->pos.y +11;
+			other->pos.x = door->target->pos.x - other->sprite->frameSize.x/2+5;
+			Camera_SetPosition(position);
+		}
+		else if(door->target->type == SDOOR)
+		{
+			vec2d_Set(position, Camera_GetPosition().x, door->target->pos.y-ROOM_HEIGHT+70);
+			other->pos.y = door->target->pos.y - other->sprite->frameSize.y-1;
+			other->pos.x = door->target->pos.x - other->sprite->frameSize.x/2+5;
+			Camera_SetPosition(position);
+		}
+		else if(door->target->type == WDOOR)
+		{
+			vec2d_Set(position, door->target->pos.x-70, Camera_GetPosition().y);
+			other->pos.y = door->target->pos.y - other->sprite->frameSize.y/2+5;
+			other->pos.x = door->target->pos.x + 11;
+			Camera_SetPosition(position);
+		}
+		else if(door->target->type == EDOOR)
+		{
+			vec2d_Set(position, door->target->pos.x-ROOM_WIDTH+70, Camera_GetPosition().y);
+			other->pos.y = door->target->pos.y - other->sprite->frameSize.y/2+5;
+			other->pos.x = door->target->pos.x - other->sprite->frameSize.x-1;
+			Camera_SetPosition(position);
+		}
+		
 	}
-	//Camera_SetPosition(Entity_GetByID(0)->pos);
+	
 }
 
 /////////////////////////////////////////////////////////
@@ -334,8 +445,8 @@ void Room_DrawAll()
 void Level_Load()
 {
 	head = Node_New();
-	head->width = 1600;
-	head->height = 900;
+	head->width = 51200;
+	head->height = 28800;
 	srand(time(NULL));
 
 	Node_RecursiveSubDivide(head, 5);

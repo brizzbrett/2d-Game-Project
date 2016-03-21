@@ -31,7 +31,7 @@ void Weapon_Fire(Entity *entity, Vec2d v)
 	vec2d_Set(vel, v.x, v.y);
 	shot->vel = vel;
 
-	shot->target = Entity_GetByID(0);
+	shot->target = Entity_GetByType(PLAYER);
 	shot->owner = entity; //the entity firing owns this projectile
 
 	pPos = shot->target->pos;	
@@ -67,6 +67,8 @@ void Weapon_Update(Shot *shot)
 	{
 		Entity_Free(&shot);
 	}
+
+	shot->target = Entity_GetByType(PLAYER);
 	vec2d_Add(shot->pos, shot->vel, shot->pos);
 	if(SDL_GetTicks() >= shot->owner->nextThink)
 	{

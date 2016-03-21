@@ -40,7 +40,7 @@ int Camera_Intersect(SDL_Rect camera, Entity *ent)
 		return 1;
 	return 0;
 }
-void Camera_IntersectAll(Entity *ent)
+/*void Camera_IntersectAll(Entity *ent)
 {
 	int i;
 	if(!ent)return;
@@ -57,4 +57,4 @@ void Camera_IntersectAll(Entity *ent)
 		}
 	}
 	return;
-}
+}*/

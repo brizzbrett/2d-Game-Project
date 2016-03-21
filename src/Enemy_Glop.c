@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include "Camera.h"
 
 /**
  * @brief	Glop load.
@@ -19,6 +20,7 @@ Glop *Glop_Load(int x, int y)
 
 	if(glop)
 	{
+		glop->think = NULL;
 		glop->touch = &Glop_Touch;
 		glop->update = &Glop_Update;
 
@@ -31,22 +33,15 @@ Glop *Glop_Load(int x, int y)
 		vec2d_Set(glop->vel,1,1);
 
 		glop->owner = NULL;
-		glop->target = Entity_GetByID(0);
+		glop->target = Entity_GetByType(PLAYER);
 		return glop;
 	}
 	return NULL;
 }
 
-/**
- * @brief	Glop update.
- *
- * @param [in,out]	glop	If non-null, the glop.
- */
-void Glop_Update(Glop *glop)
+void Glop_Think(Glop *glop)
 {
-	int itemPick;
-	Vec2d finalPos;
-	vec2d_Set(glop->vel, 1, 1);
+	vec2d_Set(glop->vel, 0.02, 0.02);
 		
 	vec2d_Subtract(glop->target->pos,glop->pos,glop->direction);
 	vec2d_Normalize(&glop->direction);
@@ -83,6 +78,22 @@ void Glop_Update(Glop *glop)
 			glop->bounds = rect(40, 40, 60,113);
 		}
 	}	
+}
+
+/**
+ * @brief	Glop update.
+ *
+ * @param [in,out]	glop	If non-null, the glop.
+ */
+void Glop_Update(Glop *glop)
+{
+	int itemPick;
+	Vec2d finalPos;
+
+	if(!glop)return;
+
+	glop->target = Entity_GetByType(PLAYER);
+
 	if(rect_intersect(rect(glop->pos.x, glop->pos.y,100,100), glop->target->attack))
 	{
 		itemPick = rand() % 30;
@@ -94,6 +105,15 @@ void Glop_Update(Glop *glop)
 			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
 		else
 			Pickup_Spawn(NULL);	
+	}
+	if(Camera_Intersect(Camera_GetActiveCamera(), glop))
+	{
+		glop->think = &Glop_Think;
+	}
+	else
+	{
+		if(!glop) return;
+		glop->think = NULL;
 	}
 	Entity_IntersectAll(glop);
 }
@@ -108,7 +128,7 @@ void Glop_Touch(Glop *glop, Entity *other)
 {
 	if(other == glop->target)
 	{
-		vec2d_Set(glop->force,30,30);
+		vec2d_Set(glop->force,2500,2500);
 		glop->target->health -= .5;
 		vec2d_Multiply(glop->velocity9, glop->force, glop->velocity9);
 		vec2d_Add(glop->target->pos,glop->velocity9,glop->target->pos);

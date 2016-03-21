@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "graphics.h"
+#include "Camera.h"
 
 
 static Sprite *spriteList = NULL;
@@ -158,14 +159,19 @@ Sprite *sprite_Load(char file[], int fw, int fh)
 void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 {
 	SDL_Rect src,dest;
-
+	Vec2d posRel;
+	Vec2d camPos;
+	SDL_Rect cam;
+	cam = Camera_GetActiveCamera();
+	camPos = Camera_GetPosition();
+	vec2d_Subtract(pos, camPos, posRel); 
 	src.x = frame%sprite->fpl * sprite->frameSize.x;
 	src.y = frame/sprite->fpl * sprite->frameSize.y;
 	src.w = sprite->frameSize.x;
 	src.h = sprite->frameSize.y;
 
-	dest.x = pos.x;
-	dest.y = pos.y;
+	dest.x = posRel.x;
+	dest.y = posRel.y;
 	dest.w = sprite->frameSize.x;
 	dest.h = sprite->frameSize.y;
 

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Camera.h"
+#include "Level.h"
 
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
@@ -147,6 +148,7 @@ void Entity_ThinkAll()
 			continue;
 		}
 		entList[i].think(&entList[i]);
+
 	}
 }
 
@@ -168,7 +170,8 @@ void Entity_UpdateAll()
 			continue;
 		}
 		entList[i].update(&entList[i]);
-		Camera_IntersectAll(&entList[i]);
+		Entity_DrawAll();
+		Entity_ThinkAll();
 	}
 }
 
@@ -188,16 +191,17 @@ void Entity_IntersectAll(Entity *a)
 			continue;
 		}	
 		if(Entity_Intersect(a, &entList[i]))
-		{
+		{			
+			if(!a->inuse)
+			{
+				return;
+			}
+
 			if(a->touch)
 			{
 				a->touch(a, &entList[i]);
 			}
 
-			if(!a->inuse)
-			{
-				return;
-			}
 			if(entList[i].touch)
 			{
 				entList[i].touch(&entList[i], a);

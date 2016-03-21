@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "Entity.h"
 #include "graphics.h"
 #include "simple_logger.h"
 
@@ -120,6 +121,7 @@ void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,
     slog("graphics initialized\n");
 }
 
+/********************************No Longer Use**********************************
 void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,int y)
 {
     SDL_Rect dstRect;
@@ -140,7 +142,7 @@ void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,
                      NULL,
                      &w,
                      &h);
-    /*check if resize is needed*/
+    /*check if resize is needed
     if ((surface->w > w)||(surface->h > h))
     {
         SDL_DestroyTexture(__graphics_texture);
@@ -166,7 +168,7 @@ void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,
                      &srcRect,
                      &dstRect);
 }
-
+*/
 void Graphics_FrameDelay()
 {
     Uint32 diff;

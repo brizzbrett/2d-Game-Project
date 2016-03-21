@@ -13,7 +13,12 @@ enum EntityType
 	PLAYER,
 	ENEMY,
 	BOSS,
-	ITEM,
+	PICKUP,
+	BOULDER,
+	SDOOR,
+	NDOOR,
+	EDOOR,
+	WDOOR,
 	OTHER,
 };
 

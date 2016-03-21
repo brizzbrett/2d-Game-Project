@@ -23,6 +23,7 @@ typedef struct Room_T
 	int type;
 	Vec2d size;
 	Vec2d pos;
+	SDL_Rect bounds;
 	Sprite *image;
 	int numEnemy;
 	int val;
@@ -84,6 +85,8 @@ Node *Node_New();
 Room *Room_New(Node *n, Vec2d pos);
 Entity *Door_New(int x, int y);
 void Room_Link(Room *l, Room *r, int split);
+void Room_IntersectAll(Entity *ent);
+Room *Room_GetByID(int id);
 void Door_Touch(Entity *door, Entity *other);
 
 void Hall_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, SDL_Rect r);
