@@ -1,6 +1,6 @@
-# 2d-Game-Project
+# Dream A Way Out
 
-Playing the game.
+The repo doesn't have any SDL dlls
 
 Use WASD keys to move up,left, down, and right respectively.
 Use Left Mouse click to attack enemies.
