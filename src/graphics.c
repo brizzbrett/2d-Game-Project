@@ -33,7 +33,7 @@ static Uint32 amask;
 
 void Graphics_Close();
 
-void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,float bgcolor[4],int fullscreen)
+void Graphics_Init(char *windowName,int renderW,int renderH,int fullscreen)
 {
     Uint32 flags = 0;
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -53,11 +53,7 @@ void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,
             flags |= SDL_WINDOW_FULLSCREEN;
         }
     }
-    __graphics_main_window = SDL_CreateWindow(windowName,
-                             SDL_WINDOWPOS_UNDEFINED,
-                             SDL_WINDOWPOS_UNDEFINED,
-                             renderW, renderH,
-                             flags);
+    __graphics_main_window = SDL_CreateWindow(windowName,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,renderW, renderH,flags);
 
     if (!__graphics_main_window)
     {
@@ -80,11 +76,7 @@ void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(__graphics_renderer, renderW, renderH);
 
-    __graphics_texture = SDL_CreateTexture(
-        __graphics_renderer,
-        SDL_PIXELFORMAT_ARGB8888,
-        SDL_TEXTUREACCESS_STREAMING,
-        renderW, renderH);
+    __graphics_texture = SDL_CreateTexture(__graphics_renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STREAMING,renderW, renderH);
     if (!__graphics_texture)
     {
         slog("failed to create screen texture: %s",SDL_GetError());
@@ -92,24 +84,11 @@ void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,
         return;
     };
     
-    SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_ARGB8888,
-                                    &bitdepth,
-                                    &rmask,
-                                    &gmask,
-                                    &bmask,
-                                    &amask);
+    SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_ARGB8888,&bitdepth,&rmask,&gmask,&bmask,&amask);
 
     
-    __graphics_surface = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,
-                                        rmask,
-                                    gmask,
-                                    bmask,
-                                    amask);
-    buffer = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,
-                                                 rmask,
-                                                 gmask,
-                                                 bmask,
-                                                 amask);    
+    __graphics_surface = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,rmask,gmask,bmask,amask);
+    buffer = SDL_CreateRGBSurface(0, renderW, renderH, bitdepth,rmask,gmask,bmask,amask);    
     if (!__graphics_surface)
     {
         slog("failed to create screen surface: %s",SDL_GetError());
@@ -121,54 +100,6 @@ void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,
     slog("graphics initialized\n");
 }
 
-/********************************No Longer Use**********************************
-void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,int y)
-{
-    SDL_Rect dstRect;
-    SDL_Point point = {1,1};
-    int w,h;
-    if (!__graphics_texture)
-    {
-        slog("Graphics_RenderSurfaceToScreen: no texture available");
-        return;
-    }
-    if (!surface)
-    {
-        slog("Graphics_RenderSurfaceToScreen: no surface provided");
-        return;
-    }
-    SDL_QueryTexture(__graphics_texture,
-                     NULL,
-                     NULL,
-                     &w,
-                     &h);
-    /*check if resize is needed
-    if ((surface->w > w)||(surface->h > h))
-    {
-        SDL_DestroyTexture(__graphics_texture);
-        __graphics_texture = SDL_CreateTexture(__graphics_renderer,
-                                                   __graphics_surface->format->format,
-                                                   SDL_TEXTUREACCESS_STREAMING, 
-                                                   surface->w,
-                                                   surface->h);
-        if (!__graphics_texture)
-        {
-            slog("Graphics_RenderSurfaceToScreen: failed to allocate more space for the screen texture!");
-            return;
-        }
-    }
-    SDL_SetTextureBlendMode(__graphics_texture,SDL_BLENDMODE_BLEND);        
-    SDL_UpdateTexture(__graphics_texture,&srcRect,surface->pixels,surface->pitch);
-    dstRect.x = x;
-    dstRect.y = y;
-    dstRect.w = srcRect.w;
-    dstRect.h = srcRect.h;
-    SDL_RenderCopy(__graphics_renderer,
-                     __graphics_texture,
-                     &srcRect,
-                     &dstRect);
-}
-*/
 void Graphics_FrameDelay()
 {
     Uint32 diff;

@@ -89,4 +89,8 @@ void Weapon_Touch(Entity *shot, Entity *other)
 		vec2d_Add(other->pos,shot->vel,other->pos);
 		Entity_Free(&shot);
 	}
+	if(other->type == BOULDER)
+	{
+		Entity_Free(&shot);
+	}
 }

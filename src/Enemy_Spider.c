@@ -150,7 +150,7 @@ void Spider_Touch(Spider *spider, Entity *other)
 	Vec2d force;
 	if(other == spider->target)
 	{
-		vec2d_Set(force,15,15);
+		vec2d_Set(force,10,10);
 		spider->target->health -= .5;
 		vec2d_Multiply(spider->target->vel, force, spider->target->velocity9);
 		vec2d_Add(spider->target->pos,-spider->target->velocity9,spider->target->pos);

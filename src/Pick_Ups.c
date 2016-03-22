@@ -103,5 +103,4 @@ void Boulder_Touch(Pickup *boulder, Entity *other)
 	{
 		vec2d_Set(other->vel,0,0);
 	}
-
 }

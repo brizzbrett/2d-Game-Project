@@ -1,4 +1,5 @@
 #include "Level.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <random>
@@ -169,7 +170,7 @@ Room *Room_New(Node *n, Vec2d pos)
 	int randomEnemy = rand() % 3;
 	int randomPlayer = rand() % 5;
 	Vec2d boulderPos;
-	int randomBoulderX = 100;
+	int randomBoulderX = 200;
 	int randomBoulderY = 450;
 	int i;
 
@@ -514,91 +515,3 @@ void Node_InitSystem()
 	atexit(Node_CloseSystem);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////ROOM_LINKER (1st attempt)\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-/*SDL_Rect Room_Linker(Node *n, int split)
-{
-	SDL_Rect link = rect(0,0,0,0);
-	if(split == SPLIT_VERTICAL)
-	{
-		if(n->split == SPLIT_VERTICAL)
-		{	
-			n->east = Door_New(n->pos.x+250-10,n->pos.y+100/2-5);
-			n->west = Door_New(n->right->pos.x,n->right->pos.y+100/2-5);
-
-			n->west->target = n->west;
-			n->west->target = n->west;
-
-			//slog("Room %i: Pos: %f, %f", n->left->room->val, n->left->room->east->pos.x, n->left->room->east->pos.y);
-			//slog("Room %i: Pos: %f, %f", n->right->room->val, n->right->room->west->pos.x, n->right->room->west->pos.y);
-
-			//link = rect(n->left->pos.x+250,n->left->pos.y+100/2-5,n->right->pos.x - n->left->pos.x, 10);
-		}
-		else if(n->split == SPLIT_HORIZONTAL)
-		{
-			n->top->south = Door_New(n->top->pos.x+120, n->top->pos.y+100-10);
-			n->bottom->north = Door_New(n->bottom->pos.x+250/2-5, n->bottom->pos.y);
-
-			n->top->south->target = n->bottom->north;
-			n->bottom->north->target = n->top->south;
-
-			//slog("Room %i: Pos: %f, %f", n->top->room->val, n->top->room->south->pos.x, n->top->room->pos.y);
-			//slog("Room %i: Pos: %f, %f", n->bottom->room->val, n->bottom->room->north->pos.x, n->bottom->room->north->pos.y);
-	
-			//link = rect(n->top->pos.x+250/2-5, n->top->pos.y+100, 10, n->bottom->pos.y - (n->top->pos.y));
-		}
-	}
-	else
-	{
-		if(n->split == SPLIT_HORIZONTAL)
-		{
-			n->south = Door_New(n->pos.x+120, n->pos.y+100-10);
-			n->bottom->north = Door_New(n->bottom->pos.x+250/2-5, n->bottom->pos.y);
-
-			n->south->target = n->bottom->north;
-			n->bottom->north->target = n->south;
-
-			//slog("Room %i: Pos: %f, %f", n->top->room->val, n->top->room->south->pos.x, n->top->room->pos.y);
-			//slog("Room %i: Pos: %f, %f", n->bottom->room->val, n->bottom->room->north->pos.x, n->bottom->room->north->pos.y);
-
-			//link = rect(n->top->pos.x+250/2-5, n->top->pos.y+100, 10, n->bottom->pos.y - (n->top->pos.y));
-		}
-		else if(n->split == SPLIT_VERTICAL)
-		{	
-			n->left->east = Door_New(n->left->pos.x+250-10,n->left->pos.y+100/2-5);
-			n->right->west = Door_New(n->right->pos.x,n->right->pos.y+100/2-5);
-
-			n->right->west->target = n->left->east;
-			n->left->east->target = n->right->west;
-
-			//slog("Room %i: Pos: %f, %f", n->left->room->val, n->left->room->east->pos.x, n->left->room->east->pos.y);
-			//slog("Room %i: Pos: %f, %f", n->right->room->val, n->right->room->west->pos.x, n->right->room->west->pos.y);
-
-			//link = rect(n->left->pos.x+250,n->left->pos.y+100/2-5,n->right->pos.x - n->left->pos.x, 10);
-		}
-		else
-		{
-			link = rect(0,0,0,0);
-		}
-		return link;
-	}
-	return rect(0,0,0,0);
-}*/

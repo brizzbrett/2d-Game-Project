@@ -40,9 +40,7 @@ Glop *Glop_Load(int x, int y)
 }
 
 void Glop_Think(Glop *glop)
-{
-	vec2d_Set(glop->vel, 0.02, 0.02);
-		
+{		
 	vec2d_Subtract(glop->target->pos,glop->pos,glop->direction);
 	vec2d_Normalize(&glop->direction);
 	vec2d_Multiply(glop->vel,glop->direction,glop->velocity9);
@@ -91,7 +89,7 @@ void Glop_Update(Glop *glop)
 	Vec2d finalPos;
 
 	if(!glop)return;
-
+	vec2d_Set(glop->vel, 0.02, 0.02);
 	glop->target = Entity_GetByType(PLAYER);
 
 	if(rect_intersect(rect(glop->pos.x, glop->pos.y,100,100), glop->target->attack))
@@ -132,5 +130,9 @@ void Glop_Touch(Glop *glop, Entity *other)
 		glop->target->health -= .5;
 		vec2d_Multiply(glop->velocity9, glop->force, glop->velocity9);
 		vec2d_Add(glop->target->pos,glop->velocity9,glop->target->pos);
+	}
+	if(other->type == BOULDER)
+	{
+		
 	}
 }

@@ -24,16 +24,7 @@
  * @param	bgcolor			  	The background color.
  * @param	fullscreen		  	The fullscreen.
  */
-void Graphics_Init(char *windowName,int viewW,int viewH,int renderW,int renderH,float bgcolor[4],int fullscreen);
-
-/**
- * @brief	Graphics render surface to screen.
- * @param [in,out]	surface	If non-null, the surface.
- * @param	srcRect		   	Source rectangle.
- * @param	x			   	The x coordinate.
- * @param	y			   	The y coordinate.
- */
-void Graphics_RenderSurfaceToScreen(SDL_Surface *surface,SDL_Rect srcRect,int x,int y);
+void Graphics_Init(char *windowName,int renderW,int renderH,int fullscreen);
 
 /**
  * @brief gets a pointer to the current active renderer;

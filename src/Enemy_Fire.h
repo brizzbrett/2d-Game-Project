@@ -2,8 +2,6 @@
 #define __ENEMY_FIRE_H__
 
 #include "Entity.h"
-#include "Vector.h"
-#include "simple_logger.h"
 
 typedef Entity Shot;
 

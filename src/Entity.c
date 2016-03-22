@@ -1,9 +1,13 @@
 #include "Entity.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "Camera.h"
 #include "Level.h"
+
+
 
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
@@ -38,10 +42,6 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		entList[i].pos = p;
 		entList[i].sprite = sprite_Load(file,fw,fh);
 		entList[i].frame = 0;
-		entList[i].health = 0;
-		entList[i].maxHealth = 0;
-		entList[i].nextThink = 0;
-		entList[i].thinkRate = 0;
 
 		return &entList[i];
 	}
@@ -61,7 +61,6 @@ void Entity_Free(Entity **ent)
 	if(!ent)return;
 	if(!*ent)return;
 
-	//self = *ent;
 	(*ent)->inuse = 0;
 
 	sprite_Free(&(*ent)->sprite);
@@ -223,6 +222,7 @@ int Entity_Intersect(Entity *a, Entity *b)
 		return 1;
 	return 0;
 }
+
 Entity *Entity_GetByID(int id)
 {
 	Uint32 i;

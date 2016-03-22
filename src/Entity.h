@@ -5,7 +5,7 @@
 #include "Graphics.h"
 #include <SDL.h>
 #include "SDL_image.h"
-#include "sprite.h"
+#include "Sprite.h"
 #include "simple_logger.h"
 
 /**
