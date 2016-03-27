@@ -5,14 +5,13 @@ Vec2d velocity;
 Vec2d pPos;
 int offsetX = 0;
 int offsetY = 0;
-void Weapon_Fire(Entity *entity, Vec2d v)
+void Weapon_Fire(Entity *owner, Vec2d v)
 {	
-
-	Shot *shot;	
+	Entity *shot;	
 
 	Vec2d pos, vel;
-	vec2d_Set(pos, entity->pos.x + offsetX, entity->pos.y + offsetY);
-	if(!entity)
+	vec2d_Set(pos, owner->pos.x + offsetX, owner->pos.y + offsetY);
+	if(!owner)
 	{
 		return;
 	}
@@ -25,14 +24,14 @@ void Weapon_Fire(Entity *entity, Vec2d v)
 
 	shot->bounds = rect(25,25,25,25);
 
-	shot->nextThink = 0;
 	shot->thinkRate = 1500;
+	shot->nextThink = SDL_GetTicks() + shot->thinkRate;
 
 	vec2d_Set(vel, v.x, v.y);
 	shot->vel = vel;
 
 	shot->target = Entity_GetByType(PLAYER);
-	shot->owner = entity; //the entity firing owns this projectile
+	shot->owner = owner; //the entity firing owns this projectile
 
 	pPos = shot->target->pos;	
 	vec2d_Subtract(pPos,shot->pos,shot->direction);
@@ -40,14 +39,14 @@ void Weapon_Fire(Entity *entity, Vec2d v)
 	vec2d_Multiply(shot->vel,shot->direction,shot->vel);
 }
 
-void Weapon_Think(Shot *shot)
+void Weapon_Think(Entity *shot)
 {
 	if(!shot)
 	{
 		return;
 	}
 	shot->nextThink = SDL_GetTicks() + shot->thinkRate;
-	if(!Camera_Intersect(Camera_GetActiveCamera(),shot))
+	if(!Camera_Intersect(shot))
 	{
 		Entity_Free(&shot);
 	}
@@ -57,23 +56,20 @@ void Weapon_Think(Shot *shot)
 	}
 	
 }
-void Weapon_Update(Shot *shot)
+void Weapon_Update(Entity *shot)
 {
 	if(!shot)
 	{
 		return;
 	}	
-	if(!shot->owner)
+	if(!shot->owner->inuse)
 	{
 		Entity_Free(&shot);
-	}
-
+		return;
+	}	
 	shot->target = Entity_GetByType(PLAYER);
 	vec2d_Add(shot->pos, shot->vel, shot->pos);
-	if(SDL_GetTicks() >= shot->owner->nextThink)
-	{
-		Entity_Free(&shot);
-	}
+
 
 	Entity_IntersectAll(shot);
 }

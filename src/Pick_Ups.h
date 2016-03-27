@@ -3,18 +3,16 @@
 
 #include "Entity.h"
 
-typedef Entity Pickup;
+void Pickup_Spawn(Entity *pickup);
 
-void Pickup_Spawn(Pickup *pickup);
+void Pickup_Update(Entity *pickup);
+void Pickup_Think(Entity *pickup);
 
-void Pickup_Update(Pickup *pickup);
-void Pickup_Think(Pickup *pickup);
+Entity *Pickup_Heart_New(Vec2d pos);
+Entity *Pickup_TempHeart_New(Vec2d pos);
+Entity *Boulder_New(Vec2d pos);
 
-Pickup *Pickup_Heart_New(Vec2d pos);
-Pickup *Pickup_TempHeart_New(Vec2d pos);
-Pickup *Boulder_New(Vec2d pos);
-
-void Pickup_Heart_Touch(Pickup *heart, Entity *other);
+void Pickup_Heart_Touch(Entity *heart, Entity *other);
 void Pickup_TempHeart_Touch(Entity *tempHeart, Entity *other);
-void Boulder_Touch(Pickup *boulder, Entity *other);
+void Boulder_Touch(Entity *boulder, Entity *other);
 #endif

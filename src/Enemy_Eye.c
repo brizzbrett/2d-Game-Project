@@ -6,13 +6,13 @@
 #include "Camera.h"
 
 /**
- * @brief	Eye load.
+ * @brief	Entity load.
  *
- * @return	null if it fails, else a Eye*.
+ * @return	null if it fails, else a Entity*.
  */
-Eye *Eye_Load(int x, int y)
+Entity *Eye_Load(int x, int y)
 {
-	Eye *eye;
+	Entity *eye;
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
@@ -42,11 +42,11 @@ Eye *Eye_Load(int x, int y)
 }
 
 /**
- * @brief	Eye think.
+ * @brief	Entity think.
  *
  * @param [in,out]	eye	If non-null, the eye.
  */
-void Eye_Think(Eye *eye)
+void Eye_Think(Entity *eye)
 {	
 	Vec2d vel;
 	vec2d_Set(vel,5,5);
@@ -62,11 +62,11 @@ void Eye_Think(Eye *eye)
 }
 
 /**
- * @brief	Eye update.
+ * @brief	Entity update.
  *
  * @param [in,out]	eye	If non-null, the eye.
  */
-void Eye_Update(Eye *eye)
+void Eye_Update(Entity *eye)
 {
 	int itemPick;
 	Vec2d finalPos;
@@ -115,25 +115,27 @@ void Eye_Update(Eye *eye)
 		else
 			Pickup_Spawn(NULL);
 	}
-	if(Camera_Intersect(Camera_GetActiveCamera(), eye))
+	if(Camera_Intersect(eye))
 	{
 		eye->think = &Eye_Think;
+		eye->flag = 1;
 	}
 	else
 	{
 		if(!eye)return;
 		eye->think = NULL;
+		eye->flag = 0;
 	}
 	Entity_IntersectAll(eye);
 }
 
 /**
- * @brief	Eye touch.
+ * @brief	Entity touch.
  *
  * @param [in,out]	eye	If non-null, the eye.
  */
 
-void Eye_Touch(Eye *eye, Entity *other)
+void Eye_Touch(Entity *eye, Entity *other)
 {
 	Vec2d force;
 	if(other == eye->target)

@@ -8,7 +8,7 @@ Vec2d Camera_GetPosition();
 Vec2d Camera_GetSize();
 void Camera_SetSize(Vec2d size);
 void Camera_SetPosition(Vec2d pos);
-int Camera_Intersect(SDL_Rect camera, Entity *ent);
+int Camera_Intersect(Entity *ent);
 void Camera_IntersectAll(Entity *ent);
 
 #endif

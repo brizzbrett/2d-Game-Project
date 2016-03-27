@@ -4,20 +4,22 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <random>
+#include <time.h>
 
 /**
- * @brief	Spider load.
+ * @brief	Entity load.
  *
- * @return	null if it fails, else a Spider*.
+ * @return	null if it fails, else a Entity*.
  */
-Spider *Spider_Load(int x, int y)
+Entity *Spider_Load(int x, int y)
 {
-	Spider *spider;
+	Entity *spider;
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
 	spider = Entity_New("images/Spidersheet.png",128,128, gPos);
-
+	
 	if(spider)
 	{
 		spider->think = NULL;
@@ -31,8 +33,10 @@ Spider *Spider_Load(int x, int y)
 		spider->health = 4;
 		spider->maxHealth = 4;
 		vec2d_Set(spider->vel,3,3);
-		spider->thinkRate = 2500;
+		spider->thinkRate = 1500;
+		spider->fireRate = 5500;
 		spider->nextThink = 0;
+		spider->nextFire = 0;
 
 		spider->owner = NULL;
 		spider->target = Entity_GetByType(PLAYER);
@@ -42,16 +46,16 @@ Spider *Spider_Load(int x, int y)
 }
 
 /**
- * @brief	Spider think.
+ * @brief	Entity think.
  *
  * @param [in,out]	spider	If non-null, the spider.
  */
-void Spider_Think(Spider *spider)
+void Spider_Think(Entity *spider)
 {	
 	Vec2d vel;
-	vec2d_Set(vel,0,0);
-	int randX = rand() % 3 -1;
-	int randY = rand() % 3 -1;
+	vec2d_Set(vel,1,1);
+	int randX;
+	int randY;
 
 	vec2d_Set(spider->vel, 0.06, 0.06);
 	vec2d_Multiply(spider->vel,spider->direction,spider->vel);
@@ -59,22 +63,33 @@ void Spider_Think(Spider *spider)
 
 	if(SDL_GetTicks() >= spider->nextThink)
 	{
-		Weapon_Fire(spider, vel);
-		vec2d_Set(spider->direction, (randX), (randY));
+		srand(time(NULL));
+		randX = rand() % 2;
+		randY = rand() % 2;
+		if(randX == 0)
+			spider->direction.x = -1;
+		else
+			spider->direction.x = 1;
+		if(randY == 0)
+			spider->direction.y = -1;
+		else
+			spider->direction.y = 1;
 
-		vec2d_Normalize(&spider->direction);
 		spider->nextThink = SDL_GetTicks() + spider->thinkRate;	
-	}		
-
-
+	}
+	if(SDL_GetTicks() >= spider->nextFire)
+	{
+		Weapon_Fire(spider, vel);
+		spider->nextFire = SDL_GetTicks() + spider->fireRate;
+	}
 }
 
 /**
- * @brief	Spider update.
+ * @brief	Entity update.
  *
  * @param [in,out]	spider	If non-null, the spider.
  */
-void Spider_Update(Spider *spider)
+void Spider_Update(Entity *spider)
 {
 	int itemPick;
 	Vec2d finalPos;
@@ -107,14 +122,14 @@ void Spider_Update(Spider *spider)
 			spider->frame = 1;
 		}
 	}
-	if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 200)
+	/*if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 200)
 	{
 		spider->direction.x = -spider->direction.x;
 	}
 	if(spider->pos.y <= Camera_GetPosition().y + 100 || spider->pos.y >= Camera_GetSize().y - 200)
 	{
 		spider->direction.y = -spider->direction.y;
-	}	
+	}*/
 	if(rect_intersect(rect(spider->pos.x+25, spider->pos.y+25,75,75), spider->target->attack))
 	{
 		itemPick = rand() % 30;
@@ -127,32 +142,34 @@ void Spider_Update(Spider *spider)
 		else
 			Pickup_Spawn(NULL);
 	}
-	if(Camera_Intersect(Camera_GetActiveCamera(), spider))
+	if(Camera_Intersect(spider))
 	{
 		spider->think = &Spider_Think;
+		spider->flag = 1;
 	}
 	else
 	{
 		if(!spider)return;
 		spider->think = NULL;
+		spider->flag = 0;
 	}
 	Entity_IntersectAll(spider);
 }
 
 /**
- * @brief	Spider touch.
+ * @brief	Entity touch.
  *
  * @param [in,out]	spider	If non-null, the spider.
  */
 
-void Spider_Touch(Spider *spider, Entity *other)
+void Spider_Touch(Entity *spider, Entity *other)
 {
 	Vec2d force;
 	if(other == spider->target)
 	{
-		vec2d_Set(force,10,10);
+		vec2d_Set(force,150,150);
 		spider->target->health -= .5;
-		vec2d_Multiply(spider->target->vel, force, spider->target->velocity9);
-		vec2d_Add(spider->target->pos,-spider->target->velocity9,spider->target->pos);
+		vec2d_Multiply(spider->vel, force, spider->target->velocity9);
+		vec2d_Add(spider->target->pos,spider->target->velocity9,spider->target->pos);
 	}
 }

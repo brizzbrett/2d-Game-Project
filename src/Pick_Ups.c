@@ -1,7 +1,7 @@
 #include "Pick_Ups.h"
 #include "Camera.h"
 
-void Pickup_Spawn(Pickup *pickup)
+void Pickup_Spawn(Entity *pickup)
 {
 	if(!pickup) return;
 
@@ -18,9 +18,9 @@ void Pickup_Spawn(Pickup *pickup)
 	pickup->thinkRate = 0;
 }
 
-Pickup *Pickup_Heart_New(Vec2d pos)
+Entity *Pickup_Heart_New(Vec2d pos)
 {
-	Pickup *heart;
+	Entity *heart;
 	heart = Entity_New("images/heart.png", 100, 100, pos);
 	heart->touch = &Pickup_Heart_Touch;
 
@@ -29,9 +29,9 @@ Pickup *Pickup_Heart_New(Vec2d pos)
 	return heart;
 }
 
-Pickup *Pickup_TempHeart_New(Vec2d pos)
+Entity *Pickup_TempHeart_New(Vec2d pos)
 {
-	Pickup *tempHeart;
+	Entity *tempHeart;
 	tempHeart = Entity_New("images/tempheart.png", 100, 100, pos);
 	tempHeart->touch = &Pickup_TempHeart_Touch;
 
@@ -39,9 +39,9 @@ Pickup *Pickup_TempHeart_New(Vec2d pos)
 	tempHeart->bounds = rect(36,39,63-36,64-39);
 	return tempHeart;
 }
-Pickup *Boulder_New(Vec2d pos)
+Entity *Boulder_New(Vec2d pos)
 {
-	Pickup *boulder;
+	Entity *boulder;
 	boulder = Entity_New("images/boulder.png", 100, 100, pos);
 	boulder->touch = &Boulder_Touch;
 	boulder->type = BOULDER;
@@ -49,11 +49,11 @@ Pickup *Boulder_New(Vec2d pos)
 	boulder->bounds = rect(5,5,100-30,100-10);
 	return boulder;
 }
-void Pickup_Update(Pickup *pickup)
+void Pickup_Update(Entity *pickup)
 {
 	pickup->target = Entity_GetByType(PLAYER);
 	Entity_IntersectAll(pickup);
-	if(Camera_Intersect(Camera_GetActiveCamera(), pickup) && pickup->type != BOULDER)
+	if(Camera_Intersect(pickup) && pickup->type != BOULDER)
 	{
 		pickup->think = &Pickup_Think;
 	}
@@ -63,7 +63,7 @@ void Pickup_Update(Pickup *pickup)
 	}
 }
 
-void Pickup_Think(Pickup *pickup)
+void Pickup_Think(Entity *pickup)
 {
 	if(!pickup)return;
 
@@ -72,7 +72,7 @@ void Pickup_Think(Pickup *pickup)
 		Entity_Free(&pickup);
 	}
 }
-void Pickup_Heart_Touch(Pickup *heart, Entity *other)
+void Pickup_Heart_Touch(Entity *heart, Entity *other)
 {
 	if(other == heart->target)
 	{
@@ -84,7 +84,7 @@ void Pickup_Heart_Touch(Pickup *heart, Entity *other)
 	}
 }
 
-void Pickup_TempHeart_Touch(Pickup *tempHeart, Entity *other)
+void Pickup_TempHeart_Touch(Entity *tempHeart, Entity *other)
 {
 	if(other == tempHeart->target)
 	{
@@ -92,11 +92,12 @@ void Pickup_TempHeart_Touch(Pickup *tempHeart, Entity *other)
 		Entity_Free(&tempHeart);
 	}
 }
-void Boulder_Touch(Pickup *boulder, Entity *other)
+void Boulder_Touch(Entity *boulder, Entity *other)
 {
+
 	if(other == boulder->target)
 	{
-		boulder->vel = other->vel;
+		vec2d_Add(other->vel,other->vel,boulder->vel);
 		vec2d_Add(boulder->vel, boulder->pos, boulder->pos);
 	}
 	else

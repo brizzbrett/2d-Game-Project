@@ -4,39 +4,37 @@
 #include "Entity.h"
 #include "Enemy_Fire.h"
 
-typedef Entity Spider;
-
 /**
  * @brief	Loads the spider at specified position.
  *
  * @param x	The x coordinate.
  * @param y	The y coordinate.
  *
- * @return	null if it fails, else a Spider*.
+ * @return	null if it fails, else a Entity*.
  */
 
-Spider *Spider_Load(int x, int y);
-
-/**
- * @brief	Spider think.
- *
- * @param	*Spider		If non-null, the Spider.
- *
- */
-void Spider_Think(Spider *Spider);
+Entity *Spider_Load(int x, int y);
 
 /**
- * @brief	Spider update.
+ * @brief	Entity think.
  *
- * @param [in,out]	Spider	If non-null, the Spider.
+ * @param	*Entity		If non-null, the Entity.
+ *
  */
-void Spider_Update(Spider *Spider);
+void Spider_Think(Entity *spider);
 
 /**
- * @brief	Spider touch.
+ * @brief	Entity update.
  *
- * @param [in,out]	Spider	If non-null, the Spider.
+ * @param [in,out]	Entity	If non-null, the Entity.
  */
-void Spider_Touch(Spider *Spider, Entity *other);
+void Spider_Update(Entity *spider);
+
+/**
+ * @brief	Entity touch.
+ *
+ * @param [in,out]	Entity	If non-null, the Entity.
+ */
+void Spider_Touch(Entity *spider, Entity *other);
 
 #endif

@@ -113,6 +113,7 @@ void Entity_InitSystem(Uint32 ent_Max)
 void Entity_DrawAll()
 {
 	Uint32 i;
+
 	for(i = 0; i < entMax; i++)
 	{
 		if(!entList[i].inuse)
@@ -123,10 +124,8 @@ void Entity_DrawAll()
 		{
 			continue;
 		}
-		if(Camera_Intersect(Camera_GetActiveCamera(), &entList[i]))
-		{
-			entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
-		}
+
+		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
 	}
 }
 
@@ -157,18 +156,32 @@ void Entity_ThinkAll()
 void Entity_UpdateAll()
 {
 	Uint32 i;
+	Uint32 flag = 0;
 	for(i= 0; i < entMax; i++)
 	{
 		if(!entList[i].inuse)
 		{
 			continue;
 		}
-		
 		if(!entList[i].update)
 		{
 			continue;
 		}
-		entList[i].update(&entList[i]);
+		entList[i].update(&entList[i]);		
+		if(entList[i].type == ENEMY)
+		{
+			if(entList[i].flag == 1)
+			{
+				Entity_GetByType(SDOOR)->touch == NULL;
+				Entity_GetByType(EDOOR)->touch == NULL;
+				Entity_GetByType(NDOOR)->touch == NULL;
+				Entity_GetByType(WDOOR)->touch == NULL;
+			}
+		}
+		if(!Camera_Intersect(&entList[i]))
+		{
+			vec2d_Negate(entList[i].direction,entList[i].direction);	
+		}
 		Entity_DrawAll();
 		Entity_ThinkAll();
 	}

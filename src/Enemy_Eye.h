@@ -4,34 +4,32 @@
 #include "Entity.h"
 #include "Enemy_Fire.h"
 
-typedef Entity Eye;
+/**
+ * @brief	Entity load.
+ *
+ * @return	null if it fails, else a Entity*.
+ */
+Entity *Eye_Load(int x, int y);
 
 /**
- * @brief	Eye load.
+ * @brief	Entity think.
  *
- * @return	null if it fails, else a Eye*.
+ * @param [in,out]	Entity	If non-null, the Entity.
  */
-Eye *Eye_Load(int x, int y);
+void Eye_Think(Entity *eye);
 
 /**
- * @brief	Eye think.
+ * @brief	Entity update.
  *
- * @param [in,out]	Eye	If non-null, the Eye.
+ * @param [in,out]	Entity	If non-null, the Entity.
  */
-void Eye_Think(Eye *Eye);
+void Eye_Update(Entity *eye);
 
 /**
- * @brief	Eye update.
+ * @brief	Entity touch.
  *
- * @param [in,out]	Eye	If non-null, the Eye.
+ * @param [in,out]	Entity	If non-null, the Entity.
  */
-void Eye_Update(Eye *Eye);
-
-/**
- * @brief	Eye touch.
- *
- * @param [in,out]	Eye	If non-null, the Eye.
- */
-void Eye_Touch(Eye *Eye, Entity *other);
+void Eye_Touch(Entity *eye, Entity *other);
 
 #endif

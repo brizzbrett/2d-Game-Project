@@ -3,12 +3,10 @@
 
 #include "Entity.h"
 
-typedef Entity Player;
-
-Player *Player_Load(int x, int y);
-Player *Player_Get();
-void Player_Think(Player *player);
-void Player_Update(Player * player);
-void Player_Touch(Player *player, Entity *other);
+Entity *Player_Load(int x, int y);
+Entity *Player_Get();
+void Player_Think(Entity *player);
+void Player_Update(Entity *player);
+void Player_Touch(Entity *player, Entity *other);
 
 #endif

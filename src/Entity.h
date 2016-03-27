@@ -54,6 +54,10 @@ typedef struct Entity_S
 
 	int nextThink;
 	int thinkRate;
+	int nextFire;
+	int fireRate;
+
+	int flag;
 
 	struct Entity_S *owner;
 	struct Entity_S *target;
@@ -71,7 +75,6 @@ typedef struct Entity_S
  * @return	Null if it fails, or no more space for entity, else an Entity*.
  */
 Entity *Entity_New(char file[], int fw, int fh, Vec2d p);
-
 /**
  * @brief	Frees the memory allocated by the entity.
  * @param	*ent	If not null, a pointer to an entity pointer.

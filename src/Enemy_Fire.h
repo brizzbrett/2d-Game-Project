@@ -3,12 +3,10 @@
 
 #include "Entity.h"
 
-typedef Entity Shot;
-
 void Weapon_Fire(Entity *owner, Vec2d vel);
-void Weapon_Think(Shot *shot);
-void Weapon_Free(Shot *shot);
-void Weapon_Update(Shot *shot);
-void Weapon_Touch(Shot *shot, Entity *other);
+void Weapon_Think(Entity *shot);
+void Weapon_Free(Entity *shot);
+void Weapon_Update(Entity *shot);
+void Weapon_Touch(Entity *shot, Entity *other);
 
 #endif

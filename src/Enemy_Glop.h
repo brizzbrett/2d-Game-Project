@@ -3,34 +3,34 @@
 
 #include "Entity.h"
 
-typedef Entity Glop;
+typedef Entity Entity;
 
 /**
- * @brief	Glop load.
+ * @brief	Entity load.
  *
- * @return	null if it fails, else a Glop*.
+ * @return	null if it fails, else a Entity*.
  */
-Glop *Glop_Load(int x, int y);
+Entity *Glop_Load(int x, int y);
 
 /**
- * @brief	Glop think.
- *
- * @param [in,out]	glop	If non-null, the glop.
- */
-void Glop_Think(Glop *glop);
-
-/**
- * @brief	Glop update.
+ * @brief	Entity think.
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-void Glop_Update(Glop *glop);
+void Glop_Think(Entity *glop);
 
 /**
- * @brief	Glop touch.
+ * @brief	Entity update.
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-void Glop_Touch(Glop *glop, Entity *other);
+void Glop_Update(Entity *glop);
+
+/**
+ * @brief	Entity touch.
+ *
+ * @param [in,out]	glop	If non-null, the glop.
+ */
+void Glop_Touch(Entity *glop, Entity *other);
 
 #endif

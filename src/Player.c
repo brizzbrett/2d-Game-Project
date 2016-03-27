@@ -1,8 +1,8 @@
 #include "Player.h"
 #include <math.h>
 
-Player *player;
-Player *Player_Load(int x, int y)
+Entity *player;
+Entity *Player_Load(int x, int y)
 {
 
 	Vec2d pos;
@@ -35,7 +35,7 @@ Player *Player_Load(int x, int y)
 	return NULL;
 }
 void Player_Attack();
-void Player_Think(Player *player)
+void Player_Think(Entity *player)
 {
 	
 	SDL_Event e;
@@ -54,7 +54,7 @@ void Player_Think(Player *player)
 		player->nextThink = SDL_GetTicks() + player->thinkRate;
 	}
 }
-void Player_Update(Player *player)
+void Player_Update(Entity *player)
 {
 	const Uint8 *keys;
 
@@ -97,7 +97,7 @@ void Player_Update(Player *player)
 	slog("%f", player->health);
 	Entity_IntersectAll(player);
 }
-void Player_Touch(Player *player, Entity *other)
+void Player_Touch(Entity *player, Entity *other)
 {
 	Uint32 timer;
 	timer = SDL_GetTicks()+100;

@@ -6,13 +6,13 @@
 #include "Camera.h"
 
 /**
- * @brief	Glop load.
+ * @brief	Entity load.
  *
- * @return	null if it fails, else a Glop*.
+ * @return	null if it fails, else a Entity*.
  */
-Glop *Glop_Load(int x, int y)
+Entity *Glop_Load(int x, int y)
 {
-	Glop *glop;
+	Entity *glop;
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
@@ -39,7 +39,7 @@ Glop *Glop_Load(int x, int y)
 	return NULL;
 }
 
-void Glop_Think(Glop *glop)
+void Glop_Think(Entity *glop)
 {		
 	vec2d_Subtract(glop->target->pos,glop->pos,glop->direction);
 	vec2d_Normalize(&glop->direction);
@@ -79,11 +79,11 @@ void Glop_Think(Glop *glop)
 }
 
 /**
- * @brief	Glop update.
+ * @brief	Entity update.
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
-void Glop_Update(Glop *glop)
+void Glop_Update(Entity *glop)
 {
 	int itemPick;
 	Vec2d finalPos;
@@ -104,25 +104,27 @@ void Glop_Update(Glop *glop)
 		else
 			Pickup_Spawn(NULL);	
 	}
-	if(Camera_Intersect(Camera_GetActiveCamera(), glop))
+	if(Camera_Intersect(glop))
 	{
 		glop->think = &Glop_Think;
+		glop->flag = 1;
 	}
 	else
 	{
 		if(!glop) return;
 		glop->think = NULL;
+		glop->flag = 0;
 	}
 	Entity_IntersectAll(glop);
 }
 
 /**
- * @brief	Glop touch.
+ * @brief	Entity touch.
  *
  * @param [in,out]	glop	If non-null, the glop.
  */
 
-void Glop_Touch(Glop *glop, Entity *other)
+void Glop_Touch(Entity *glop, Entity *other)
 {
 	if(other == glop->target)
 	{
