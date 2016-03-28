@@ -66,6 +66,9 @@
     <ClCompile Include="..\src\Level_Loader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\HUD.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\graphics.h">
