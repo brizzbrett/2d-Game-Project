@@ -24,12 +24,6 @@ Entity *Glop_Load(int x, int y)
 		glop->touch = &Glop_Touch;
 		glop->update = &Glop_Update;
 
-		glop->type = GLOP;
-		glop->bounds = rect(40, 40, 60,113);
-		glop->strength = 3;
-		glop->speed = 2;
-		glop->health = 4;
-		glop->maxHealth = 4;
 		vec2d_Set(glop->vel,1,1);
 
 		glop->owner = NULL;

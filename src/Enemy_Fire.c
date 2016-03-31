@@ -22,9 +22,6 @@ void Weapon_Fire(Entity *owner, Vec2d v)
 	shot->update = &Weapon_Update;
 	shot->touch = &Weapon_Touch;
 
-	shot->bounds = rect(25,25,25,25);
-
-	shot->thinkRate = 1500;
 	shot->nextThink = SDL_GetTicks() + shot->thinkRate;
 
 	vec2d_Set(vel, v.x, v.y);

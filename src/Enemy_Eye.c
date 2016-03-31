@@ -24,12 +24,6 @@ Entity *Eye_Load(int x, int y)
 		eye->touch = &Eye_Touch;
 		eye->update = &Eye_Update;
 
-		eye->type = EYE;
-		eye->bounds = rect(25, 25, 50,50);
-		eye->strength = 3;
-		eye->speed = 2;
-		eye->health = 4;
-		eye->maxHealth = 4;
 		vec2d_Set(eye->vel,1,1);
 		eye->thinkRate = 2500;
 		eye->nextThink = 0;

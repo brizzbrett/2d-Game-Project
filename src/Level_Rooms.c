@@ -109,9 +109,7 @@ Entity *Door_New(int x, int y, EntityType type)
 		door->touch = &Door_Touch;
 		door->think = &Door_Think;
 		door->type = type;
-		//door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
 
-		door->flag = 0;
 		door->owner = NULL;
 		door->target = NULL;
 		

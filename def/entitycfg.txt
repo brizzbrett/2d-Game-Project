@@ -20,7 +20,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 0
 		}
 	},
 	
@@ -35,10 +37,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 40,
+			"y": 40,
+			"w": 60,
+			"h": 113
 		},
 		"info": 
 		{
@@ -47,7 +49,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 0
 		}
 	},
 	
@@ -62,10 +66,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 25,
+			"y": 25,
+			"w": 50,
+			"h": 50
 		},
 		"info": 
 		{
@@ -74,7 +78,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 2500,
+			"next fire": 0,
+			"fire rate": 0
 		}
 	},
 	
@@ -89,10 +95,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 25,
+			"y": 25,
+			"w": 78,
+			"h": 78
 		},
 		"info": 
 		{
@@ -101,7 +107,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 1500,			
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	
@@ -110,16 +118,16 @@
 		"imagefiles": 
 		{
 			"file": "images/shot.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 100,
+			"fh": 100,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 25,
+			"y": 25,
+			"w": 25,
+			"h": 25
 		},
 		"info": 
 		{
@@ -128,7 +136,9 @@
 			"strength": 1,
 			"speed": 0,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 1500,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	
@@ -155,7 +165,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"pickup heart": 
@@ -163,16 +175,16 @@
 		"imagefiles": 
 		{
 			"file": "images/heart.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 100,
+			"fh": 100,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 36,
+			"y": 39,
+			"w": 27,
+			"h": 25
 		},
 		"info": 
 		{
@@ -181,7 +193,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 0,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"pickup tempheart": 
@@ -189,16 +203,16 @@
 		"imagefiles": 
 		{
 			"file": "images/tempheart.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 100,
+			"fh": 100,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 36,
+			"y": 39,
+			"w": 27,
+			"h": 25
 		},
 		"info": 
 		{
@@ -207,7 +221,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"boulder": 
@@ -215,16 +231,16 @@
 		"imagefiles": 
 		{
 			"file": "images/boulder.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 100,
+			"fh": 100,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
+			"x": 5,
 			"y": 5,
-			"w": 52,
-			"h": 118
+			"w": 70,
+			"h": 90
 		},
 		"info": 
 		{
@@ -233,7 +249,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"south door": 
@@ -247,10 +265,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 0,
+			"y": 0,
+			"w": 10,
+			"h": 10
 		},
 		"info": 
 		{
@@ -259,7 +277,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"north door": 
@@ -273,10 +293,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 0,
+			"y": 0,
+			"w": 10,
+			"h": 10
 		},
 		"info": 
 		{
@@ -285,7 +305,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"east door": 
@@ -299,10 +321,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 0,
+			"y": 0,
+			"w": 10,
+			"h": 10
 		},
 		"info": 
 		{
@@ -311,7 +333,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	},
 	"west door": 
@@ -325,10 +349,10 @@
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 0,
+			"y": 0,
+			"w": 10,
+			"h": 10
 		},
 		"info": 
 		{
@@ -337,7 +361,9 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
 		}
 	}
 }

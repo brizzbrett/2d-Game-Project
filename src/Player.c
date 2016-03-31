@@ -15,18 +15,7 @@ Entity *Player_Load(int x, int y)
 		player->touch = &Player_Touch;
 		player->update = &Player_Update;
 
-		player->id = 0;
-		player->pos = pos;
-		player->type = PLAYER;
-		//player->bounds = rect(38, 5,player->sprite->frameSize.x-76,player->sprite->frameSize.y-10);
 		player->attack = rect(0,0,0,0);
-		player->strength = 3;
-		player->speed = 5;
-		player->health = 4;
-		player->maxHealth = 4;
-
-		player->thinkRate = 100;
-		player->nextThink = 0;
 
 		player->owner = NULL;
 		player->target = NULL;

@@ -5,7 +5,6 @@ void Pickup_Spawn(Entity *pickup)
 {
 	if(!pickup) return;
 
-	pickup->draw = &sprite_Draw;
 	pickup->update = &Pickup_Update;
 	pickup->think = NULL;
 	pickup->target = Entity_GetByType(PLAYER);
@@ -21,8 +20,6 @@ Entity *Pickup_Heart_New(Vec2d pos)
 	if(!heart)return NULL;
 	heart->touch = &Pickup_Heart_Touch;
 
-	heart->pos = pos;
-	heart->bounds = rect(36,39,63-36,64-39);
 	return heart;
 }
 
@@ -33,8 +30,6 @@ Entity *Pickup_TempHeart_New(Vec2d pos)
 	if(!tempHeart)return NULL;
 	tempHeart->touch = &Pickup_TempHeart_Touch;
 
-	tempHeart->pos = pos;
-	tempHeart->bounds = rect(36,39,63-36,64-39);
 	return tempHeart;
 }
 Entity *Boulder_New(Vec2d pos)
@@ -43,9 +38,7 @@ Entity *Boulder_New(Vec2d pos)
 	boulder = Entity_New(BOULDER, pos);
 	if(!boulder)return NULL;
 	boulder->touch = &Boulder_Touch;
-	boulder->type = BOULDER;
-	boulder->pos = pos;
-	boulder->bounds = rect(5,5,100-30,100-10);
+
 	return boulder;
 }
 void Pickup_Update(Entity *pickup)
@@ -96,6 +89,8 @@ void Boulder_Touch(Entity *boulder, Entity *other)
 
 	if(other == boulder->target)
 	{
+		other->vel.x = other->vel.x * .5;
+		other->vel.y = other->vel.y * .5;
 		vec2d_Add(other->vel,other->vel,boulder->vel);
 		vec2d_Add(boulder->vel, boulder->pos, boulder->pos);
 	}

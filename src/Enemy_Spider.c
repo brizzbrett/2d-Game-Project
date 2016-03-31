@@ -26,17 +26,7 @@ Entity *Spider_Load(int x, int y)
 		spider->touch = &Spider_Touch;
 		spider->update = &Spider_Update;
 
-		spider->type = SPIDER;
-		//spider->bounds = rect(25, 25, spider->sprite->frameSize.x-50,spider->sprite->frameSize.y-50);
-		spider->strength = 3;
-		spider->speed = 2;
-		spider->health = 4;
-		spider->maxHealth = 4;
 		vec2d_Set(spider->vel,3,3);
-		spider->thinkRate = 1500;
-		spider->fireRate = 5500;
-		spider->nextThink = 0;
-		spider->nextFire = 0;
 
 		spider->owner = NULL;
 		spider->target = Entity_GetByType(PLAYER);

@@ -81,11 +81,14 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 
 	ent->thinkRate = cJSON_GetObjectItem(buf, "think rate")->valueint;
 	ent->nextThink = cJSON_GetObjectItem(buf, "next think")->valueint;
+	ent->fireRate = cJSON_GetObjectItem(buf, "fire rate")->valueint;
+	ent->nextFire = cJSON_GetObjectItem(buf, "next fire")->valueint;
 
 	ent->strength = cJSON_GetObjectItem(buf, "strength")->valueint;
 	ent->speed = cJSON_GetObjectItem(buf, "speed")->valueint;
 	ent->health = cJSON_GetObjectItem(buf, "health")->valuedouble;
 	ent->maxHealth = cJSON_GetObjectItem(buf, "max health")->valueint;
+	
 
 	for(i = 0; i < entMax; i++)
 	{
