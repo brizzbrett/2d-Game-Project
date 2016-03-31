@@ -1,0 +1,344 @@
+{"entity": {
+	"player": {
+		"imagefiles": {
+			"file": "images/playersheet.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	
+	"glop": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/glopsheet.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	
+	"eye": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/eyesheet.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	
+	"spider": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/spidersheet.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	
+	"shot": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/shot.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 0.0,
+			"max health": 0,
+			"strength": 1,
+			"speed": 0,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	
+	"boss": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/playersheet.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"pickup heart": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/heart.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"pickup tempheart": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/tempheart.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"boulder": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/boulder.png",
+			"fw": 128,
+			"fh": 128,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"south door": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/hall.png",
+			"fw": 10,
+			"fh": 10,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"north door": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/hall.png",
+			"fw": 10,
+			"fh": 10,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"east door": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/hall.png",
+			"fw": 10,
+			"fh": 10,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	},
+	"west door": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/hall.png",
+			"fw": 10,
+			"fh": 10,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 5,
+			"w": 52,
+			"h": 118
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100
+		}
+	}
+}
+}

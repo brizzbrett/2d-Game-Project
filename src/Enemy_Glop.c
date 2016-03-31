@@ -16,15 +16,15 @@ Entity *Glop_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	glop = Entity_New("images/glopsheet.png",128,128, gPos);
+	glop = Entity_New(GLOP, gPos);
 
 	if(glop)
 	{
-		glop->think = NULL;
+		glop->think = &Glop_Think;
 		glop->touch = &Glop_Touch;
 		glop->update = &Glop_Update;
 
-		glop->type = ENEMY;
+		glop->type = GLOP;
 		glop->bounds = rect(40, 40, 60,113);
 		glop->strength = 3;
 		glop->speed = 2;
@@ -40,7 +40,8 @@ Entity *Glop_Load(int x, int y)
 }
 
 void Glop_Think(Entity *glop)
-{		
+{	
+	glop->target = Entity_GetByType(PLAYER);
 	vec2d_Subtract(glop->target->pos,glop->pos,glop->direction);
 	vec2d_Normalize(&glop->direction);
 	vec2d_Multiply(glop->vel,glop->direction,glop->velocity9);

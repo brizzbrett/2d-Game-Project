@@ -69,6 +69,12 @@
     <ClCompile Include="..\src\HUD.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cJSON.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Audio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\graphics.h">
@@ -111,6 +117,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cJSON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,14 +26,14 @@ void Spider_Think(Entity *spider);
 /**
  * @brief	Entity update.
  *
- * @param [in,out]	Entity	If non-null, the Entity.
+ * @param	*Entity		If non-null, the Entity.
  */
 void Spider_Update(Entity *spider);
 
 /**
  * @brief	Entity touch.
  *
- * @param [in,out]	Entity	If non-null, the Entity.
+ * @param	*Entity		If non-null, the Entity.
  */
 void Spider_Touch(Entity *spider, Entity *other);
 

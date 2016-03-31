@@ -86,7 +86,7 @@ void sprite_CloseSystem()
  * @param	fh  	The frame height.
  * @return	the new Sprite.
  */
-Sprite *sprite_Load(char file[], int fw, int fh)
+Sprite *sprite_Load(char *file, int fw, int fh)
 {
 	int i;
 	SDL_Surface *temp;
@@ -165,6 +165,7 @@ void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 	cam = Camera_GetActiveCamera();
 	camPos = Camera_GetPosition();
 	vec2d_Subtract(pos, camPos, posRel); 
+
 	src.x = frame%sprite->fpl * sprite->frameSize.x;
 	src.y = frame/sprite->fpl * sprite->frameSize.y;
 	src.w = sprite->frameSize.x;

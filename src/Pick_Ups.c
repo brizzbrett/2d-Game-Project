@@ -9,10 +9,6 @@ void Pickup_Spawn(Entity *pickup)
 	pickup->update = &Pickup_Update;
 	pickup->think = NULL;
 	pickup->target = Entity_GetByType(PLAYER);
-	if(pickup->type == OTHER)
-	{
-		pickup->type = PICKUP;
-	}
 
 	pickup->nextThink = SDL_GetTicks() + 8000;
 	pickup->thinkRate = 0;
@@ -21,7 +17,8 @@ void Pickup_Spawn(Entity *pickup)
 Entity *Pickup_Heart_New(Vec2d pos)
 {
 	Entity *heart;
-	heart = Entity_New("images/heart.png", 100, 100, pos);
+	heart = Entity_New(PICKUP_HEART, pos);
+	if(!heart)return NULL;
 	heart->touch = &Pickup_Heart_Touch;
 
 	heart->pos = pos;
@@ -32,7 +29,8 @@ Entity *Pickup_Heart_New(Vec2d pos)
 Entity *Pickup_TempHeart_New(Vec2d pos)
 {
 	Entity *tempHeart;
-	tempHeart = Entity_New("images/tempheart.png", 100, 100, pos);
+	tempHeart = Entity_New(PICKUP_TEMPHEART, pos);
+	if(!tempHeart)return NULL;
 	tempHeart->touch = &Pickup_TempHeart_Touch;
 
 	tempHeart->pos = pos;
@@ -42,7 +40,8 @@ Entity *Pickup_TempHeart_New(Vec2d pos)
 Entity *Boulder_New(Vec2d pos)
 {
 	Entity *boulder;
-	boulder = Entity_New("images/boulder.png", 100, 100, pos);
+	boulder = Entity_New(BOULDER, pos);
+	if(!boulder)return NULL;
 	boulder->touch = &Boulder_Touch;
 	boulder->type = BOULDER;
 	boulder->pos = pos;

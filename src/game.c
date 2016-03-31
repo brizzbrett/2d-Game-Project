@@ -12,8 +12,6 @@
 #include "Camera.h"
 #include "Level.h"
 
-extern SDL_Surface *buffer; /**<pointer to the draw buffer*/
-
 void Init_All();
 
 /**
@@ -24,20 +22,12 @@ void Init_All();
  */
 int main(int argc, char *argv[])
 {
-	SDL_Surface *temp = NULL;
 	int done;
 	const Uint8 *keys;
 
 	Init_All();
 	
 	Level_Load();
-
-	temp = IMG_Load("images/bgtest.png");
-	if(temp != NULL)
-	{
-		fprintf(stdout, "temp image successfully loaded\n");
-		SDL_BlitSurface(temp,NULL,buffer,NULL);
-	}
 
 	done = 0;
 	do
@@ -47,13 +37,12 @@ int main(int argc, char *argv[])
 		Room_DrawAll();
 		Entity_UpdateAll();
 		
-		NextFrame();
+		NextFrame();		
 		SDL_PumpEvents();
+
 		keys = SDL_GetKeyboardState(NULL);
 		if(keys[SDL_SCANCODE_ESCAPE])done = 1;
 	}while(!done);
-
-	SDL_FreeSurface(temp);
 
 	exit(0);
 	return 0;

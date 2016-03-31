@@ -12,11 +12,6 @@ int id = 96;
 Uint32 nodeMax = 100;
 Uint32 numNodes = 0;
 
-/**
- * @brief	Node new.
- *
- * @return	null if it fails, else a Node*.
- */
 Node *Node_New()
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
@@ -48,11 +43,6 @@ Node *Node_New()
 	return NULL;
 }
 
-/**
- * @brief	Node sub divide.
- *
- * @param [in,out]	n	If non-null, the Node to process.
- */
 void Node_SubDivide(Node *n)
 {
 	int size = 0;
@@ -111,12 +101,6 @@ void Node_SubDivide(Node *n)
 	
 }	
 
-/**
- * @brief	Node recursive sub divide.
- *
- * @param [in,out]	n	If non-null, the Node to process.
- * @param	count	 	Number of.
- */
 void Node_RecursiveSubDivide(Node *n, int count)
 {	
 
@@ -141,9 +125,6 @@ void Node_RecursiveSubDivide(Node *n, int count)
 //					DRAW FUNCTIONS					   //
 /////////////////////////////////////////////////////////
 
-/**
- * @brief	Room draw all.
- */
 void Room_DrawAll()
 {
 	Uint32 i;
@@ -168,11 +149,7 @@ void Room_DrawAll()
 /////////////////////////////////////////////////////////
 //					MEMORY MANAGEMENT				   //
 /////////////////////////////////////////////////////////
-/**
- * @brief	Node free.
- *
- * @param [in,out]	n	If non-null, the Node to process.
- */
+
 void Node_Free(Node **n)
 {
 	//Entity *self; /**<alias for *ent*/
@@ -193,9 +170,6 @@ void Node_Free(Node **n)
 
 }
 
-/**
- * @brief	Node close system.
- */
 void Node_CloseSystem()
 {
 	Node *n; /**<alias for *ent*/
@@ -210,9 +184,6 @@ void Node_CloseSystem()
 	numNodes = 0;
 }
 
-/**
- * @brief	Node initialise system.
- */
 void Node_InitSystem()
 {
 	if(nodeMax == 0)

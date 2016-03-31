@@ -7,6 +7,7 @@
 #include "SDL_image.h"
 #include "Sprite.h"
 #include "simple_logger.h"
+#include "cJSON.h"
 
 /**
  * @brief	EntityType enum
@@ -14,9 +15,13 @@
 enum EntityType
 {
 	PLAYER,
-	ENEMY,
+	GLOP,
+	EYE,
+	SPIDER,
+	SHOT,
 	BOSS,
-	PICKUP,
+	PICKUP_HEART,
+	PICKUP_TEMPHEART,
 	BOULDER,
 	SDOOR,
 	NDOOR,
@@ -74,7 +79,7 @@ typedef struct Entity_S
  * @brief	Return a pointer to an empty entity structure
  * @return	Null if it fails, or no more space for entity, else an Entity*.
  */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p);
+Entity *Entity_New(EntityType type, Vec2d pos);
 /**
  * @brief	Frees the memory allocated by the entity.
  * @param	*ent	If not null, a pointer to an entity pointer.

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Camera.h"
 #include <math.h>
 
 Entity *player;
@@ -7,17 +8,17 @@ Entity *Player_Load(int x, int y)
 
 	Vec2d pos;
 	vec2d_Set(pos,x,y);
-	player = Entity_New("images/playersheet.png", 128,128, pos);
+	player = Entity_New(PLAYER, pos);
 	if(player)
 	{
-		player->think = &Player_Think;
+		player->think = &Player_Think; 
 		player->touch = &Player_Touch;
 		player->update = &Player_Update;
 
 		player->id = 0;
 		player->pos = pos;
 		player->type = PLAYER;
-		player->bounds = rect(38, 5,player->sprite->frameSize.x-76,player->sprite->frameSize.y-10);
+		//player->bounds = rect(38, 5,player->sprite->frameSize.x-76,player->sprite->frameSize.y-10);
 		player->attack = rect(0,0,0,0);
 		player->strength = 3;
 		player->speed = 5;
@@ -92,6 +93,10 @@ void Player_Update(Entity *player)
 	else
 	{
 		player->vel.x = 0;
+	}
+	if(!Camera_Intersect(player))
+	{
+		player->flag = 1;	
 	}
 	vec2d_Add(player->pos, player->vel, player->pos);
 	slog("%f", player->health);

@@ -35,7 +35,7 @@ void sprite_CloseSystem();
  * @param	fh  	The frame height.
  * @return	the new Sprite.
  */
-Sprite *sprite_Load(char file[], int fw, int fh);
+Sprite *sprite_Load(char *file, int fw, int fh);
 
 /**
  * @brief	Frees up the memory allocated by the pointer to the sprite pointer.

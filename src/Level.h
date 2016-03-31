@@ -64,7 +64,7 @@ void Node_RecursiveSubDivide(Node *n, int count);
 /**
  * @brief	Node free.
  *
- * @param [in,out]	n	If non-null, the Node to process.
+ * @param	*n	If non-null, the Node to process.
  */
 void Node_Free(Node **n);
 /**

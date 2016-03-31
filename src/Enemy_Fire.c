@@ -15,7 +15,7 @@ void Weapon_Fire(Entity *owner, Vec2d v)
 	{
 		return;
 	}
-	shot = Entity_New("images/shot.png", 100, 100, pos); 
+	shot = Entity_New(SHOT, pos); 
 	if(!shot)
 		return;
 	shot->think = &Weapon_Think;

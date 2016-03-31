@@ -18,16 +18,16 @@ Entity *Spider_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	spider = Entity_New("images/Spidersheet.png",128,128, gPos);
+	spider = Entity_New(SPIDER, gPos);
 	
 	if(spider)
 	{
-		spider->think = NULL;
+		spider->think = &Spider_Think;
 		spider->touch = &Spider_Touch;
 		spider->update = &Spider_Update;
 
-		spider->type = ENEMY;
-		spider->bounds = rect(25, 25, spider->sprite->frameSize.x-50,spider->sprite->frameSize.y-50);
+		spider->type = SPIDER;
+		//spider->bounds = rect(25, 25, spider->sprite->frameSize.x-50,spider->sprite->frameSize.y-50);
 		spider->strength = 3;
 		spider->speed = 2;
 		spider->health = 4;
@@ -57,10 +57,8 @@ void Spider_Think(Entity *spider)
 	int randX;
 	int randY;
 
-	vec2d_Set(spider->vel, 0.06, 0.06);
-	vec2d_Multiply(spider->vel,spider->direction,spider->vel);
-	vec2d_Add(spider->pos,spider->vel,spider->pos);
-
+	
+	spider->target = Entity_GetByType(PLAYER);
 	if(SDL_GetTicks() >= spider->nextThink)
 	{
 		srand(time(NULL));
@@ -77,6 +75,10 @@ void Spider_Think(Entity *spider)
 
 		spider->nextThink = SDL_GetTicks() + spider->thinkRate;	
 	}
+	vec2d_Set(spider->vel, 0.06, 0.06);
+	vec2d_Multiply(spider->vel,spider->direction,spider->vel);
+	vec2d_Add(spider->pos,spider->vel,spider->pos);
+
 	if(SDL_GetTicks() >= spider->nextFire)
 	{
 		Weapon_Fire(spider, vel);

@@ -16,15 +16,15 @@ Entity *Eye_Load(int x, int y)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	eye = Entity_New("images/Eyesheet.png", 128,128, gPos);
+	eye = Entity_New(EYE, gPos);
 
 	if(eye)
 	{
-		eye->think = NULL;
+		eye->think = &Eye_Think;
 		eye->touch = &Eye_Touch;
 		eye->update = &Eye_Update;
 
-		eye->type = ENEMY;
+		eye->type = EYE;
 		eye->bounds = rect(25, 25, 50,50);
 		eye->strength = 3;
 		eye->speed = 2;
@@ -48,8 +48,10 @@ Entity *Eye_Load(int x, int y)
  */
 void Eye_Think(Entity *eye)
 {	
+
 	Vec2d vel;
 	vec2d_Set(vel,5,5);
+	eye->target = Entity_GetByType(PLAYER);
 	vec2d_Subtract(eye->target->pos,eye->pos,eye->direction);
 	if(SDL_GetTicks() >= eye->nextThink)
 	{

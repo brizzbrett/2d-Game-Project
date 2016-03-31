@@ -17,14 +17,6 @@ Uint32 length = 0;
 
 Entity *p;
 
-/**
- * @brief	Room new.
- *
- * @param	type	The type.
- * @param	pos 	The position.
- *
- * @return	null if it fails, else a Room*.
- */
 Room *Room_New(Node *n, Vec2d pos)
 {
 	Room *r;
@@ -55,7 +47,7 @@ Room *Room_New(Node *n, Vec2d pos)
 	r->pos = pos;
 	r->bounds = rect(r->pos.x+100,r->pos.y+100,r->size.x-200, r->size.x-200);
 	r->type = RTYPE_NORMAL;
-	r->numEnemy = rand() % 6;
+	r->numEnemy = rand() % 6+1;
 	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
 
 	r->val = length;
@@ -65,6 +57,7 @@ Room *Room_New(Node *n, Vec2d pos)
 	if(!p && randomPlayer == 0)
 	{
 		p = Player_Load(r->pos.x+775,r->pos.y+600);
+		slog("Player created!");
 		Camera_SetPosition(r->pos);
 		r->type = RTYPE_START;
 		r->numEnemy = 0;
@@ -109,14 +102,14 @@ Entity *Door_New(int x, int y, EntityType type)
 	Vec2d gPos;
 	vec2d_Set(gPos,x,y);
 
-	door = Entity_New("images/hall.png", 10,10, gPos);
+	door = Entity_New(type, gPos);
 
 	if(door)
 	{
 		door->touch = &Door_Touch;
 		door->think = &Door_Think;
 		door->type = type;
-		door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
+		//door->bounds = rect(0, 0, door->sprite->frameSize.x,door->sprite->frameSize.y);
 
 		door->flag = 0;
 		door->owner = NULL;
@@ -160,6 +153,7 @@ Room *Room_Get(Node *n)
 		}
 	}
 }
+
 void Room_RecursiveCreateRoom(Node *n)
 {
 	if(n->left || n->right)
@@ -192,6 +186,10 @@ void Room_Link(Room *l, Room *r, int split)
 		l->south = Door_New(l->pos.x+l->size.x/2-5,l->pos.y+l->size.y-70, SDOOR);
 		r->north = Door_New(r->pos.x+r->size.x/2-5, r->pos.y+70,NDOOR);
 
+		if(!l->south && !r->north)
+		{
+			return;
+		}
 		l->south->target = r->north;
 		r->north->target = l->south;
 	}
@@ -200,7 +198,10 @@ void Room_Link(Room *l, Room *r, int split)
 	{	
 		l->east = Door_New(l->pos.x+l->size.x-70,l->pos.y+l->size.y/2-5, EDOOR);
 		r->west = Door_New(r->pos.x+70,r->pos.y+r->size.y/2-5, WDOOR);
-
+		if(!l->east && !r->west)
+		{
+			return;
+		}
 		l->east->target = r->west;
 		r->west->target = l->east;
 	}
@@ -209,6 +210,7 @@ void Room_Link(Room *l, Room *r, int split)
 /////////////////////////////////////////////////////////
 //					TOUCH FUNCTIONS					   //
 /////////////////////////////////////////////////////////
+// 
 void Door_Think(Entity *door)
 {
 	if(SDL_GetTicks() >= door->nextThink && door->flag != 1)
@@ -216,6 +218,7 @@ void Door_Think(Entity *door)
 		door->touch = &Door_Touch;
 	}
 }
+
 void Door_Touch(Entity *door, Entity *other)
 {
 	Vec2d position;

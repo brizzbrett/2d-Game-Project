@@ -7,26 +7,96 @@
 #include "Camera.h"
 #include "Level.h"
 
-
-
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
 Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
 
-/**
- * @brief	Creates a new reference to an Entity.
- * @return	a new Entity.
- */
-Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
+Entity *Entity_New(EntityType type, Vec2d pos)
 {
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
+	FILE *f;
+	long len;
+	char *data;
+	cJSON *json,*root,*obj,*buf;
+	Entity *ent = (Entity *)malloc(sizeof(Entity));
+	
+	f=fopen("def/entitycfg.txt","r");
+	if(!f)return NULL;
+	fseek(f,0,SEEK_END);
+	len=ftell(f);
+	fseek(f,0,SEEK_SET);
+
+	data=(char*)malloc(len+1);
+	fread(data,1,len,f);
+	fclose(f);
+
+	json = cJSON_Parse(data);
+	if(!json)return NULL;
+	root = cJSON_GetObjectItem(json,"entity");
+	if(!root)return NULL;
+
+	if(type == PLAYER)
+		obj = cJSON_GetObjectItem(root, "player");
+	else if(type == GLOP)
+		obj = cJSON_GetObjectItem(root, "glop");
+	else if(type == EYE)
+		obj = cJSON_GetObjectItem(root, "eye");
+	else if(type == SPIDER)
+		obj = cJSON_GetObjectItem(root, "spider");
+	else if(type == SHOT)
+		obj = cJSON_GetObjectItem(root, "shot");
+	else if(type == BOSS)
+		obj = cJSON_GetObjectItem(root, "boss");
+	else if(type == PICKUP_HEART)
+		obj = cJSON_GetObjectItem(root, "pickup heart");
+	else if(type == PICKUP_TEMPHEART)
+		obj = cJSON_GetObjectItem(root, "pickup tempheart");
+	else if(type == BOULDER)
+		obj = cJSON_GetObjectItem(root, "boulder");
+	else if(type == SDOOR)
+		obj = cJSON_GetObjectItem(root, "south door");
+	else if(type == NDOOR)
+		obj = cJSON_GetObjectItem(root, "north door");
+	else if(type == EDOOR)
+		obj = cJSON_GetObjectItem(root, "east door");
+	else if(type == WDOOR)
+		obj = cJSON_GetObjectItem(root, "west door");
+
+	ent->type = type;
+	buf = cJSON_GetObjectItem(obj, "imagefiles");
+
+	ent->frame = cJSON_GetObjectItem(buf, "frame")->valueint;
+	ent->pos = pos;
+	ent->sprite = sprite_Load(cJSON_GetObjectItem(buf, "file")->valuestring,cJSON_GetObjectItem(buf, "fw")->valueint,cJSON_GetObjectItem(buf, "fh")->valueint);		
+
+	buf = cJSON_GetObjectItem(obj, "bounds");
+
+	ent->bounds = rect(
+					cJSON_GetObjectItem(buf, "x")->valueint,
+					cJSON_GetObjectItem(buf, "y")->valueint,
+					cJSON_GetObjectItem(buf, "w")->valueint,
+					cJSON_GetObjectItem(buf, "h")->valueint);
+
+	buf = cJSON_GetObjectItem(obj, "info");
+
+	ent->thinkRate = cJSON_GetObjectItem(buf, "think rate")->valueint;
+	ent->nextThink = cJSON_GetObjectItem(buf, "next think")->valueint;
+
+	ent->strength = cJSON_GetObjectItem(buf, "strength")->valueint;
+	ent->speed = cJSON_GetObjectItem(buf, "speed")->valueint;
+	ent->health = cJSON_GetObjectItem(buf, "health")->valuedouble;
+	ent->maxHealth = cJSON_GetObjectItem(buf, "max health")->valueint;
+
 	for(i = 0; i < entMax; i++)
 	{
+		
 		if(entList[i].inuse)
 		{
 			continue;
 		}
+		
 		memset(&entList[i],0,sizeof(Entity));
+		entList[i] = *ent;
 		entList[i].inuse = 1;
 		numEnt++;
 		if(numEnt > entMax)
@@ -36,13 +106,11 @@ Entity *Entity_New(char file[], int fw, int fh, Vec2d p)
 		}
 
 		entList[i].draw = &sprite_Draw;
-		entList[i].id = i;
-		entList[i].inuse = 1;
-		entList[i].type = OTHER;
-		entList[i].pos = p;
-		entList[i].sprite = sprite_Load(file,fw,fh);
-		entList[i].frame = 0;
+		entList[i].update = NULL;
+		entList[i].think = NULL;
+		entList[i].touch = NULL;
 
+		free(ent);
 		return &entList[i];
 	}
 	return NULL;
@@ -51,10 +119,7 @@ int Entity_GetNum()
 {
 	return numEnt;
 }
-/**
- * @brief	Frees up the memory allocated to the Entity that is input
- * @param	**ent	If not null, a pointer to the entity pointer.
- */
+
 void Entity_Free(Entity **ent)
 {
 
@@ -69,9 +134,6 @@ void Entity_Free(Entity **ent)
 
 }
 
-/**   
- * @brief	Closes the Entity System by freeing up memory allocated to it. 
- */
 void Entity_CloseSystem()
 {
 	Entity *ent; /**<alias for *ent*/
@@ -86,10 +148,6 @@ void Entity_CloseSystem()
 	numEnt = 0;
 }
 
-/**
- * @brief	Initialises the Entity System.
- * @param	ent_Max	The maximum number of Entities.
- */
 void Entity_InitSystem(Uint32 ent_Max)
 {
 	if(entMax == 0)
@@ -103,13 +161,6 @@ void Entity_InitSystem(Uint32 ent_Max)
 	atexit(Entity_CloseSystem);
 }
 
-/**
- * @brief	Entity draw.
- * @param	*ent				If not null, the entity.
- * @param	frame				The frame in the spritesheet thats being drawn.
- * @param	*renderer			The renderer being drawn to.
- * @param	drawPos				The position on the screen the entity is being drawn on.
- */
 void Entity_DrawAll()
 {
 	Uint32 i;
@@ -124,14 +175,10 @@ void Entity_DrawAll()
 		{
 			continue;
 		}
-
 		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
 	}
 }
 
-/**   
- * @brief	The Think function for all entities. 
- */
 void Entity_ThinkAll()
 {
 	Uint32 i;
@@ -150,13 +197,10 @@ void Entity_ThinkAll()
 	}
 }
 
-/**   
- * @brief	The Update function that updates all entities every certain amount of time.  
- */
 void Entity_UpdateAll()
 {
 	Uint32 i;
-	Uint32 flag = 0;
+	Uint32 pflag = 0;
 	for(i= 0; i < entMax; i++)
 	{
 		if(!entList[i].inuse)
@@ -168,16 +212,7 @@ void Entity_UpdateAll()
 			continue;
 		}
 		entList[i].update(&entList[i]);		
-		if(entList[i].type == ENEMY)
-		{
-			if(entList[i].flag == 1)
-			{
-				Entity_GetByType(SDOOR)->touch == NULL;
-				Entity_GetByType(EDOOR)->touch == NULL;
-				Entity_GetByType(NDOOR)->touch == NULL;
-				Entity_GetByType(WDOOR)->touch == NULL;
-			}
-		}
+
 		if(!Camera_Intersect(&entList[i]))
 		{
 			vec2d_Negate(entList[i].direction,entList[i].direction);	

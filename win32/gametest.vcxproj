@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Audio.c" />
     <ClCompile Include="..\src\Camera.c" />
+    <ClCompile Include="..\src\cJSON.c" />
     <ClCompile Include="..\src\Enemy_Eye.c" />
     <ClCompile Include="..\src\Enemy_Fire.c" />
     <ClCompile Include="..\src\Enemy_Glop.c" />
@@ -31,7 +33,9 @@
     <ClCompile Include="..\src\Vector.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Audio.h" />
     <ClInclude Include="..\src\Camera.h" />
+    <ClInclude Include="..\src\cJSON.h" />
     <ClInclude Include="..\src\Enemy_Eye.h" />
     <ClInclude Include="..\src\Enemy_Fire.h" />
     <ClInclude Include="..\src\Enemy_Glop.h" />
@@ -81,23 +85,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ReferencePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;$(ReferencePath)</ReferencePath>
-    <LibraryPath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib;$(LibraryPath)</LibraryPath>
     <OutDir>..</OutDir>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <TargetName>DreamAWayOut</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ReferencePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib;$(LibraryPath)</LibraryPath>
     <OutDir>..</OutDir>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <TargetName>DreamAWayOut</TargetName>

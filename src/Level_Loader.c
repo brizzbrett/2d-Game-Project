@@ -5,9 +5,6 @@
 
 Node *head;
 
-/**
- * @brief	Level load.
- */
 void Level_Load()
 {
 	head = Node_New();
