@@ -1,11 +1,5 @@
 #include "Level.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <random>
-#include <cmath>
-#include <time.h>
-
 #include "Player.h"
 #include "Enemy_Glop.h"
 #include "Enemy_Eye.h"
@@ -17,7 +11,7 @@ Uint32 length = 0;
 
 Entity *p;
 
-Room *Room_New(Node *n, Vec2d pos)
+Room *Room_New(Vec2d pos, char *file, int rtype)
 {
 	Room *r;
 
@@ -42,19 +36,12 @@ Room *Room_New(Node *n, Vec2d pos)
 	int i;
 
 	r = (Room *)malloc(sizeof(Room));
-
 	vec2d_Set(r->size, ROOM_WIDTH, ROOM_HEIGHT);
 	r->pos = pos;
 	r->bounds = rect(r->pos.x+100,r->pos.y+100,r->size.x-200, r->size.x-200);
-	r->type = RTYPE_NORMAL;
-	r->numEnemy = rand() % 6+1;
-	r->image = sprite_Load("images/room.png",r->size.x,r->size.y);
 
-	r->val = length;
-	length++;
-	vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
-	Pickup_Spawn(Boulder_New(boulderPos));
-	if(!p && randomPlayer == 0)
+	r->image = sprite_Load(file,r->size.x,r->size.y);		
+	if(!p)
 	{
 		p = Player_Load(r->pos.x+775,r->pos.y+600);
 		slog("Player created!");
@@ -62,37 +49,47 @@ Room *Room_New(Node *n, Vec2d pos)
 		r->type = RTYPE_START;
 		r->numEnemy = 0;
 	}	
-	
-	vec2d_Set(availP[0], r->pos.x+150, r->pos.y+150);
-	vec2d_Set(availP[1], r->pos.x+675, r->pos.y+450);
-	vec2d_Set(availP[2], r->pos.x+1350, r->pos.y+150);
-	vec2d_Set(availP[3], r->pos.x+875, r->pos.y+450);
-	vec2d_Set(availP[4], r->pos.x+150, r->pos.y+750);
-	vec2d_Set(availP[5], r->pos.x+1350, r->pos.y+750);
-
-	for(i = 0; i < r->numEnemy; i++)
+	//r->draw = &sprite_Draw;
+	//r->draw(r->image, 0, Graphics_GetActiveRenderer(), r->pos);	
+	if(rtype != RTYPE_HUBR)
 	{
-		randomEnemy = rand() % 3;
+		r->type = RTYPE_NORMAL;
+		r->numEnemy = rand() % 6+1;
+		r->val = length;
+		length++;
+		vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
+		Pickup_Spawn(Boulder_New(boulderPos));
 
-		if(randomEnemy == 0)
-		{
-			spider[spiderCount] = Spider_Load(availP[i].x,availP[i].y);
-			spiderCount++;
-		}
-		else if(randomEnemy == 1)
-		{
+		vec2d_Set(availP[0], r->pos.x+150, r->pos.y+150);
+		vec2d_Set(availP[1], r->pos.x+675, r->pos.y+450);
+		vec2d_Set(availP[2], r->pos.x+1350, r->pos.y+150);
+		vec2d_Set(availP[3], r->pos.x+875, r->pos.y+450);
+		vec2d_Set(availP[4], r->pos.x+150, r->pos.y+750);
+		vec2d_Set(availP[5], r->pos.x+1350, r->pos.y+750);
 
-			eye[eyeCount] = Eye_Load(availP[i].x,availP[i].y);
-			eyeCount++;
-
-		}
-		else
+		for(i = 0; i < r->numEnemy; i++)
 		{
-			glop[glopCount] = Glop_Load(availP[i].x,availP[i].y);
-			glopCount++;
+			randomEnemy = rand() % 3;
+
+			if(randomEnemy == 0)
+			{
+				spider[spiderCount] = Spider_Load(availP[i].x,availP[i].y);
+				spiderCount++;
+			}
+			else if(randomEnemy == 1)
+			{
+
+				eye[eyeCount] = Eye_Load(availP[i].x,availP[i].y);
+				eyeCount++;
+
+			}
+			else
+			{
+				glop[glopCount] = Glop_Load(availP[i].x,availP[i].y);
+				glopCount++;
+			}
 		}
 	}
-
 	return r;
 }
 
@@ -152,17 +149,17 @@ Room *Room_Get(Node *n)
 	}
 }
 
-void Room_RecursiveCreateRoom(Node *n)
+void Room_RecursiveCreateRoom(Node *n, char *file)
 {
 	if(n->left || n->right)
 	{		
 		if(n->left)
 		{	
-			Room_RecursiveCreateRoom(n->left);
+			Room_RecursiveCreateRoom(n->left, file);
 		}
 		if(n->right)
 		{
-			Room_RecursiveCreateRoom(n->right);
+			Room_RecursiveCreateRoom(n->right, file);
 		}
 		if(n->left && n->right) // if node has both left and right children, 
 								// traverse these nodes until you get a room from both nodes and link them
@@ -172,7 +169,7 @@ void Room_RecursiveCreateRoom(Node *n)
 	}
 	else
 	{
-		n->room = Room_New(n, n->pos);		
+		n->room = Room_New(n->pos, file, 2);		
 	}
 }
 

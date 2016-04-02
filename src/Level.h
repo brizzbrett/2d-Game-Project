@@ -3,6 +3,12 @@
 
 #include "Entity.h"
 #include "Camera.h"
+
+#include <string.h>
+#include <stdlib.h>
+#include <random>
+#include <cmath>
+#include <time.h>
 #include <SDL.h>
 
 #define SPLIT_VERTICAL 0
@@ -19,6 +25,8 @@ typedef struct Room_T
 	int val;
 	struct Room_T *next;
 	Entity *north, *south, *east, *west;
+
+	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
 }Room;
 
 /**
@@ -52,7 +60,7 @@ typedef struct Node_S
 /**
  * @brief	Level load.
  */
-void Level_Load();
+void Level_Load(char *file);
 /**
  * @brief	Node new.
  *
@@ -85,19 +93,22 @@ void Node_InitSystem();
 #define RTYPE_KEY 3
 #define RTYPE_KEYDOOR 4
 #define RTYPE_BOSS 5
+#define RTYPE_HUBR 6
 
 #define ROOM_WIDTH 1600
 #define ROOM_HEIGHT 900
 
 
-Room *Room_New(Node *n, Vec2d pos);
+Room *Room_New(Vec2d pos, char *file, int rtype);
 Entity *Door_New(int x, int y);
-void Room_RecursiveCreateRoom(Node *n);
+void Room_RecursiveCreateRoom(Node *n, char *file);
 void Room_Link(Room *l, Room *r, int split);
 void Room_IntersectAll(Entity *ent);
 Room *Room_GetByID(int id);
 void Door_Think(Entity *door);
 void Door_Touch(Entity *door, Entity *other);
 void Room_DrawAll();
+
+void Hub_Create(char *file);
 
 #endif

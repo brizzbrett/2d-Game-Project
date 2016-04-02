@@ -10,6 +10,14 @@
 #include "cJSON.h"
 
 /**
+ * @brief	Boolean type enum
+ */
+enum BrettBool
+{
+	FALSE,
+	TRUE
+};
+/**
  * @brief	EntityType enum
  */
 enum EntityType

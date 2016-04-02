@@ -1,13 +1,6 @@
 #include "Level.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <random>
-#include <cmath>
-#include <time.h>
-
 Node *NList;
-
 int id = 96;
 Uint32 nodeMax = 100;
 Uint32 numNodes = 0;

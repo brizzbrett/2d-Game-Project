@@ -13,7 +13,7 @@
 #include "Level.h"
 
 void Init_All();
-
+static char *level = "def/nightmarecfg.txt";
 /**
  * @brief	Main entry-point for this application.
  * @param	argc	Number of command-line arguments.
@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
 
 	Init_All();
 	
-	Level_Load();
-
 	done = 0;
 	do
 	{
@@ -51,8 +49,11 @@ int main(int argc, char *argv[])
 /** @brief	Initialises all. */
 void Init_All()
 {
+	
 	sprite_InitSystem();
 	Entity_InitSystem(1000);
-	Node_InitSystem();
+	Node_InitSystem();	
 	Graphics_Init("Dream a Way Out",1600,900,0);
+	Hub_Create(level);
+	Level_Load(level);
 }

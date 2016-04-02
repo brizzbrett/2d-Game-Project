@@ -23,6 +23,7 @@
     <ClCompile Include="..\src\graphics.c" />
     <ClCompile Include="..\src\HUD.c" />
     <ClCompile Include="..\src\Level_BSP.c" />
+    <ClCompile Include="..\src\Level_HUB.c" />
     <ClCompile Include="..\src\Level_Loader.c" />
     <ClCompile Include="..\src\Level_Rooms.c" />
     <ClCompile Include="..\src\Pick_Ups.c" />
@@ -85,7 +86,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\include;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\include\glib-2.0;C:\Users\Brett\Desktop\NJIT HW\IT 276\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ReferencePath>C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_ttf-2.0.13\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_mixer-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2_image-2.0.1\lib\x86;C:\Users\Brett\Desktop\NJIT HW\IT 276\SDL2-2.0.4\lib\x86;$(ReferencePath)</ReferencePath>
