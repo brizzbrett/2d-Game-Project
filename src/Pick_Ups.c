@@ -1,5 +1,6 @@
 #include "Pick_Ups.h"
 #include "Camera.h"
+#include "Level.h"
 
 void Pickup_Spawn(Entity *pickup)
 {
@@ -41,11 +42,21 @@ Entity *Boulder_New(Vec2d pos)
 
 	return boulder;
 }
+Entity *Bed_New(Vec2d pos)
+{
+	Entity *bed;
+	bed = Entity_New(BED, pos);
+	if(!bed)return NULL;
+	bed->touch = &Bed_Touch;
+
+	return bed;
+}
+
 void Pickup_Update(Entity *pickup)
 {
 	pickup->target = Entity_GetByType(PLAYER);
 	Entity_IntersectAll(pickup);
-	if(Camera_Intersect(pickup) && pickup->type != BOULDER)
+	if(Camera_Intersect(pickup) && pickup->type != BOULDER && pickup->type != BED)
 	{
 		pickup->think = &Pickup_Think;
 	}
@@ -93,6 +104,18 @@ void Boulder_Touch(Entity *boulder, Entity *other)
 		other->vel.y = other->vel.y * .5;
 		vec2d_Add(other->vel,other->vel,boulder->vel);
 		vec2d_Add(boulder->vel, boulder->pos, boulder->pos);
+	}
+	else
+	{
+		vec2d_Set(other->vel,0,0);
+	}
+}
+void Bed_Touch(Entity *bed, Entity *other)
+{
+	
+	if(other == bed->target)
+	{
+		Level_Load("def/nightmarecfg.txt");
 	}
 	else
 	{

@@ -11,8 +11,10 @@ void Pickup_Think(Entity *pickup);
 Entity *Pickup_Heart_New(Vec2d pos);
 Entity *Pickup_TempHeart_New(Vec2d pos);
 Entity *Boulder_New(Vec2d pos);
+Entity *Bed_New(Vec2d pos);
 
 void Pickup_Heart_Touch(Entity *heart, Entity *other);
 void Pickup_TempHeart_Touch(Entity *tempHeart, Entity *other);
 void Boulder_Touch(Entity *boulder, Entity *other);
+void Bed_Touch(Entity *bed, Entity *other);
 #endif

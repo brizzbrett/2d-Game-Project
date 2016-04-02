@@ -8,7 +8,7 @@
 
 Room *roomList;
 Uint32 length = 0;
-
+BrettBool set = TRUE;
 Entity *p;
 
 Room *Room_New(Vec2d pos, char *file, int rtype)
@@ -28,7 +28,6 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 
 	int randomEnemy = rand() % 3;
 	int randomPlayer = rand() % 5;
-
 	Vec2d boulderPos;
 	int randomBoulderX = 200;
 	int randomBoulderY = 450;
@@ -39,7 +38,7 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 	vec2d_Set(r->size, ROOM_WIDTH, ROOM_HEIGHT);
 	r->pos = pos;
 	r->bounds = rect(r->pos.x+100,r->pos.y+100,r->size.x-200, r->size.x-200);
-
+	vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
 	r->image = sprite_Load(file,r->size.x,r->size.y);		
 	if(!p)
 	{
@@ -49,9 +48,13 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 		r->type = RTYPE_START;
 		r->numEnemy = 0;
 	}	
+	if(rtype == RTYPE_HUBR)
+	{
+		Pickup_Spawn(Bed_New(boulderPos));
+	}
 	//r->draw = &sprite_Draw;
 	//r->draw(r->image, 0, Graphics_GetActiveRenderer(), r->pos);	
-	if(rtype != RTYPE_HUBR)
+	if(rtype != RTYPE_HUBR && rtype != RTYPE_HUBH && rtype != RTYPE_HUBM)
 	{
 		r->type = RTYPE_NORMAL;
 		r->numEnemy = rand() % 6+1;
@@ -59,7 +62,15 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 		length++;
 		vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
 		Pickup_Spawn(Boulder_New(boulderPos));
-
+		if(p && randomPlayer == 0 && set)
+		{
+			p->pos.x = r->pos.x+775;
+			p->pos.y = r->pos.y+600;
+			Camera_SetPosition(r->pos);
+			r->type = RTYPE_START;
+			r->numEnemy = 0;
+			set = FALSE;
+		}	
 		vec2d_Set(availP[0], r->pos.x+150, r->pos.y+150);
 		vec2d_Set(availP[1], r->pos.x+675, r->pos.y+450);
 		vec2d_Set(availP[2], r->pos.x+1350, r->pos.y+150);

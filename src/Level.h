@@ -94,6 +94,8 @@ void Node_InitSystem();
 #define RTYPE_KEYDOOR 4
 #define RTYPE_BOSS 5
 #define RTYPE_HUBR 6
+#define RTYPE_HUBH 7
+#define RTYPE_HUBM 8
 
 #define ROOM_WIDTH 1600
 #define ROOM_HEIGHT 900

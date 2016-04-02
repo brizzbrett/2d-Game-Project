@@ -11,7 +11,9 @@ void Level_Load(char *file)
 	FILE *f;
 	long len;
 	cJSON *json, *root, *obj;
-	
+
+	if(!file)return;
+
 	f = fopen(file, "rb");
 
 	if(!f)return;

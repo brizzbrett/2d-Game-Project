@@ -20,7 +20,7 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 	cJSON *json,*root,*obj,*buf;
 	Entity *ent = (Entity *)malloc(sizeof(Entity));
 	
-	f=fopen("def/entitycfg.txt","r");
+	f=fopen("def/entitycfg.txt","rb");
 	if(!f)return NULL;
 	fseek(f,0,SEEK_END);
 	len=ftell(f);
@@ -53,6 +53,8 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		obj = cJSON_GetObjectItem(root, "pickup tempheart");
 	else if(type == BOULDER)
 		obj = cJSON_GetObjectItem(root, "boulder");
+	else if(type == BED)
+		obj = cJSON_GetObjectItem(root, "bed");
 	else if(type == SDOOR)
 		obj = cJSON_GetObjectItem(root, "south door");
 	else if(type == NDOOR)

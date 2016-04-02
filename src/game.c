@@ -55,5 +55,5 @@ void Init_All()
 	Node_InitSystem();	
 	Graphics_Init("Dream a Way Out",1600,900,0);
 	Hub_Create(level);
-	Level_Load(level);
+	//Level_Load(level);
 }

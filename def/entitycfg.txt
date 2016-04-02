@@ -254,6 +254,34 @@
 			"fire rate": 5500
 		}
 	},
+	"bed": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/bed.png",
+			"fw": 256,
+			"fh": 256,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 38,
+			"y": 96,
+			"w": 142,
+			"h": 64
+		},
+		"info": 
+		{
+			"health": 4.0,
+			"max health": 4,
+			"strength": 3,
+			"speed": 5,
+			"next think": 0,
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
+		}
+	},
 	"south door": 
 	{
 		"imagefiles": 
