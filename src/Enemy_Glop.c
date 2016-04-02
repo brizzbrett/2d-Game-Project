@@ -93,22 +93,20 @@ void Glop_Update(Entity *glop)
 		finalPos = glop->pos;
 		Entity_Free(&glop);
 		if(itemPick % 3 == 0)
-			Pickup_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos));
 		else if(itemPick % 5 == 0)
-			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos));
 		else
-			Pickup_Spawn(NULL);	
+			Item_Spawn(NULL);	
 	}
 	if(Camera_Intersect(glop))
 	{
 		glop->think = &Glop_Think;
-		glop->flag = 1;
 	}
 	else
 	{
 		if(!glop) return;
 		glop->think = NULL;
-		glop->flag = 0;
 	}
 	Entity_IntersectAll(glop);
 }

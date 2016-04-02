@@ -50,7 +50,7 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 	}	
 	if(rtype == RTYPE_HUBR)
 	{
-		Pickup_Spawn(Bed_New(boulderPos));
+		Item_Spawn(Bed_New(boulderPos));
 	}
 	//r->draw = &sprite_Draw;
 	//r->draw(r->image, 0, Graphics_GetActiveRenderer(), r->pos);	
@@ -61,7 +61,7 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 		r->val = length;
 		length++;
 		vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
-		Pickup_Spawn(Boulder_New(boulderPos));
+		
 		if(p && randomPlayer == 0 && set)
 		{
 			p->pos.x = r->pos.x+775;
@@ -70,7 +70,12 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 			r->type = RTYPE_START;
 			r->numEnemy = 0;
 			set = FALSE;
+			Item_Spawn(Bed_New(boulderPos));
 		}	
+		else
+		{
+			Item_Spawn(Boulder_New(boulderPos));
+		}
 		vec2d_Set(availP[0], r->pos.x+150, r->pos.y+150);
 		vec2d_Set(availP[1], r->pos.x+675, r->pos.y+450);
 		vec2d_Set(availP[2], r->pos.x+1350, r->pos.y+150);
@@ -219,7 +224,7 @@ void Room_Link(Room *l, Room *r, int split)
 // 
 void Door_Think(Entity *door)
 {
-	if(SDL_GetTicks() >= door->nextThink && door->flag != 1)
+	if(SDL_GetTicks() >= door->nextThink)
 	{
 		door->touch = &Door_Touch;
 	}

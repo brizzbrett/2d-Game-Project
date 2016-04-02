@@ -5,35 +5,36 @@
 #include "Enemy_Fire.h"
 
 /**
- * @brief	Loads the spider at specified position.
+ * @brief	Spider Entity Load.
  *
  * @param x	The x coordinate.
  * @param y	The y coordinate.
  *
- * @return	null if it fails, else a Entity*.
+ * @return	The spider entity, if not null.
  */
 
 Entity *Spider_Load(int x, int y);
 
+
 /**
- * @brief	Entity think.
+ * @brief	Spider Entity think.
  *
- * @param	*Entity		If non-null, the Entity.
- *
+ * @param spider	The spider entity that is thinking.
  */
 void Spider_Think(Entity *spider);
 
 /**
- * @brief	Entity update.
+ * @brief	Spider Entity update.
  *
- * @param	*Entity		If non-null, the Entity.
+ * @param spider	The spider entity that is updating.
  */
 void Spider_Update(Entity *spider);
 
 /**
- * @brief	Entity touch.
+ * @brief	Spider Entity touch.
  *
- * @param	*Entity		If non-null, the Entity.
+ * @param spider	The spider entity that is being touched.
+ * @param other		The entity that is touching.
  */
 void Spider_Touch(Entity *spider, Entity *other);
 

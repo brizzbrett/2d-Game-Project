@@ -14,29 +14,29 @@
  */
 enum BrettBool
 {
-	FALSE,
-	TRUE
+	FALSE,	/**<If 0, then false */
+	TRUE	/**<If 1, then true */
 };
 /**
  * @brief	EntityType enum
  */
 enum EntityType
 {
-	PLAYER,
-	GLOP,
-	EYE,
-	SPIDER,
-	SHOT,
-	BOSS,
-	PICKUP_HEART,
-	PICKUP_TEMPHEART,
-	BOULDER,
-	BED,
-	SDOOR,
-	NDOOR,
-	EDOOR,
-	WDOOR,
-	OTHER,
+	PLAYER,				/**<Player entities */
+	GLOP,				/**<Glop entities */
+	EYE,				/**<Eye entities */
+	SPIDER,				/**<Spider entities */
+	SHOT,				/**<Bullet entities */
+	BOSS,				/**<Boss entities */
+	PICKUP_HEART,		/**<Heart pickup entities */
+	PICKUP_TEMPHEART,	/**<Temporary Heart pickup entities */
+	BOULDER,			/**<Boulder entities */
+	BED,				/**<Bed entities */
+	SDOOR,				/**<South door entities */
+	NDOOR,				/**<North door entities */
+	EDOOR,				/**<East door entities */
+	WDOOR,				/**<West door entities */
+	OTHER,				/**<Any other entity that I did not catch */
 };
 
 /**
@@ -44,53 +44,55 @@ enum EntityType
  */
 typedef struct Entity_S
 {
-	int inuse;
-	EntityType type;
-	int id;
+	int inuse;			/**<Entity inuse flag */
+	EntityType type;	/**<The entities type */
+	int id;				/**<The entities id */
 
-	Vec2d pos;
-	Vec2d vel;
-	Vec2d velocity9;
-	Vec2d direction;
-	Vec2d force;
-	Vec2d offsetNW;
-	Vec2d offsetSE;
+	Vec2d pos;			/**<Position in vector 2d */
+	Vec2d vel;			/**<Velocity in vector 2d */
+	Vec2d velocity9;	/**<Manipulated Velocity in vector 2d */
+	Vec2d direction;	/**<Direction in vector 2d */
+	Vec2d force;		/**<Forec in vector 2d */
 
-	Sprite *sprite;
+	Sprite *sprite;		/**<Entity sprite info */
 
-	SDL_Rect bounds;
-	SDL_Rect attack;
+	SDL_Rect bounds;	/**<The collision bounds */
+	SDL_Rect attack;	/**<The attacking bounds (for player) */
 
-	int frame;
+	int frame;			/**<The current frame of the sprite */
 
-	float health;
-	int maxHealth, speed, strength;
+	float health;		/**<Entity health, if have */
+	int maxHealth, speed, strength;	/**<Entity max health, speed and strength, if have */
 
-	int nextThink;
-	int thinkRate;
-	int nextFire;
-	int fireRate;
+	int nextThink;		/**<The next think for an entity */
+	int thinkRate;		/**<The rate of thinking */
+	int nextFire;		/**<The next fire for an entity that fires bullets */
+	int fireRate;		/**<The rate of fire */
 
-	int flag;
+	int flag;			/**<Misc flag usage */
 
-	struct Entity_S *owner;
-	struct Entity_S *target;
+	struct Entity_S *owner;		/**<The Entity that owns this entity, if it has one */
+	struct Entity_S *target;	/**<The Entity that this entity is targeting */
 
-	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
-	void (*think)(struct Entity_S *self);
-	void (*update)(struct Entity_S *self);
-	void (*touch)(struct Entity_S *self, struct Entity_S *other);
+	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);	/**<Draw function pointer */
+	void (*think)(struct Entity_S *self);										/**<Think function pointer */
+	void (*update)(struct Entity_S *self);										/**<Update function pointer */
+	void (*touch)(struct Entity_S *self, struct Entity_S *other);				/**<Touch function pointer */
 
 }Entity;
 
-
 /**
- * @brief	Return a pointer to an empty entity structure
- * @return	Null if it fails, or no more space for entity, else an Entity*.
+ * @brief	Return an Entity* and adds it to the entity list
+ * 			
+ * @param EntityType	the type of entity being created
+ * @param pos			Position the entity is placed in the world
+ * 						
+ * @return	Null if it fails, or no more space for entity list, else an Entity*.
  */
 Entity *Entity_New(EntityType type, Vec2d pos);
 /**
  * @brief	Frees the memory allocated by the entity.
+ * 			
  * @param	*ent	If not null, a pointer to an entity pointer.
  */
 void Entity_Free(Entity **ent);
@@ -103,6 +105,7 @@ void Entity_CloseSystem();
 
 /**
  * @brief	Entity initialise system.
+ * 			
  * @param	ent_Max	Maximum amount of entities system supports.
  */
 void Entity_InitSystem(Uint32 ent_Max);
@@ -113,11 +116,7 @@ void Entity_InitSystem(Uint32 ent_Max);
 void Entity_ThinkAll();
 
 /**
- * @brief	Entity draw.
- * @param	*ent				If not null, the entity.
- * @param	frame				The frame in the spritesheet thats being drawn.
- * @param	*renderer			The renderer being drawn to.
- * @param	drawPos				The position on the screen the entity is being drawn on.
+ * @brief	Entity draw function for all entities.
  */
 void Entity_DrawAll();
 

@@ -2,16 +2,18 @@
 #include "Camera.h"
 #include "Level.h"
 
-void Pickup_Spawn(Entity *pickup)
+BrettBool inDream = FALSE;
+Entity *hub;
+void Item_Spawn(Entity *item)
 {
-	if(!pickup) return;
+	if(!item) return;
 
-	pickup->update = &Pickup_Update;
-	pickup->think = NULL;
-	pickup->target = Entity_GetByType(PLAYER);
+	item->update = &Item_Update;
+	item->think = NULL;
+	item->target = Entity_GetByType(PLAYER);
 
-	pickup->nextThink = SDL_GetTicks() + 8000;
-	pickup->thinkRate = 0;
+	item->nextThink = SDL_GetTicks() + 8000;
+	item->thinkRate = 0;
 }
 
 Entity *Pickup_Heart_New(Vec2d pos)
@@ -52,27 +54,27 @@ Entity *Bed_New(Vec2d pos)
 	return bed;
 }
 
-void Pickup_Update(Entity *pickup)
+void Item_Update(Entity *item)
 {
-	pickup->target = Entity_GetByType(PLAYER);
-	Entity_IntersectAll(pickup);
-	if(Camera_Intersect(pickup) && pickup->type != BOULDER && pickup->type != BED)
+	item->target = Entity_GetByType(PLAYER);
+	Entity_IntersectAll(item);
+	if(Camera_Intersect(item) && item->type != BOULDER && item->type != BED)
 	{
-		pickup->think = &Pickup_Think;
+		item->think = &Pickup_Think;
 	}
 	else
 	{
-		pickup->think = NULL;
+		item->think = NULL;
 	}
 }
 
-void Pickup_Think(Entity *pickup)
+void Pickup_Think(Entity *item)
 {
-	if(!pickup)return;
+	if(!item)return;
 
-	if(SDL_GetTicks() >= pickup->nextThink)
+	if(SDL_GetTicks() >= item->nextThink)
 	{
-		Entity_Free(&pickup);
+		Entity_Free(&item);
 	}
 }
 void Pickup_Heart_Touch(Entity *heart, Entity *other)
@@ -112,10 +114,20 @@ void Boulder_Touch(Entity *boulder, Entity *other)
 }
 void Bed_Touch(Entity *bed, Entity *other)
 {
-	
-	if(other == bed->target)
+	Vec2d temp;
+	if(other == bed->target && !inDream)
 	{
-		Level_Load("def/nightmarecfg.txt");
+		Level_Load("def/nightmarecfg.txt", 1);
+		hub = bed;
+		inDream = TRUE;
+	}
+	else if(other == bed->target && inDream)
+	{
+		other->pos.y = hub->pos.y + 170;
+		other->pos.x = hub->pos.x + 50;
+		vec2d_Set(temp, hub->pos.x-200, hub->pos.y-450);
+		Camera_SetPosition(temp);
+		inDream = FALSE;
 	}
 	else
 	{

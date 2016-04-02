@@ -6,30 +6,34 @@
 typedef Entity Entity;
 
 /**
- * @brief	Entity load.
+ * @brief	Glop Entity load.
  *
- * @return	null if it fails, else a Entity*.
+ * @param x	The x coordinate.
+ * @param y	The y coordinate.
+ *
+ * @return	The Glop Entity, if not null.
  */
 Entity *Glop_Load(int x, int y);
 
 /**
- * @brief	Entity think.
+ * @brief	Glop Entity think.
  *
- * @param [in,out]	glop	If non-null, the glop.
+ * @param glop	The glop entity that is thinking.
  */
 void Glop_Think(Entity *glop);
 
 /**
- * @brief	Entity update.
+ * @brief	Glop Entity Update.
  *
- * @param [in,out]	glop	If non-null, the glop.
+ * @param glop	The glop entity that is updating.
  */
 void Glop_Update(Entity *glop);
 
 /**
- * @brief	Entity touch.
+ * @brief	Glop Entity Update.
  *
- * @param [in,out]	glop	If non-null, the glop.
+ * @param glop	The glop entity that is being touched.
+ * @param other	The entity that is touching.
  */
 void Glop_Touch(Entity *glop, Entity *other);
 

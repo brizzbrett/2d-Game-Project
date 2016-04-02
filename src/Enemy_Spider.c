@@ -114,36 +114,34 @@ void Spider_Update(Entity *spider)
 			spider->frame = 1;
 		}
 	}
-	/*if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 200)
+	if(spider->pos.x <= Camera_GetPosition().x + 100 || spider->pos.x >= Camera_GetSize().x - 200)
 	{
 		spider->direction.x = -spider->direction.x;
 	}
 	if(spider->pos.y <= Camera_GetPosition().y + 100 || spider->pos.y >= Camera_GetSize().y - 200)
 	{
 		spider->direction.y = -spider->direction.y;
-	}*/
+	}
 	if(rect_intersect(rect(spider->pos.x+25, spider->pos.y+25,75,75), spider->target->attack))
 	{
 		itemPick = rand() % 30;
 		finalPos = spider->pos;
 		Entity_Free(&spider);
 		if(itemPick % 3 == 0)
-			Pickup_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos));
 		else if(itemPick % 5 == 0)
-			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos));
 		else
-			Pickup_Spawn(NULL);
+			Item_Spawn(NULL);
 	}
 	if(Camera_Intersect(spider))
 	{
 		spider->think = &Spider_Think;
-		spider->flag = 1;
 	}
 	else
 	{
 		if(!spider)return;
 		spider->think = NULL;
-		spider->flag = 0;
 	}
 	Entity_IntersectAll(spider);
 }

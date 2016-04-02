@@ -3,9 +3,15 @@
 #include <time.h>
 #include <random>
 
+#define HUB 0
+#define NIGHTMARE 1
+#define COWBOY 2
+#define FUTURE 3
+#define MEDIEVAL 4
+
 Node *head;
 
-void Level_Load(char *file)
+void Level_Load(char *file, Uint8 level)
 {
 	char *data;
 	FILE *f;
@@ -28,15 +34,23 @@ void Level_Load(char *file)
 
 	json = cJSON_Parse(data);
 	if(!json)return;
-	root = cJSON_GetObjectItem(json, "nightmare");
-	if(!root)return;
-	obj = cJSON_GetObjectItem(root, "level load");
-	head = Node_New();
-	head->width = cJSON_GetObjectItem(obj, "head width")->valueint;
-	head->height = cJSON_GetObjectItem(obj, "head height")->valueint;
+	if(level == HUB)
+	{
+		Hub_Create(file);
+	}
+	else if(level == NIGHTMARE)
+	{
+		
+		root = cJSON_GetObjectItem(json, "nightmare");
+		if(!root)return;
+		obj = cJSON_GetObjectItem(root, "level load");
+		head = Node_New();
+		head->width = cJSON_GetObjectItem(obj, "head width")->valueint;
+		head->height = cJSON_GetObjectItem(obj, "head height")->valueint;
 
-	srand(time(NULL));
+		srand(time(NULL));
 
-	Node_RecursiveSubDivide(head, cJSON_GetObjectItem(obj, "divisions")->valueint);
-	Room_RecursiveCreateRoom(head, cJSON_GetObjectItem(obj, "room look")->valuestring);
+		Node_RecursiveSubDivide(head, cJSON_GetObjectItem(obj, "divisions")->valueint);
+		Room_RecursiveCreateRoom(head, cJSON_GetObjectItem(obj, "room look")->valuestring);
+	}
 }

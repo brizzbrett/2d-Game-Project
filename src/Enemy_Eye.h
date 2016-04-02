@@ -5,30 +5,34 @@
 #include "Enemy_Fire.h"
 
 /**
- * @brief	Entity load.
+ * @brief	Eye Entity load.
  *
- * @return	null if it fails, else a Entity*.
+ * @param x	The x coordinate.
+ * @param y	The y coordinate.
+ *
+ * @return	The Eye entity, if not null.
  */
 Entity *Eye_Load(int x, int y);
 
 /**
- * @brief	Entity think.
+ * @brief	Eye Entity think.
  *
- * @param [in,out]	Entity	If non-null, the Entity.
+ * @param eye	The entity that is thinking.
  */
 void Eye_Think(Entity *eye);
 
 /**
- * @brief	Entity update.
+ * @brief	Eye Entity update.
  *
- * @param [in,out]	Entity	If non-null, the Entity.
+ * @param eye	the entity that is updating.
  */
 void Eye_Update(Entity *eye);
 
 /**
  * @brief	Entity touch.
  *
- * @param [in,out]	Entity	If non-null, the Entity.
+ * @param eye	the entity that is checking for touching.
+ * @param other	the entity that is touching.
  */
 void Eye_Touch(Entity *eye, Entity *other);
 

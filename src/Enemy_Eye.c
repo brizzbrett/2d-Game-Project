@@ -105,22 +105,20 @@ void Eye_Update(Entity *eye)
 		finalPos = eye->pos;
 		Entity_Free(&eye);
 		if(itemPick % 3 == 0)
-			Pickup_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos));
 		else if(itemPick % 5 == 0)
-			Pickup_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos));
 		else
-			Pickup_Spawn(NULL);
+			Item_Spawn(NULL);
 	}
 	if(Camera_Intersect(eye))
 	{
 		eye->think = &Eye_Think;
-		eye->flag = 1;
 	}
 	else
 	{
 		if(!eye)return;
 		eye->think = NULL;
-		eye->flag = 0;
 	}
 	Entity_IntersectAll(eye);
 }

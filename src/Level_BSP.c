@@ -2,7 +2,7 @@
 
 Node *NList;
 int id = 96;
-Uint32 nodeMax = 100;
+Uint32 nodeMax = 1000;
 Uint32 numNodes = 0;
 
 Node *Node_New()
