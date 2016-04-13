@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "Level.h"
 
-BrettBool inDream = FALSE;
+bool inDream = FALSE;
 Entity *hub;
 void Item_Spawn(Entity *item)
 {
@@ -117,7 +117,8 @@ void Bed_Touch(Entity *bed, Entity *other)
 	Vec2d temp;
 	if(other == bed->target && !inDream)
 	{
-		Level_Load("def/nightmarecfg.txt", 1);
+		Level_Load(1);
+		//vec2d_Set(temp, bed->pos.x-200, bed->pos.y-450);
 		hub = bed;
 		inDream = TRUE;
 	}

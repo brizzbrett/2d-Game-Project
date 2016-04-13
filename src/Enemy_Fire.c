@@ -28,7 +28,7 @@ void Weapon_Fire(Entity *owner, Vec2d v)
 	shot->vel = vel;
 
 	shot->target = Entity_GetByType(PLAYER);
-	shot->owner = owner; //the entity firing owns this projectile
+	shot->owner = owner; 
 
 	pPos = shot->target->pos;	
 	vec2d_Subtract(pPos,shot->pos,shot->direction);

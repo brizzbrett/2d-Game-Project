@@ -1,0 +1,190 @@
+******NODES******
+NODE A-------------
+	POSITION-- X: 0, Y: 0 
+	SIZE-- W: 25600, H:14400
+	Children: B, C
+NODE B-------------
+	POSITION-- X: 0, Y: 0 
+	SIZE-- W: 12800, H:14400
+	Children: D, E
+NODE C-------------
+	POSITION-- X: 12800, Y: 0 
+	SIZE-- W: 12800, H:14400
+	Children: R, S
+NODE D-------------
+	POSITION-- X: 0, Y: 0 
+	SIZE-- W: 6400, H:14400
+	Children: F, G
+NODE E-------------
+	POSITION-- X: 6400, Y: 0 
+	SIZE-- W: 6400, H:14400
+	Children: L, M
+NODE F-------------
+	POSITION-- X: 0, Y: 0 
+	SIZE-- W: 6400, H:7200
+	Children: H, I
+NODE G-------------
+	POSITION-- X: 0, Y: 7200 
+	SIZE-- W: 6400, H:7200
+	Children: J, K
+NODE H-------------
+	POSITION-- X: 0, Y: 0 
+	SIZE-- W: 6400, H:3600
+NODE I-------------
+	POSITION-- X: 0, Y: 3600 
+	SIZE-- W: 6400, H:3600
+NODE J-------------
+	POSITION-- X: 0, Y: 7200 
+	SIZE-- W: 6400, H:3600
+NODE K-------------
+	POSITION-- X: 0, Y: 10800 
+	SIZE-- W: 6400, H:3600
+NODE L-------------
+	POSITION-- X: 6400, Y: 0 
+	SIZE-- W: 6400, H:7200
+	Children: N, O
+NODE M-------------
+	POSITION-- X: 6400, Y: 7200 
+	SIZE-- W: 6400, H:7200
+	Children: P, Q
+NODE N-------------
+	POSITION-- X: 6400, Y: 0 
+	SIZE-- W: 3200, H:7200
+NODE O-------------
+	POSITION-- X: 9600, Y: 0 
+	SIZE-- W: 3200, H:7200
+NODE P-------------
+	POSITION-- X: 6400, Y: 7200 
+	SIZE-- W: 3200, H:7200
+NODE Q-------------
+	POSITION-- X: 9600, Y: 7200 
+	SIZE-- W: 3200, H:7200
+NODE R-------------
+	POSITION-- X: 12800, Y: 0 
+	SIZE-- W: 12800, H:7200
+	Children: T, U
+NODE S-------------
+	POSITION-- X: 12800, Y: 7200 
+	SIZE-- W: 12800, H:7200
+	Children: Z, [
+NODE T-------------
+	POSITION-- X: 12800, Y: 0 
+	SIZE-- W: 12800, H:3600
+	Children: V, W
+NODE U-------------
+	POSITION-- X: 12800, Y: 3600 
+	SIZE-- W: 12800, H:3600
+	Children: X, Y
+NODE V-------------
+	POSITION-- X: 12800, Y: 0 
+	SIZE-- W: 12800, H:1800
+NODE W-------------
+	POSITION-- X: 12800, Y: 1800 
+	SIZE-- W: 12800, H:1800
+NODE X-------------
+	POSITION-- X: 12800, Y: 3600 
+	SIZE-- W: 6400, H:3600
+NODE Y-------------
+	POSITION-- X: 19200, Y: 3600 
+	SIZE-- W: 6400, H:3600
+NODE Z-------------
+	POSITION-- X: 12800, Y: 7200 
+	SIZE-- W: 6400, H:7200
+	Children: \, ]
+NODE [-------------
+	POSITION-- X: 19200, Y: 7200 
+	SIZE-- W: 6400, H:7200
+	Children: ^, _
+NODE \-------------
+	POSITION-- X: 12800, Y: 7200 
+	SIZE-- W: 6400, H:3600
+NODE ]-------------
+	POSITION-- X: 12800, Y: 10800 
+	SIZE-- W: 6400, H:3600
+NODE ^-------------
+	POSITION-- X: 19200, Y: 7200 
+	SIZE-- W: 6400, H:3600
+NODE _-------------
+	POSITION-- X: 19200, Y: 10800 
+	SIZE-- W: 6400, H:3600
+******LEAFS******
+NODE H----PARENT F----
+	POSITION-- X: 0, Y: 0
+	Room: A--
+		POSITION-- X: 0, Y: 0
+		SIZE-- W: 1600, H:900
+NODE I----PARENT F----
+	POSITION-- X: 0, Y: 3600
+	Room: B--
+		POSITION-- X: 0, Y: 3600
+		SIZE-- W: 1600, H:900
+NODE J----PARENT G----
+	POSITION-- X: 0, Y: 7200
+	Room: C--
+		POSITION-- X: 0, Y: 7200
+		SIZE-- W: 1600, H:900
+NODE K----PARENT G----
+	POSITION-- X: 0, Y: 10800
+	Room: D--
+		POSITION-- X: 0, Y: 10800
+		SIZE-- W: 1600, H:900
+NODE N----PARENT L----
+	POSITION-- X: 6400, Y: 0
+	Room: E--
+		POSITION-- X: 6400, Y: 0
+		SIZE-- W: 1600, H:900
+NODE O----PARENT L----
+	POSITION-- X: 9600, Y: 0
+	Room: F--
+		POSITION-- X: 9600, Y: 0
+		SIZE-- W: 1600, H:900
+NODE P----PARENT M----
+	POSITION-- X: 6400, Y: 7200
+	Room: G--
+		POSITION-- X: 6400, Y: 7200
+		SIZE-- W: 1600, H:900
+NODE Q----PARENT M----
+	POSITION-- X: 9600, Y: 7200
+	Room: H--
+		POSITION-- X: 9600, Y: 7200
+		SIZE-- W: 1600, H:900
+NODE V----PARENT T----
+	POSITION-- X: 12800, Y: 0
+	Room: I--
+		POSITION-- X: 12800, Y: 0
+		SIZE-- W: 1600, H:900
+NODE W----PARENT T----
+	POSITION-- X: 12800, Y: 1800
+	Room: J--
+		POSITION-- X: 12800, Y: 1800
+		SIZE-- W: 1600, H:900
+NODE X----PARENT U----
+	POSITION-- X: 12800, Y: 3600
+	Room: K--
+		POSITION-- X: 12800, Y: 3600
+		SIZE-- W: 1600, H:900
+NODE Y----PARENT U----
+	POSITION-- X: 19200, Y: 3600
+	Room: L--
+		POSITION-- X: 19200, Y: 3600
+		SIZE-- W: 1600, H:900
+NODE \----PARENT Z----
+	POSITION-- X: 12800, Y: 7200
+	Room: M--
+		POSITION-- X: 12800, Y: 7200
+		SIZE-- W: 1600, H:900
+NODE ]----PARENT Z----
+	POSITION-- X: 12800, Y: 10800
+	Room: N--
+		POSITION-- X: 12800, Y: 10800
+		SIZE-- W: 1600, H:900
+NODE ^----PARENT [----
+	POSITION-- X: 19200, Y: 7200
+	Room: O--
+		POSITION-- X: 19200, Y: 7200
+		SIZE-- W: 1600, H:900
+NODE _----PARENT [----
+	POSITION-- X: 19200, Y: 10800
+	Room: P--
+		POSITION-- X: 19200, Y: 10800
+		SIZE-- W: 1600, H:900

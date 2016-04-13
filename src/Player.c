@@ -19,6 +19,7 @@ Entity *Player_Load(int x, int y)
 
 		player->owner = NULL;
 		player->target = NULL;
+		player->sound = Sound_New("audio/punch.ogg",0,PLAYER_FX);
 
 		return player;
 	}
@@ -35,6 +36,7 @@ void Player_Think(Entity *player)
 	{
 		if(e.type == SDL_MOUSEBUTTONDOWN)
 		{
+			Sound_Player(player->sound);
 			Player_Attack();
 		}
 	}
@@ -88,7 +90,7 @@ void Player_Update(Entity *player)
 		player->flag = 1;	
 	}
 	vec2d_Add(player->pos, player->vel, player->pos);
-	slog("%f", player->health);
+	//slog("%f", player->health);
 	Entity_IntersectAll(player);
 }
 void Player_Touch(Entity *player, Entity *other)

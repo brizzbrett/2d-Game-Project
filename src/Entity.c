@@ -145,7 +145,7 @@ void Entity_CloseSystem()
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
 	for(i = 0; i < entMax; i++)
 	{
-		ent= &entList[i];
+		ent = &entList[i];
         Entity_Free(&ent);
 	}
 	free(entList);

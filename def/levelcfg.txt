@@ -1,0 +1,72 @@
+{"nightmare":{
+	"level load":{
+		"h width": 25600,
+		"h height": 14400,
+		"divisions": 1,
+		"room look": "images/room.png"
+	},
+	"level info":{
+	}
+},
+ "HUB":{
+	"level load":{
+		"base room":{
+			"posx": -1700,
+			"posy": 0,
+			"room look": "images/room.png"
+		},
+		"cowboy room":{
+			"posx": -3400,
+			"posy": -1000,
+			"room look": "images/room.png"
+		},
+		"future room":{
+			"posx": 0,
+			"posy": -1000,
+			"room look": "images/room.png"
+		},
+		"medieval room":{
+			"posx": -1700,
+			"posy": -5000,
+			"room look": "images/room.png"
+		},
+		"final room":{
+			"posx": -3400,
+			"posy": -4000,
+			"room look": "images/room.png"
+		},
+		"bath room":{
+			"posx": 0,
+			"posy": -2000,
+			"room look": "images/room.png"
+		},
+		"kitchen":{
+			"posx": -3400,
+			"posy": -3000,
+			"room look": "images/room.png"
+		},
+		"hall1":{
+			"posx": -1700,
+			"posy": -1000,
+			"room look": "images/room.png"
+		},
+		"hall2":{
+			"posx": -1700,
+			"posy": -2000,
+			"room look": "images/room.png"
+		},
+		"hall3":{
+			"posx": -1700,
+			"posy": -3000,
+			"room look": "images/room.png"
+		},
+		"hall4":{
+			"posx": -1700,
+			"posy": -4000,
+			"room look": "images/room.png"
+		}
+	},
+	"level info":{
+	}
+}
+}

@@ -7,13 +7,13 @@
 
 #include "graphics.h"
 #include "sprite.h"
+#include "Audio.h"
 #include "Vector.h"
 
 #include "Camera.h"
 #include "Level.h"
 
 void Init_All();
-static char *level = "def/levelcfg.txt";
 /**
  * @brief	Main entry-point for this application.
  * @param	argc	Number of command-line arguments.
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
 
-		Room_DrawAll();
+		//Room_DrawAll();
 		Entity_UpdateAll();
 		
 		NextFrame();		
@@ -51,8 +51,8 @@ void Init_All()
 {
 	
 	sprite_InitSystem();
+	Audio_InitSystem(128,3);
 	Entity_InitSystem(1000);
-	Node_InitSystem();
 	Graphics_Init("Dream a Way Out",1600,900,0);
-	Level_Load(level, 0);
+	Level_Load(0);
 }

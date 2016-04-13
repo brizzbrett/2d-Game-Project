@@ -5,11 +5,6 @@
 #include <math.h>
 #include "Camera.h"
 
-/**
- * @brief	Entity load.
- *
- * @return	null if it fails, else a Entity*.
- */
 Entity *Glop_Load(int x, int y)
 {
 	Entity *glop;
@@ -28,6 +23,9 @@ Entity *Glop_Load(int x, int y)
 
 		glop->owner = NULL;
 		glop->target = Entity_GetByType(PLAYER);
+
+		glop->sound = Sound_New("audio/glop.ogg",0,ENEMY_FX);
+
 		return glop;
 	}
 	return NULL;
@@ -73,11 +71,6 @@ void Glop_Think(Entity *glop)
 	}	
 }
 
-/**
- * @brief	Entity update.
- *
- * @param [in,out]	glop	If non-null, the glop.
- */
 void Glop_Update(Entity *glop)
 {
 	int itemPick;
@@ -87,7 +80,7 @@ void Glop_Update(Entity *glop)
 	vec2d_Set(glop->vel, 0.02, 0.02);
 	glop->target = Entity_GetByType(PLAYER);
 
-	if(rect_intersect(rect(glop->pos.x, glop->pos.y,100,100), glop->target->attack))
+	if(rect_intersect(rect(glop->pos.x+glop->bounds.x, glop->pos.y+glop->bounds.y,glop->bounds.w,glop->bounds.h), glop->target->attack))
 	{
 		itemPick = rand() % 30;
 		finalPos = glop->pos;
@@ -111,12 +104,6 @@ void Glop_Update(Entity *glop)
 	Entity_IntersectAll(glop);
 }
 
-/**
- * @brief	Entity touch.
- *
- * @param [in,out]	glop	If non-null, the glop.
- */
-
 void Glop_Touch(Entity *glop, Entity *other)
 {
 	if(other == glop->target)
@@ -125,6 +112,7 @@ void Glop_Touch(Entity *glop, Entity *other)
 		glop->target->health -= .5;
 		vec2d_Multiply(glop->velocity9, glop->force, glop->velocity9);
 		vec2d_Add(glop->target->pos,glop->velocity9,glop->target->pos);
+		Sound_Player(glop->sound);
 	}
 	if(other->type == BOULDER)
 	{

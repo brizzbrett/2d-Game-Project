@@ -1,39 +1,21 @@
 #include "Level.h"
 
-Node *NList;
-int id = 96;
-Uint32 nodeMax = 1000;
-Uint32 numNodes = 0;
+GList *NList;
+int id = 64;
 
-Node *Node_New()
+Node *Node_New(int x, int y, int width, int height, Node *parent)
 {
-	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
-	for(i = 0; i < nodeMax; i++)
-	{
-		if(NList[i].inuse)
-		{
-			continue;
-		}
+	Node *n = (Node *)malloc(sizeof(Node));
+	memset(n,0,sizeof(Node));
 
-		memset(&NList[i],0,sizeof(Node));
-		NList[i].id = 'a';
-		NList[i].inuse = 1;
-
-		numNodes++;
-
-		NList[i].room = NULL;
-		NList[i].width = 0;
-		NList[i].height = 0;
-		NList[i].split = 0;
-		vec2d_Set(NList[i].pos,0,0);
-		NList[i].parent = NULL;
-		NList[i].left = NULL;
-		NList[i].right = NULL;
-		NList[i].drawroom = &sprite_Draw;
-
-		return &NList[i];
-	}
-	return NULL;
+	n->id = ++id;
+	n->pos.x = x;
+	n->pos.y = y;
+	n->width = width;
+	n->height = height;
+	n->parent = parent;
+	NList = g_list_append(NList, n);
+	return n;
 }
 
 void Node_SubDivide(Node *n)
@@ -47,27 +29,17 @@ void Node_SubDivide(Node *n)
 		return;
 	}
 	n->split = rand() % 2;
-	n->id = ++id;
-	a = Node_New();
-	b = Node_New();
-	a->parent = n;
-	b->parent = n;
-	a->pos = n->pos;
+
 	if(n->split == SPLIT_VERTICAL)
 	{
 		size = n->width/2;
 
-		if(size < 250)
+		if(size < 1600)
 		{
 			return;
 		}
-
-		a->width = size;
-		b->width = n->width-size;
-		a->height = n->height;
-		b->height = n->height;
-		b->pos.x = n->pos.x+size;
-		b->pos.y = n->pos.y;
+		a = Node_New(n->pos.x,n->pos.y,size,n->height,n);
+		b = Node_New(n->pos.x+size,n->pos.y,n->width-size, n->height,n);
 
 		n->left = a;
 		n->right = b;
@@ -76,24 +48,22 @@ void Node_SubDivide(Node *n)
 	{
 		size = n->height/2;
 
-		if(size < 100)
+		if(size < 900)
 		{
 			return;
 		}
-
-		a->height = size;
-		b->height = n->height-size;
-		a->width = n->width;
-		b->width = n->width;
-		b->pos.x = n->pos.x;
-		b->pos.y = n->pos.y+size;
+		a = Node_New(n->pos.x,n->pos.y,n->width,size,n);
+		b = Node_New(n->pos.x,n->pos.y+size,n->width,n->height-size,n);
 
 		n->top = a;
 		n->bottom = b;
 	}
 	
 }	
-
+GList *NodeList_Get()
+{
+	return NList;
+}
 void Node_RecursiveSubDivide(Node *n, int count)
 {	
 
@@ -118,26 +88,27 @@ void Node_RecursiveSubDivide(Node *n, int count)
 //					DRAW FUNCTIONS					   //
 /////////////////////////////////////////////////////////
 
-void Room_DrawAll()
+/*void Room_DrawAll()
 {
 	Uint32 i;
+
 	for(i = 0; i < nodeMax; i++)
 	{
-		if(!NList[i].inuse)
+		if(!n->inuse)
 		{
 			continue;
 		}
-		if(!NList[i].drawroom)
+		if(!n->drawroom)
 		{
 			continue;
 		}
-		if(!NList[i].room)
+		if(!n->room)
 		{
 			continue;
 		}
-		NList[i].drawroom(NList[i].room->image, 0, Graphics_GetActiveRenderer(), NList[i].room->pos);
+		n->drawroom(n->room->image, 0, Graphics_GetActiveRenderer(), n->room->pos);
 	}
-}
+}*/
 
 /////////////////////////////////////////////////////////
 //					MEMORY MANAGEMENT				   //
@@ -146,9 +117,8 @@ void Room_DrawAll()
 void Node_Free(Node **n)
 {
 	//Entity *self; /**<alias for *ent*/
-
+	if(!(*n))return;
 	if(!n)return;
-	if(!*n)return;
 	if((*n)->room)
 	{
 		if((*n)->room->image)
@@ -165,18 +135,19 @@ void Node_Free(Node **n)
 
 void Node_CloseSystem()
 {
+	GList *g;
 	Node *n; /**<alias for *ent*/
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
-	for(i = 0; i < nodeMax; i++)
+	for(g = NList; g != NULL; g = g->next)
 	{
-		n = &NList[i];
+		n = (Node *)(g->data);
         Node_Free(&n);
 	}
-	free(NList);
-	NList = NULL;	
-	numNodes = 0;
-}
 
+	free(g);
+	NList = NULL;
+}
+/*
 void Node_InitSystem()
 {
 	if(nodeMax == 0)
@@ -186,6 +157,5 @@ void Node_InitSystem()
 	}
 	NList = (Node *)malloc(sizeof(Node)*nodeMax);
 	memset(NList,0,sizeof(Node)*nodeMax);
-	atexit(Node_CloseSystem);
-}
+}*/
 

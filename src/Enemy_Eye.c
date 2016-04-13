@@ -5,11 +5,6 @@
 #include <math.h>
 #include "Camera.h"
 
-/**
- * @brief	Entity load.
- *
- * @return	null if it fails, else a Entity*.
- */
 Entity *Eye_Load(int x, int y)
 {
 	Entity *eye;
@@ -35,11 +30,6 @@ Entity *Eye_Load(int x, int y)
 	return NULL;
 }
 
-/**
- * @brief	Entity think.
- *
- * @param [in,out]	eye	If non-null, the eye.
- */
 void Eye_Think(Entity *eye)
 {	
 
@@ -99,7 +89,7 @@ void Eye_Update(Entity *eye)
 			eye->frame = 1;
 		}
 	}	
-	if(rect_intersect(rect(eye->pos.x+25, eye->pos.y+25,75,75), eye->target->attack))
+	if(rect_intersect(rect(eye->pos.x+eye->bounds.x, eye->pos.y+eye->bounds.y,eye->bounds.w,eye->bounds.h), eye->target->attack))
 	{
 		itemPick = rand() % 30;
 		finalPos = eye->pos;

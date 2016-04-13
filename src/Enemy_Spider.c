@@ -7,11 +7,6 @@
 #include <random>
 #include <time.h>
 
-/**
- * @brief	Entity load.
- *
- * @return	null if it fails, else a Entity*.
- */
 Entity *Spider_Load(int x, int y)
 {
 	Entity *spider;
@@ -35,11 +30,6 @@ Entity *Spider_Load(int x, int y)
 	return NULL;
 }
 
-/**
- * @brief	Entity think.
- *
- * @param [in,out]	spider	If non-null, the spider.
- */
 void Spider_Think(Entity *spider)
 {	
 	Vec2d vel;
@@ -76,11 +66,6 @@ void Spider_Think(Entity *spider)
 	}
 }
 
-/**
- * @brief	Entity update.
- *
- * @param [in,out]	spider	If non-null, the spider.
- */
 void Spider_Update(Entity *spider)
 {
 	int itemPick;
@@ -122,7 +107,7 @@ void Spider_Update(Entity *spider)
 	{
 		spider->direction.y = -spider->direction.y;
 	}
-	if(rect_intersect(rect(spider->pos.x+25, spider->pos.y+25,75,75), spider->target->attack))
+	if(rect_intersect(rect(spider->pos.x+spider->bounds.x, spider->pos.y+spider->bounds.y,spider->bounds.w,spider->bounds.h), spider->target->attack))
 	{
 		itemPick = rand() % 30;
 		finalPos = spider->pos;
@@ -145,12 +130,6 @@ void Spider_Update(Entity *spider)
 	}
 	Entity_IntersectAll(spider);
 }
-
-/**
- * @brief	Entity touch.
- *
- * @param [in,out]	spider	If non-null, the spider.
- */
 
 void Spider_Touch(Entity *spider, Entity *other)
 {

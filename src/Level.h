@@ -2,6 +2,7 @@
 #define __LEVEL__H__
 
 #include "Entity.h"
+#include "Audio.h"
 #include "Camera.h"
 
 #include <string.h>
@@ -10,6 +11,7 @@
 #include <cmath>
 #include <time.h>
 #include <SDL.h>
+#include <glib.h>
 
 #define SPLIT_VERTICAL 0 /**<Node split macro for splitting vertically */
 #define SPLIT_HORIZONTAL 1 /**<Node split macro for splitting horizontally */
@@ -27,6 +29,7 @@ typedef struct Room_T
 	int numEnemy;							/**<Number of Enemies in the room */
 	int val;								/**<Room value */
 	struct Room_T *next;					/**<Linked List of rooms */
+	struct Node_S *owner;
 	Entity *north, *south, *east, *west;	/**<Door entities */
 
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
@@ -69,7 +72,7 @@ typedef struct Node_S
  * @param file	a string for the file that is being used to load the level
  * @param level	an int that tells the Level_Loader which level to load.
  */
-void Level_Load(char *file, Uint8 level);
+void Level_Load(Uint8 levelType);
 
 ////////////////////////////////////////////////////////////
 /////////////////////NODE FUNCTIONS/////////////////////////
@@ -79,7 +82,7 @@ void Level_Load(char *file, Uint8 level);
  *
  * @return	The Node being created.
  */
-Node *Node_New();
+Node *Node_New(int x, int y, int width, int height, Node *parent);
 
 /**
  * @brief	Node new.
@@ -104,7 +107,7 @@ void Node_CloseSystem();
  * @brief	Node initialise system.
  */
 void Node_InitSystem();
-
+GList *NodeList_Get();
 ////////////////////////////////////////////////////////////
 /////////////////////ROOM FUNCTIONS/////////////////////////
 ////////////////////////////////////////////////////////////
@@ -128,7 +131,7 @@ void Node_InitSystem();
  * @param file	a string for the file that is being used to load the room background
  * @param rtype	an int that tells which room type is being used.
  */
-Room *Room_New(Vec2d pos, char *file, int rtype);
+Room *Room_New(Vec2d pos, char *file, int rtype, Node *owner);
 
 /**
  * @brief	Creates a new door entity.
@@ -187,4 +190,7 @@ void Room_DrawAll();
  */
 void Hub_Create(char *file);
 
+GList *RoomList_Get();
+GList *LeafList_Get();
+void Door_Placer();
 #endif

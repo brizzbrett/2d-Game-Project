@@ -6,12 +6,14 @@
 #include "Enemy_Spider.h"
 #include "Pick_Ups.h"
 
-Room *roomList;
+static GList *roomList;
+static GList *leafList;
+Uint32 roomnum = 1;
 Uint32 length = 0;
-BrettBool set = TRUE;
+bool set = TRUE;
 Entity *p;
 
-Room *Room_New(Vec2d pos, char *file, int rtype)
+Room *Room_New(Vec2d pos, char *file, int rtype, Node *owner)
 {
 	Room *r;
 
@@ -39,7 +41,10 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 	r->pos = pos;
 	r->bounds = rect(r->pos.x+100,r->pos.y+100,r->size.x-200, r->size.x-200);
 	vec2d_Set(boulderPos,r->pos.x+randomBoulderX,r->pos.y+randomBoulderY);
-	r->image = sprite_Load(file,r->size.x,r->size.y);		
+	r->image = sprite_Load(file,r->size.x,r->size.y);	
+	r->val = roomnum;
+	r->owner = owner;
+	roomnum += 1;
 	if(!p)
 	{
 		p = Player_Load(r->pos.x+775,r->pos.y+600);
@@ -51,9 +56,7 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 	if(rtype == RTYPE_HUBR)
 	{
 		Item_Spawn(Bed_New(boulderPos));
-	}
-	//r->draw = &sprite_Draw;
-	//r->draw(r->image, 0, Graphics_GetActiveRenderer(), r->pos);	
+	}	
 	if(rtype != RTYPE_HUBR && rtype != RTYPE_HUBH && rtype != RTYPE_HUBM)
 	{
 		r->type = RTYPE_NORMAL;
@@ -106,6 +109,8 @@ Room *Room_New(Vec2d pos, char *file, int rtype)
 			}
 		}
 	}
+	if(r->owner)
+		roomList = g_list_append(roomList, r);
 	return r;
 }
 
@@ -164,7 +169,14 @@ Room *Room_Get(Node *n)
 		}
 	}
 }
-
+GList *RoomList_Get()
+{
+	return roomList;
+}
+GList *LeafList_Get()
+{
+	return leafList;
+}
 void Room_RecursiveCreateRoom(Node *n, char *file)
 {
 	if(n->left || n->right)
@@ -185,10 +197,22 @@ void Room_RecursiveCreateRoom(Node *n, char *file)
 	}
 	else
 	{
-		n->room = Room_New(n->pos, file, 2);		
+		leafList = g_list_append(leafList, n);
+		n->room = Room_New(n->pos, file, 2, n);		
 	}
 }
-
+void Door_Placer()
+{
+	GList *g;
+	Room *left;
+	Room *right;
+	for (g = RoomList_Get(); g != NULL; g = g->next->next)
+	{
+		left = (Room *)(g->data);
+		right = (Room *)(g->next->data);
+		Room_Link(left, right, left->owner->parent->split);
+	}
+}
 void Room_Link(Room *l, Room *r, int split)
 {
 	if(split == SPLIT_HORIZONTAL) //if parent was split horizontally, 
@@ -224,6 +248,8 @@ void Room_Link(Room *l, Room *r, int split)
 // 
 void Door_Think(Entity *door)
 {
+	GList *l;
+	Room *r;
 	if(SDL_GetTicks() >= door->nextThink)
 	{
 		door->touch = &Door_Touch;

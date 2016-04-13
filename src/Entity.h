@@ -6,17 +6,10 @@
 #include <SDL.h>
 #include "SDL_image.h"
 #include "Sprite.h"
+#include "Audio.h"
 #include "simple_logger.h"
 #include "cJSON.h"
 
-/**
- * @brief	Boolean type enum
- */
-enum BrettBool
-{
-	FALSE,	/**<If 0, then false */
-	TRUE	/**<If 1, then true */
-};
 /**
  * @brief	EntityType enum
  */
@@ -55,6 +48,7 @@ typedef struct Entity_S
 	Vec2d force;		/**<Forec in vector 2d */
 
 	Sprite *sprite;		/**<Entity sprite info */
+	Sound *sound;
 
 	SDL_Rect bounds;	/**<The collision bounds */
 	SDL_Rect attack;	/**<The attacking bounds (for player) */
