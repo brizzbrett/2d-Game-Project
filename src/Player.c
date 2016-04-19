@@ -21,6 +21,9 @@ Entity *Player_Load(int x, int y)
 		player->target = NULL;
 		player->sound = Sound_New("audio/punch.ogg",0,PLAYER_FX);
 
+		player->set = FALSE;
+
+		player->levelin = NULL;
 		return player;
 	}
 	return NULL;
@@ -34,13 +37,14 @@ void Player_Think(Entity *player)
 
 	if( SDL_PollEvent( &e ) != 0 )
 	{
-		if(e.type == SDL_MOUSEBUTTONDOWN)
+		if(e.type == SDL_MOUSEBUTTONDOWN && SDL_GetTicks() >= player->nextThink)
 		{
 			Sound_Player(player->sound);
 			Player_Attack();
+			player->nextThink = SDL_GetTicks() + player->thinkRate;
 		}
 	}
-	if(SDL_GetTicks() >= player->nextThink)
+	if(SDL_GetTicks() >= player->nextThink+100)
 	{
 		player->attack = rect(0,0,0,0); 
 		player->nextThink = SDL_GetTicks() + player->thinkRate;
@@ -56,14 +60,17 @@ void Player_Update(Entity *player)
 	{
 		player->direction.y = -1;
 		player->vel.y = player->direction.y * player->speed;
-		
 		player->frame = 2;
+
+		//player->set = FALSE;
 	}
 	else if(keys[SDL_SCANCODE_S])
 	{
 		player->direction.y = 1;
 		player->vel.y = player->direction.y * player->speed;
 		player->frame = 1;
+
+		//player->set = FALSE;
 	}
 	else
 	{
@@ -74,12 +81,14 @@ void Player_Update(Entity *player)
 		player->direction.x = -1;
 		player->vel.x = player->direction.x * player->speed;
 		player->frame = 3;
+		//player->set = FALSE;
 	}
 	else if(keys[SDL_SCANCODE_D])
 	{
 		player->direction.x = 1;
 		player->vel.x = player->direction.x * player->speed;
 		player->frame = 0;
+		//player->set = FALSE;
 	}
 	else
 	{
@@ -90,7 +99,7 @@ void Player_Update(Entity *player)
 		player->flag = 1;	
 	}
 	vec2d_Add(player->pos, player->vel, player->pos);
-	//slog("%f", player->health);
+	slog("%f", player->health);
 	Entity_IntersectAll(player);
 }
 void Player_Touch(Entity *player, Entity *other)

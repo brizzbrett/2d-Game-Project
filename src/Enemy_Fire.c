@@ -64,9 +64,15 @@ void Weapon_Update(Entity *shot)
 		Entity_Free(&shot);
 		return;
 	}	
-	shot->target = Entity_GetByType(PLAYER);
+	//shot->target = Entity_GetByType(PLAYER);
 	vec2d_Add(shot->pos, shot->vel, shot->pos);
-
+	if(rect_intersect(rect(shot->pos.x+shot->bounds.x, shot->pos.y+shot->bounds.y,shot->bounds.w,shot->bounds.h), shot->target->attack))
+	{
+		vec2d_Negate(shot->velocity9, shot->vel);
+		shot->vel = shot->velocity9;
+		shot->target = shot->owner;
+		shot->owner = Entity_GetByType(PLAYER);
+	}
 
 	Entity_IntersectAll(shot);
 }

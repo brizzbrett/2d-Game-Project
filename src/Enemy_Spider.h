@@ -13,7 +13,7 @@
  * @return	The spider entity, if not null.
  */
 
-Entity *Spider_Load(int x, int y);
+Entity *Spider_Load(int x, int y, int levelin);
 
 
 /**

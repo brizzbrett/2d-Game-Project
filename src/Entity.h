@@ -9,6 +9,7 @@
 #include "Audio.h"
 #include "simple_logger.h"
 #include "cJSON.h"
+#include <glib.h>
 
 /**
  * @brief	EntityType enum
@@ -42,6 +43,7 @@ typedef struct Entity_S
 	int id;				/**<The entities id */
 
 	Vec2d pos;			/**<Position in vector 2d */
+	Vec2d levelPos;
 	Vec2d vel;			/**<Velocity in vector 2d */
 	Vec2d velocity9;	/**<Manipulated Velocity in vector 2d */
 	Vec2d direction;	/**<Direction in vector 2d */
@@ -64,6 +66,12 @@ typedef struct Entity_S
 	int fireRate;		/**<The rate of fire */
 
 	int flag;			/**<Misc flag usage */
+
+	bool set;
+
+	int levelin;
+
+	int bedLevel;
 
 	struct Entity_S *owner;		/**<The Entity that owns this entity, if it has one */
 	struct Entity_S *target;	/**<The Entity that this entity is targeting */
@@ -97,6 +105,7 @@ void Entity_Free(Entity **ent);
  */
 void Entity_CloseSystem();
 
+void Entity_FreeByLevel(int level);
 /**
  * @brief	Entity initialise system.
  * 			
@@ -160,5 +169,5 @@ Entity *Entity_GetByType(EntityType type);
  */
 int Entity_GetNum();
 
-
+GList *EntList_Get();
 #endif

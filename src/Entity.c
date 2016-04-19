@@ -5,10 +5,10 @@
 #include <string.h>
 
 #include "Camera.h"
-#include "Level.h"
 
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
+GList *g_entList;
 Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
 
 Entity *Entity_New(EntityType type, Vec2d pos)
@@ -116,6 +116,7 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		entList[i].touch = NULL;
 
 		free(ent);
+		g_entList = g_list_append(g_entList, &entList[i]);
 		return &entList[i];
 	}
 	return NULL;
@@ -138,21 +139,53 @@ void Entity_Free(Entity **ent)
 	*ent = NULL;
 
 }
-
+void Entity_FreeByLevel(int level)
+{
+	Entity *ent; /**<alias for *ent*/
+	GList *g;
+	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
+	for(i = 0; i < entMax; i++)
+	{
+		ent = &entList[i];
+		if(ent->levelin == level)
+		{
+			Entity_Free(&ent);
+		}
+	}
+	for (g = EntList_Get(); g != NULL; g = g->next)
+	{
+		ent = (Entity *)(g->data);
+        if(ent->levelin == level)
+		{
+			Entity_Free(&ent);
+		}
+	}
+}
 void Entity_CloseSystem()
 {
 	Entity *ent; /**<alias for *ent*/
+	GList *g;
 	Uint32 i; /**<unsigned integer used for incrementing a for loop*/
 	for(i = 0; i < entMax; i++)
 	{
 		ent = &entList[i];
         Entity_Free(&ent);
 	}
+	for (g = EntList_Get(); g != NULL; g = g->next)
+	{
+		ent = (Entity *)(g->data);
+        Entity_Free(&ent);
+	}
 	free(entList);
+	free(g);
+	g_entList = NULL;
 	entList = NULL;	
 	numEnt = 0;
 }
-
+GList *EntList_Get()
+{
+	return g_entList;
+}
 void Entity_InitSystem(Uint32 ent_Max)
 {
 	if(entMax == 0)

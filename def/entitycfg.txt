@@ -20,7 +20,7 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100,
+			"think rate": 50,
 			"next fire": 0,
 			"fire rate": 0
 		}
@@ -73,7 +73,7 @@
 		},
 		"info": 
 		{
-			"health": 4.0,
+			"health": 1.0,
 			"max health": 4,
 			"strength": 3,
 			"speed": 5,

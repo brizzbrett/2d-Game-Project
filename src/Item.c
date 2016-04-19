@@ -1,17 +1,17 @@
-#include "Pick_Ups.h"
+#include "Items.h"
 #include "Camera.h"
 #include "Level.h"
 
 bool inDream = FALSE;
 Entity *hub;
-void Item_Spawn(Entity *item)
+void Item_Spawn(Entity *item, int levelin)
 {
 	if(!item) return;
 
 	item->update = &Item_Update;
 	item->think = NULL;
 	item->target = Entity_GetByType(PLAYER);
-
+	item->levelin = levelin;
 	item->nextThink = SDL_GetTicks() + 8000;
 	item->thinkRate = 0;
 }
@@ -44,18 +44,20 @@ Entity *Boulder_New(Vec2d pos)
 
 	return boulder;
 }
-Entity *Bed_New(Vec2d pos)
+Entity *Bed_New(Vec2d pos, int bedlvl)
 {
 	Entity *bed;
 	bed = Entity_New(BED, pos);
 	if(!bed)return NULL;
 	bed->touch = &Bed_Touch;
+	bed->bedLevel = bedlvl;
 
 	return bed;
 }
 
 void Item_Update(Entity *item)
 {
+	
 	item->target = Entity_GetByType(PLAYER);
 	Entity_IntersectAll(item);
 	if(Camera_Intersect(item) && item->type != BOULDER && item->type != BED)
@@ -114,11 +116,27 @@ void Boulder_Touch(Entity *boulder, Entity *other)
 }
 void Bed_Touch(Entity *bed, Entity *other)
 {
+	
 	Vec2d temp;
 	if(other == bed->target && !inDream)
 	{
-		Level_Load(1);
-		//vec2d_Set(temp, bed->pos.x-200, bed->pos.y-450);
+		if(bed->bedLevel == 1)
+		{
+			Level_Load(1);
+		}
+		if(bed->bedLevel == 2)
+		{
+			Level_Load(3);
+		}
+		if(bed->bedLevel == 3)
+		{
+			Level_Load(2);
+		}
+		if(bed->bedLevel == 4)
+		{
+			Level_Load(4);
+		}
+
 		hub = bed;
 		inDream = TRUE;
 	}
@@ -129,9 +147,11 @@ void Bed_Touch(Entity *bed, Entity *other)
 		vec2d_Set(temp, hub->pos.x-200, hub->pos.y-450);
 		Camera_SetPosition(temp);
 		inDream = FALSE;
+		Level_Closer(hub->bedLevel);
 	}
 	else
 	{
 		vec2d_Set(other->vel,0,0);
 	}
+	bed->touch = NULL;
 }

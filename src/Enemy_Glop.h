@@ -13,7 +13,7 @@ typedef Entity Entity;
  *
  * @return	The Glop Entity, if not null.
  */
-Entity *Glop_Load(int x, int y);
+Entity *Glop_Load(int x, int y, int levelin);
 
 /**
  * @brief	Glop Entity think.

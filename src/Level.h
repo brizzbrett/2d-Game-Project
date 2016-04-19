@@ -28,40 +28,25 @@ typedef struct Room_T
 	Sprite *image;							/**<The room background image */
 	int numEnemy;							/**<Number of Enemies in the room */
 	int val;								/**<Room value */
-	struct Room_T *next;					/**<Linked List of rooms */
-	struct Node_S *owner;
+
+	int levelin;
+
+	struct Room_T *nroom, *sroom, *eroom, *wroom;
 	Entity *north, *south, *east, *west;	/**<Door entities */
 
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
+	void (*touch)(struct Room_T *r, Entity *other);
 }Room;
 
-/**
- * @brief	Defines the structure for a Node data type.
- */
-typedef struct Node_S
+typedef struct Level_S
 {
-	char id;				/**<Node id */
-	int inuse;				/**<Node inuse flag */
-	Room *room;				/**<Room inside this node */
-
-	int width;				/**<Node width */
-	int height;				/**<Node height */
-	int split;				/**<The split this node is doing */
-	Vec2d pos;				/**<Position of the node */
-	struct Node_S *parent;	/**<The parent of this node */
-	union
-	{
-		Node_S *left;		/**<The left child node */
-		Node_S *top;		/**<The top child node */
-	};
-	union
-	{
-		Node_S *right;		/**<The right child node */
-		Node_S *bottom;		/**<The bottom child node */
-	};
-
-	void (*drawroom)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos); /**<Draw room function pointer */
-}Node;
+	GList *g;
+	Room *r;
+	char *data;
+	FILE *f;
+	long len;
+	Music *bk_music;
+}Level;
 
 ////////////////////////////////////////////////////////////
 ///////////////////LEVEL LOADER FUNCTIONS///////////////////
@@ -74,40 +59,6 @@ typedef struct Node_S
  */
 void Level_Load(Uint8 levelType);
 
-////////////////////////////////////////////////////////////
-/////////////////////NODE FUNCTIONS/////////////////////////
-////////////////////////////////////////////////////////////
-/**
- * @brief	Node new.
- *
- * @return	The Node being created.
- */
-Node *Node_New(int x, int y, int width, int height, Node *parent);
-
-/**
- * @brief	Node new.
- *
- * @param n	The node being subdivided
- * @param count The number of subdivisions
- */
-void Node_RecursiveSubDivide(Node *n, int count);
-/**
- * @brief	Node free.
- *
- * @param *n	The node being freed.
- */
-void Node_Free(Node **n);
-
-/**
- * @brief	Node close system.
- */
-void Node_CloseSystem();
-
-/**
- * @brief	Node initialise system.
- */
-void Node_InitSystem();
-GList *NodeList_Get();
 ////////////////////////////////////////////////////////////
 /////////////////////ROOM FUNCTIONS/////////////////////////
 ////////////////////////////////////////////////////////////
@@ -131,7 +82,10 @@ GList *NodeList_Get();
  * @param file	a string for the file that is being used to load the room background
  * @param rtype	an int that tells which room type is being used.
  */
-Room *Room_New(Vec2d pos, char *file, int rtype, Node *owner);
+Room *Room_New(Vec2d pos, char *file, int rtype, int levelin);
+void Room_Free(Room **r);
+void Room_FreeByLevel(int level);
+void Room_MobMaker(Room *r, int rtype, int levelin);
 
 /**
  * @brief	Creates a new door entity.
@@ -141,15 +95,10 @@ Room *Room_New(Vec2d pos, char *file, int rtype, Node *owner);
  *
  * @return	A door entity with door information.
  */
-Entity *Door_New(int x, int y);
+Entity *Door_New(int x, int y, EntityType type, int levelin);
 
-/**
- * @brief	Creates rooms using a BSP Tree recursively.
- *
- * @param b	The head node of the created tree.
- * @param file The file of the background for the room being created
- */
-void Room_RecursiveCreateRoom(Node *n, char *file);
+void Level_Maker(char *file, int levelin);
+void Level_Closer(int level);
 
 /**
  * @brief	Links rooms by creating Door entities.
@@ -158,7 +107,9 @@ void Room_RecursiveCreateRoom(Node *n, char *file);
  * @param r	The right or bottom room
  * @param split The node split of the parent
  */
-void Room_Link(Room *l, Room *r, int split);
+void Room_Link(Room *l, Room *r, int split, int levelin);
+
+void Room_Touch(Room *r, Entity *other);
 
 /**
  * @brief	Door Entity Think.

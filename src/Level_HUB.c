@@ -102,17 +102,17 @@ void Hub_Create(char *file)
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
 	r[10] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBM, NULL);
-	Room_Link(r[1],r[0],SPLIT_HORIZONTAL);/**<Hall 1 to Base Room*/
-	Room_Link(r[2],r[1],SPLIT_HORIZONTAL);/**<Hall 2 to Hall 1*/
-	Room_Link(r[1],r[5],SPLIT_VERTICAL);/**<Cowboy Room to Hall 1*/
-	Room_Link(r[6],r[1],SPLIT_VERTICAL);/**<Hall 1 to Future Room*/
-	Room_Link(r[2],r[9],SPLIT_VERTICAL);/**<Hall 2 to Bath Room*/
-	Room_Link(r[3],r[2],SPLIT_HORIZONTAL);/**<Hall 3 to Hall 2*/
-	Room_Link(r[10],r[3],SPLIT_VERTICAL);/**<Kitchen to Hall 3*/
-	Room_Link(r[8],r[10],SPLIT_HORIZONTAL);/**<Final Room to Kitchen*/
-	Room_Link(r[4],r[3],SPLIT_HORIZONTAL);/**<Hall 4 to Hall 3*/
-	Room_Link(r[8],r[4],SPLIT_VERTICAL);/**<Final Room to Hall 4*/
-	Room_Link(r[7],r[4],SPLIT_HORIZONTAL);/**<Medieval Room to Hall 4*/
+	Room_Link(r[1],r[0],SPLIT_HORIZONTAL, NULL);/**<Hall 1 to Base Room*/
+	Room_Link(r[2],r[1],SPLIT_HORIZONTAL, NULL);/**<Hall 2 to Hall 1*/
+	Room_Link(r[1],r[5],SPLIT_VERTICAL, NULL);/**<Cowboy Room to Hall 1*/
+	Room_Link(r[6],r[1],SPLIT_VERTICAL, NULL);/**<Hall 1 to Future Room*/
+	Room_Link(r[2],r[9],SPLIT_VERTICAL, NULL);/**<Hall 2 to Bath Room*/
+	Room_Link(r[3],r[2],SPLIT_HORIZONTAL, NULL);/**<Hall 3 to Hall 2*/
+	Room_Link(r[10],r[3],SPLIT_VERTICAL, NULL);/**<Kitchen to Hall 3*/
+	Room_Link(r[8],r[10],SPLIT_HORIZONTAL, NULL);/**<Final Room to Kitchen*/
+	Room_Link(r[4],r[3],SPLIT_HORIZONTAL, NULL);/**<Hall 4 to Hall 3*/
+	Room_Link(r[8],r[4],SPLIT_VERTICAL, NULL);/**<Final Room to Hall 4*/
+	Room_Link(r[7],r[4],SPLIT_HORIZONTAL, NULL);/**<Medieval Room to Hall 4*/
 
 	free(data);
 	json = NULL;

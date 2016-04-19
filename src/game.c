@@ -14,6 +14,7 @@
 #include "Level.h"
 
 void Init_All();
+void Update_All();
 /**
  * @brief	Main entry-point for this application.
  * @param	argc	Number of command-line arguments.
@@ -30,13 +31,7 @@ int main(int argc, char *argv[])
 	done = 0;
 	do
 	{
-		SDL_RenderClear(Graphics_GetActiveRenderer());
-
-		//Room_DrawAll();
-		Entity_UpdateAll();
-		
-		NextFrame();		
-		SDL_PumpEvents();
+		Update_All();
 
 		keys = SDL_GetKeyboardState(NULL);
 		if(keys[SDL_SCANCODE_ESCAPE])done = 1;
@@ -55,4 +50,15 @@ void Init_All()
 	Entity_InitSystem(1000);
 	Graphics_Init("Dream a Way Out",1600,900,0);
 	Level_Load(0);
+}
+/** @brief	Updates all every frame */
+void Update_All()
+{
+		SDL_RenderClear(Graphics_GetActiveRenderer());
+
+		Room_DrawAll();
+		Entity_UpdateAll();
+		
+		NextFrame();		
+		SDL_PumpEvents();
 }

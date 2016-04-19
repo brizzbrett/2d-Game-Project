@@ -8,7 +8,7 @@
  *
  * @return	The item entity being created, if not null.
  */
-void Item_Spawn(Entity *item);
+void Item_Spawn(Entity *item, int levelin);
 
 /**
  * @brief	Item Entity Update.
@@ -57,7 +57,7 @@ Entity *Boulder_New(Vec2d pos);
  * @param pos	The position.
  * @return	The Bed entity being created, if not null.
  */
-Entity *Bed_New(Vec2d pos);
+Entity *Bed_New(Vec2d pos, int bedlvl);
 
 /**
  * @brief	Item Entity Touch.

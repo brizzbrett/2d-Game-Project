@@ -1,5 +1,5 @@
 #include "Enemy_Spider.h"
-#include "Pick_Ups.h"
+#include "Items.h"
 #include "Camera.h"
 
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <random>
 #include <time.h>
 
-Entity *Spider_Load(int x, int y)
+Entity *Spider_Load(int x, int y, int levelin)
 {
 	Entity *spider;
 	Vec2d gPos;
@@ -25,6 +25,8 @@ Entity *Spider_Load(int x, int y)
 
 		spider->owner = NULL;
 		spider->target = Entity_GetByType(PLAYER);
+
+		spider->levelin = levelin;
 		return spider;
 	}
 	return NULL;
@@ -41,14 +43,14 @@ void Spider_Think(Entity *spider)
 	spider->target = Entity_GetByType(PLAYER);
 	if(SDL_GetTicks() >= spider->nextThink)
 	{
-		srand(time(NULL));
-		randX = rand() % 2;
-		randY = rand() % 2;
-		if(randX == 0)
+		//srand(time(NULL));
+		randX = rand() % 4;
+		randY = rand() % 4;
+		if(randX % 2 == 0)
 			spider->direction.x = -1;
 		else
 			spider->direction.x = 1;
-		if(randY == 0)
+		if(randY % 2 != 0)
 			spider->direction.y = -1;
 		else
 			spider->direction.y = 1;
@@ -113,11 +115,15 @@ void Spider_Update(Entity *spider)
 		finalPos = spider->pos;
 		Entity_Free(&spider);
 		if(itemPick % 3 == 0)
-			Item_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos),0);
 		else if(itemPick % 5 == 0)
-			Item_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos),0);
 		else
-			Item_Spawn(NULL);
+			Item_Spawn(NULL,0);
+	}
+	if(spider && spider->health <= 0)
+	{
+		Entity_Free(&spider);
 	}
 	if(Camera_Intersect(spider))
 	{

@@ -12,7 +12,7 @@
  *
  * @return	The Eye entity, if not null.
  */
-Entity *Eye_Load(int x, int y);
+Entity *Eye_Load(int x, int y, int levelin);
 
 /**
  * @brief	Eye Entity think.

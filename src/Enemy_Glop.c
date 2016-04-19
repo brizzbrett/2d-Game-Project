@@ -1,11 +1,11 @@
 #include "Enemy_Glop.h"
-#include "Pick_Ups.h"
+#include "Items.h"
 
 #include <stdlib.h>
 #include <math.h>
 #include "Camera.h"
 
-Entity *Glop_Load(int x, int y)
+Entity *Glop_Load(int x, int y, int levelin)
 {
 	Entity *glop;
 	Vec2d gPos;
@@ -26,6 +26,7 @@ Entity *Glop_Load(int x, int y)
 
 		glop->sound = Sound_New("audio/glop.ogg",0,ENEMY_FX);
 
+		glop->levelin = levelin;
 		return glop;
 	}
 	return NULL;
@@ -86,11 +87,11 @@ void Glop_Update(Entity *glop)
 		finalPos = glop->pos;
 		Entity_Free(&glop);
 		if(itemPick % 3 == 0)
-			Item_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos),0);
 		else if(itemPick % 5 == 0)
-			Item_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos),0);
 		else
-			Item_Spawn(NULL);	
+			Item_Spawn(NULL,0);	
 	}
 	if(Camera_Intersect(glop))
 	{

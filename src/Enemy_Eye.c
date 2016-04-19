@@ -1,11 +1,11 @@
 #include "Enemy_Eye.h"
-#include "Pick_Ups.h"
+#include "Items.h"
 
 #include <stdlib.h>
 #include <math.h>
 #include "Camera.h"
 
-Entity *Eye_Load(int x, int y)
+Entity *Eye_Load(int x, int y, int levelin)
 {
 	Entity *eye;
 	Vec2d gPos;
@@ -25,6 +25,8 @@ Entity *Eye_Load(int x, int y)
 
 		eye->owner = NULL;
 		eye->target = Entity_GetByType(PLAYER);
+
+		eye->levelin = levelin;
 		return eye;
 	}
 	return NULL;
@@ -95,11 +97,15 @@ void Eye_Update(Entity *eye)
 		finalPos = eye->pos;
 		Entity_Free(&eye);
 		if(itemPick % 3 == 0)
-			Item_Spawn(Pickup_Heart_New(finalPos));
+			Item_Spawn(Pickup_Heart_New(finalPos),0);
 		else if(itemPick % 5 == 0)
-			Item_Spawn(Pickup_TempHeart_New(finalPos));
+			Item_Spawn(Pickup_TempHeart_New(finalPos),0);
 		else
-			Item_Spawn(NULL);
+			Item_Spawn(NULL, 0);
+	}
+	if(eye && eye->health <= 0)
+	{
+		Entity_Free(&eye);
 	}
 	if(Camera_Intersect(eye))
 	{

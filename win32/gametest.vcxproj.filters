@@ -54,13 +54,7 @@
     <ClCompile Include="..\src\Enemy_Spider.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Pick_Ups.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Level_Rooms.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Level_BSP.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Level_Loader.c">
@@ -76,6 +70,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Level_HUB.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Item.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,9 +113,6 @@
     <ClInclude Include="..\src\Enemy_Spider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Pick_Ups.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -126,6 +120,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
