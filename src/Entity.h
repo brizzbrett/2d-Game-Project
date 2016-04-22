@@ -16,6 +16,7 @@
  */
 enum EntityType
 {
+	NONE,
 	PLAYER,				/**<Player entities */
 	GLOP,				/**<Glop entities */
 	EYE,				/**<Eye entities */
@@ -26,10 +27,12 @@ enum EntityType
 	PICKUP_TEMPHEART,	/**<Temporary Heart pickup entities */
 	BOULDER,			/**<Boulder entities */
 	BED,				/**<Bed entities */
+	KEY,				/**<Key entities */
 	SDOOR,				/**<South door entities */
 	NDOOR,				/**<North door entities */
 	EDOOR,				/**<East door entities */
 	WDOOR,				/**<West door entities */
+	BDOOR,				/**<Boss door */
 	OTHER,				/**<Any other entity that I did not catch */
 };
 
@@ -40,9 +43,11 @@ typedef struct Entity_S
 {
 	int inuse;			/**<Entity inuse flag */
 	EntityType type;	/**<The entities type */
+	EntityType boss;
 	int id;				/**<The entities id */
 
 	Vec2d pos;			/**<Position in vector 2d */
+	Vec2d startPos;
 	Vec2d levelPos;
 	Vec2d vel;			/**<Velocity in vector 2d */
 	Vec2d velocity9;	/**<Manipulated Velocity in vector 2d */
@@ -59,6 +64,8 @@ typedef struct Entity_S
 
 	float health;		/**<Entity health, if have */
 	int maxHealth, speed, strength;	/**<Entity max health, speed and strength, if have */
+
+	int keys;
 
 	int nextThink;		/**<The next think for an entity */
 	int thinkRate;		/**<The rate of thinking */

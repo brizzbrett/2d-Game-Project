@@ -224,6 +224,8 @@ void vec3d_AngleToVector(Vec3d angles, Vec3d *forward, Vec3d *right, Vec3d *up);
  * @return	A float of the length.
  */
 float vec2d_GetLength(Vec2d vec);
+
+float vec2d_GetDistanceSquared(Vec2d vec, Vec2d vec2);
 /**
  * @brief	Vector 3D get length.
  * @param	vec	The vector you want the length of.

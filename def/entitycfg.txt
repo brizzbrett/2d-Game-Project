@@ -2,25 +2,25 @@
 	"player": {
 		"imagefiles": {
 			"file": "images/playersheet.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 64,
+			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 19,
+			"y": 3,
+			"w": 26,
+			"h": 59
 		},
 		"info": 
 		{
 			"health": 4.0,
 			"max health": 4,
 			"strength": 3,
-			"speed": 5,
+			"speed": 3,
 			"next think": 0,
-			"think rate": 50,
+			"think rate": 100,
 			"next fire": 0,
 			"fire rate": 0
 		}
@@ -31,16 +31,16 @@
 		"imagefiles": 
 		{
 			"file": "images/glopsheet.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 64,
+			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 40,
-			"y": 40,
-			"w": 60,
-			"h": 113
+			"x": 20,
+			"y": 20,
+			"w": 30,
+			"h": 57
 		},
 		"info": 
 		{
@@ -60,16 +60,16 @@
 		"imagefiles": 
 		{
 			"file": "images/eyesheet.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 64,
+			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 25,
-			"y": 25,
-			"w": 50,
-			"h": 50
+			"x": 13,
+			"y": 13,
+			"w": 25,
+			"h": 25
 		},
 		"info": 
 		{
@@ -89,16 +89,16 @@
 		"imagefiles": 
 		{
 			"file": "images/spidersheet.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 64,
+			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 25,
-			"y": 25,
-			"w": 78,
-			"h": 78
+			"x": 13,
+			"y": 13,
+			"w": 39,
+			"h": 39
 		},
 		"info": 
 		{
@@ -118,16 +118,16 @@
 		"imagefiles": 
 		{
 			"file": "images/shot.png",
-			"fw": 100,
-			"fh": 100,
+			"fw": 50,
+			"fh": 50,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 25,
-			"y": 25,
-			"w": 25,
-			"h": 25
+			"x": 18,
+			"y": 18,
+			"w": 13,
+			"h": 13
 		},
 		"info": 
 		{
@@ -147,8 +147,8 @@
 		"imagefiles": 
 		{
 			"file": "images/playersheet.png",
-			"fw": 128,
-			"fh": 128,
+			"fw": 64,
+			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
@@ -175,16 +175,16 @@
 		"imagefiles": 
 		{
 			"file": "images/heart.png",
-			"fw": 100,
-			"fh": 100,
+			"fw": 50,
+			"fh": 50,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 36,
-			"y": 39,
-			"w": 27,
-			"h": 25
+			"x": 18,
+			"y": 18,
+			"w": 14,
+			"h": 13
 		},
 		"info": 
 		{
@@ -203,16 +203,16 @@
 		"imagefiles": 
 		{
 			"file": "images/tempheart.png",
-			"fw": 100,
-			"fh": 100,
+			"fw": 50,
+			"fh": 50,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 36,
-			"y": 39,
-			"w": 27,
-			"h": 25
+			"x": 18,
+			"y": 18,
+			"w": 14,
+			"h": 14
 		},
 		"info": 
 		{
@@ -231,16 +231,16 @@
 		"imagefiles": 
 		{
 			"file": "images/boulder.png",
-			"fw": 100,
-			"fh": 100,
+			"fw": 50,
+			"fh": 50,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 5,
-			"y": 5,
-			"w": 70,
-			"h": 90
+			"x": 2,
+			"y": 2,
+			"w": 35,
+			"h": 45
 		},
 		"info": 
 		{
@@ -259,16 +259,16 @@
 		"imagefiles": 
 		{
 			"file": "images/bed.png",
-			"fw": 256,
-			"fh": 256,
+			"fw": 128,
+			"fh": 128,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 96,
-			"w": 142,
-			"h": 64
+			"x": 19,
+			"y": 48,
+			"w": 71,
+			"h": 32
 		},
 		"info": 
 		{
@@ -276,6 +276,34 @@
 			"max health": 4,
 			"strength": 3,
 			"speed": 5,
+			"next think": 0,
+			"think rate": 100,
+			"next fire": 0,
+			"fire rate": 5500
+		}
+	},
+	"key": 
+	{
+		"imagefiles": 
+		{
+			"file": "images/keys.png",
+			"fw": 32,
+			"fh": 32,
+			"frame": 0
+		},
+		"bounds": 
+		{
+			"x": 2,
+			"y": 2,
+			"w": 28,
+			"h": 28
+		},
+		"info": 
+		{
+			"health": 0.0,
+			"max health": 0,
+			"strength": 0,
+			"speed": 0,
 			"next think": 0,
 			"think rate": 100,
 			"next fire": 0,
@@ -286,17 +314,17 @@
 	{
 		"imagefiles": 
 		{
-			"file": "images/hall.png",
-			"fw": 10,
-			"fh": 10,
+			"file": "images/sdoor.png",
+			"fw": 80,
+			"fh": 80,
 			"frame": 0
 		},
 		"bounds": 
 		{
 			"x": 0,
-			"y": 0,
-			"w": 10,
-			"h": 10
+			"y": 20,
+			"w": 80,
+			"h": 80
 		},
 		"info": 
 		{
@@ -305,7 +333,7 @@
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100,
+			"think rate": 50,
 			"next fire": 0,
 			"fire rate": 5500
 		}
@@ -314,17 +342,17 @@
 	{
 		"imagefiles": 
 		{
-			"file": "images/hall.png",
-			"fw": 10,
-			"fh": 10,
+			"file": "images/ndoor.png",
+			"fw": 80,
+			"fh": 80,
 			"frame": 0
 		},
 		"bounds": 
 		{
 			"x": 0,
 			"y": 0,
-			"w": 10,
-			"h": 10
+			"w": 80,
+			"h": 60
 		},
 		"info": 
 		{
@@ -342,17 +370,17 @@
 	{
 		"imagefiles": 
 		{
-			"file": "images/hall.png",
-			"fw": 10,
-			"fh": 10,
+			"file": "images/edoor.png",
+			"fw": 80,
+			"fh": 80,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 0,
+			"x": 10,
 			"y": 0,
-			"w": 10,
-			"h": 10
+			"w": 80,
+			"h": 80
 		},
 		"info": 
 		{
@@ -370,17 +398,17 @@
 	{
 		"imagefiles": 
 		{
-			"file": "images/hall.png",
-			"fw": 10,
-			"fh": 10,
+			"file": "images/wdoor.png",
+			"fw": 80,
+			"fh": 80,
 			"frame": 0
 		},
 		"bounds": 
 		{
 			"x": 0,
 			"y": 0,
-			"w": 10,
-			"h": 10
+			"w": 70,
+			"h": 80
 		},
 		"info": 
 		{

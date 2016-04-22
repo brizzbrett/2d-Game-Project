@@ -23,7 +23,7 @@ Entity *Glop_Load(int x, int y, int levelin)
 
 		glop->owner = NULL;
 		glop->target = Entity_GetByType(PLAYER);
-
+		glop->flag = 0;
 		glop->sound = Sound_New("audio/glop.ogg",0,ENEMY_FX);
 
 		glop->levelin = levelin;
@@ -36,40 +36,47 @@ void Glop_Think(Entity *glop)
 {	
 	glop->target = Entity_GetByType(PLAYER);
 	vec2d_Subtract(glop->target->pos,glop->pos,glop->direction);
-	vec2d_Normalize(&glop->direction);
-	vec2d_Multiply(glop->vel,glop->direction,glop->velocity9);
-	vec2d_Add(glop->pos,glop->velocity9,glop->pos);
+	if((glop->direction.x <= 250 && glop->direction.x >= -250) && (glop->direction.y <= 150 && glop->direction.y >= -150))
+	{
+		glop->flag = 1;
+	}
+	if(glop->flag)
+	{
+		vec2d_Normalize(&glop->direction);
+		vec2d_Multiply(glop->vel,glop->direction,glop->velocity9);
+		vec2d_Add(glop->pos,glop->velocity9,glop->pos);
 	
-	if (abs(glop->target->pos.y-glop->pos.y) > abs(glop->target->pos.x-glop->pos.x)) 
-	{
-		if ((glop->target->pos.y-glop->pos.y) > 0) 
+		if (abs(glop->target->pos.y-glop->pos.y) > abs(glop->target->pos.x-glop->pos.x)) 
 		{
-			glop->frame = 0;
-			glop->bounds = rect(50, 50, 40,83);
+			if ((glop->target->pos.y-glop->pos.y) > 0) 
+			{
+				glop->frame = 0;
+				glop->bounds = rect(25, 25, 20,41);
+			} 
+			else if ((glop->target->pos.y-glop->pos.y) < 0) 
+			{
+				glop->frame = 2;
+				glop->bounds = rect(25, 25, 30,41);
+			}
 		} 
-		else if ((glop->target->pos.y-glop->pos.y) < 0) 
+		else
 		{
-			glop->frame = 2;
-			glop->bounds = rect(50, 50, 60,83);
+			if ((glop->target->pos.x-glop->pos.x) == 0 && (glop->target->pos.y-glop->pos.y) == 0) 
+			{
+				glop->frame = 0;
+			}
+			if ((glop->target->pos.x-glop->pos.x) > 0) 
+			{
+				glop->frame = 3;
+				glop->bounds = rect(20, 20, 30,56);
+			} 
+			else if ((glop->target->pos.x-glop->pos.x) < 0) 
+			{
+				glop->frame = 1;
+				glop->bounds = rect(20, 20, 30,56);
+			}
 		}
-	} 
-	else
-	{
-		if ((glop->target->pos.x-glop->pos.x) == 0 && (glop->target->pos.y-glop->pos.y) == 0) 
-		{
-			glop->frame = 0;
-		}
-		if ((glop->target->pos.x-glop->pos.x) > 0) 
-		{
-			glop->frame = 3;
-			glop->bounds = rect(40, 40, 60,113);
-		} 
-		else if ((glop->target->pos.x-glop->pos.x) < 0) 
-		{
-			glop->frame = 1;
-			glop->bounds = rect(40, 40, 60,113);
-		}
-	}	
+	}
 }
 
 void Glop_Update(Entity *glop)
@@ -78,9 +85,8 @@ void Glop_Update(Entity *glop)
 	Vec2d finalPos;
 
 	if(!glop)return;
-	vec2d_Set(glop->vel, 0.02, 0.02);
+	vec2d_Set(glop->vel, sin(0.03f), sin(0.03f));
 	glop->target = Entity_GetByType(PLAYER);
-
 	if(rect_intersect(rect(glop->pos.x+glop->bounds.x, glop->pos.y+glop->bounds.y,glop->bounds.w,glop->bounds.h), glop->target->attack))
 	{
 		itemPick = rand() % 30;
@@ -109,7 +115,7 @@ void Glop_Touch(Entity *glop, Entity *other)
 {
 	if(other == glop->target)
 	{
-		vec2d_Set(glop->force,2500,2500);
+		vec2d_Set(glop->force,250,250);
 		glop->target->health -= .5;
 		vec2d_Multiply(glop->velocity9, glop->force, glop->velocity9);
 		vec2d_Add(glop->target->pos,glop->velocity9,glop->target->pos);

@@ -41,67 +41,79 @@ void Hub_Create(char *file)
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[0] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBR, NULL);
+	r[0] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[0]->type = RTYPE_HUBR;
 	room = cJSON_GetObjectItem(obj, "hall1");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[1] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBH, NULL);
+	r[1] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[1]->type = RTYPE_HUBH;
 	room = cJSON_GetObjectItem(obj, "hall2");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[2] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBH, NULL);
+	r[2] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[2]->type = RTYPE_HUBH;
 	room = cJSON_GetObjectItem(obj, "hall3");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[3] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBH, NULL);
+	r[3] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[3]->type = RTYPE_HUBH;
 	room = cJSON_GetObjectItem(obj, "hall4");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[4] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBH, NULL);
+	r[4] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[4]->type = RTYPE_HUBH;
 	room = cJSON_GetObjectItem(obj, "cowboy room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[5] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBR, NULL);
+	r[5] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[5]->type = RTYPE_HUBR;
 	room = cJSON_GetObjectItem(obj, "future room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[6] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBR, NULL);
+	r[6] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[6]->type = RTYPE_HUBR;
 	room = cJSON_GetObjectItem(obj, "medieval room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[7] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBR, NULL);
+	r[7] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[7]->type = RTYPE_HUBR;
 	room = cJSON_GetObjectItem(obj, "final room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[8] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBR, NULL);
+	r[8] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[8]->type = RTYPE_HUBM;
 	room = cJSON_GetObjectItem(obj, "bath room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[9] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBM, NULL);
+	r[9] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[9]->type = RTYPE_HUBM;
 	room = cJSON_GetObjectItem(obj, "kitchen");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
 			  cJSON_GetObjectItem(room, "posy")->valueint
 	);
-	r[10] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, RTYPE_HUBM, NULL);
+	r[10] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
+	r[10]->type = RTYPE_HUBM;
+
 	Room_Link(r[1],r[0],SPLIT_HORIZONTAL, NULL);/**<Hall 1 to Base Room*/
 	Room_Link(r[2],r[1],SPLIT_HORIZONTAL, NULL);/**<Hall 2 to Hall 1*/
 	Room_Link(r[1],r[5],SPLIT_VERTICAL, NULL);/**<Cowboy Room to Hall 1*/
@@ -113,6 +125,8 @@ void Hub_Create(char *file)
 	Room_Link(r[4],r[3],SPLIT_HORIZONTAL, NULL);/**<Hall 4 to Hall 3*/
 	Room_Link(r[8],r[4],SPLIT_VERTICAL, NULL);/**<Final Room to Hall 4*/
 	Room_Link(r[7],r[4],SPLIT_HORIZONTAL, NULL);/**<Medieval Room to Hall 4*/
+
+	Room_Populate(0);
 
 	free(data);
 	json = NULL;

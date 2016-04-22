@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Level.h"
 
+static int gametime;
 void Init_All();
 void Update_All();
 /**
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
 	done = 0;
 	do
 	{
+		gametime = SDL_GetTicks();
 		Update_All();
 
 		keys = SDL_GetKeyboardState(NULL);
@@ -40,7 +42,6 @@ int main(int argc, char *argv[])
 	exit(0);
 	return 0;
 }
-
 /** @brief	Initialises all. */
 void Init_All()
 {
@@ -48,7 +49,7 @@ void Init_All()
 	sprite_InitSystem();
 	Audio_InitSystem(128,3);
 	Entity_InitSystem(1000);
-	Graphics_Init("Dream a Way Out",1600,900,0);
+	Graphics_Init("Dream a Way Out",1000,703,0);
 	Level_Load(0);
 }
 /** @brief	Updates all every frame */

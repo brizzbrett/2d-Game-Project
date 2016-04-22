@@ -5,7 +5,7 @@ Vec2d velocity;
 Vec2d pPos;
 int offsetX = 0;
 int offsetY = 0;
-void Weapon_Fire(Entity *owner, Vec2d v)
+void Weapon_Fire(Entity *owner, Vec2d v, int frame)
 {	
 	Entity *shot;	
 

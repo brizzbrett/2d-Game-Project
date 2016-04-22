@@ -162,6 +162,9 @@ void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 	Vec2d posRel;
 	Vec2d camPos;
 	SDL_Rect cam;
+
+	if(!sprite)return;
+
 	cam = Camera_GetActiveCamera();
 	camPos = Camera_GetPosition();
 	vec2d_Subtract(pos, camPos, posRel); 

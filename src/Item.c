@@ -8,7 +8,6 @@ void Item_Spawn(Entity *item, int levelin)
 {
 	if(!item) return;
 
-	item->update = &Item_Update;
 	item->think = NULL;
 	item->target = Entity_GetByType(PLAYER);
 	item->levelin = levelin;
@@ -22,7 +21,7 @@ Entity *Pickup_Heart_New(Vec2d pos)
 	heart = Entity_New(PICKUP_HEART, pos);
 	if(!heart)return NULL;
 	heart->touch = &Pickup_Heart_Touch;
-
+	heart->update = &Pickup_Update;
 	return heart;
 }
 
@@ -32,7 +31,7 @@ Entity *Pickup_TempHeart_New(Vec2d pos)
 	tempHeart = Entity_New(PICKUP_TEMPHEART, pos);
 	if(!tempHeart)return NULL;
 	tempHeart->touch = &Pickup_TempHeart_Touch;
-
+	tempHeart->update = &Pickup_Update;
 	return tempHeart;
 }
 Entity *Boulder_New(Vec2d pos)
@@ -41,7 +40,7 @@ Entity *Boulder_New(Vec2d pos)
 	boulder = Entity_New(BOULDER, pos);
 	if(!boulder)return NULL;
 	boulder->touch = &Boulder_Touch;
-
+	boulder->update = &Item_Update;
 	return boulder;
 }
 Entity *Bed_New(Vec2d pos, int bedlvl)
@@ -51,25 +50,41 @@ Entity *Bed_New(Vec2d pos, int bedlvl)
 	if(!bed)return NULL;
 	bed->touch = &Bed_Touch;
 	bed->bedLevel = bedlvl;
-
+	bed->update = &Item_Update;
 	return bed;
+}
+
+Entity *Key_New(Vec2d pos, int color)
+{
+	Entity *key;
+	key = Entity_New(KEY, pos);
+	if(!key)return NULL;
+	key->touch = &Key_Touch;
+	key->frame = color;
+	key->update = &Item_Update;
+	return key;
+}
+
+void Pickup_Update(Entity *pickup)
+{
+	pickup->target = Entity_GetByType(PLAYER);
+	Entity_IntersectAll(pickup);
+
+	if(Camera_Intersect(pickup))
+	{
+		pickup->think = &Pickup_Think;
+	}
+	else
+	{
+		pickup->think = NULL;
+	}
 }
 
 void Item_Update(Entity *item)
 {
-	
 	item->target = Entity_GetByType(PLAYER);
 	Entity_IntersectAll(item);
-	if(Camera_Intersect(item) && item->type != BOULDER && item->type != BED)
-	{
-		item->think = &Pickup_Think;
-	}
-	else
-	{
-		item->think = NULL;
-	}
 }
-
 void Pickup_Think(Entity *item)
 {
 	if(!item)return;
@@ -142,9 +157,9 @@ void Bed_Touch(Entity *bed, Entity *other)
 	}
 	else if(other == bed->target && inDream)
 	{
-		other->pos.y = hub->pos.y + 170;
+		other->pos.y = hub->pos.y + 70;
 		other->pos.x = hub->pos.x + 50;
-		vec2d_Set(temp, hub->pos.x-200, hub->pos.y-450);
+		vec2d_Set(temp, hub->pos.x-150, hub->pos.y-400);
 		Camera_SetPosition(temp);
 		inDream = FALSE;
 		Level_Closer(hub->bedLevel);
@@ -154,4 +169,13 @@ void Bed_Touch(Entity *bed, Entity *other)
 		vec2d_Set(other->vel,0,0);
 	}
 	bed->touch = NULL;
+}
+void Key_Touch(Entity *key, Entity *other)
+{
+	if(other == key->target)
+	{
+		key->target->keys++;
+		slog("Player now has: %i keys", key->target->keys);
+		Entity_Free(&key);
+	}
 }

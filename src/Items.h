@@ -11,6 +11,12 @@
 void Item_Spawn(Entity *item, int levelin);
 
 /**
+ * @brief	Pickup Entity Update.
+ *
+ * @param pickup	The item that is updating.
+ */
+void Pickup_Update(Entity *pickup);
+/**
  * @brief	Item Entity Update.
  *
  * @param item	The item that is updating.
@@ -59,6 +65,8 @@ Entity *Boulder_New(Vec2d pos);
  */
 Entity *Bed_New(Vec2d pos, int bedlvl);
 
+Entity *Key_New(Vec2d pos, int color);
+
 /**
  * @brief	Item Entity Touch.
  *
@@ -90,4 +98,6 @@ void Boulder_Touch(Entity *boulder, Entity *other);
  * @param other		The item that is touching.
  */
 void Bed_Touch(Entity *bed, Entity *other);
+
+void Key_Touch(Entity *key, Entity *other);
 #endif

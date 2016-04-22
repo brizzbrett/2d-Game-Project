@@ -20,9 +20,9 @@ Entity *Player_Load(int x, int y)
 		player->owner = NULL;
 		player->target = NULL;
 		player->sound = Sound_New("audio/punch.ogg",0,PLAYER_FX);
-
 		player->set = FALSE;
 
+		player->keys = 0;
 		player->levelin = NULL;
 		return player;
 	}
@@ -58,48 +58,68 @@ void Player_Update(Entity *player)
 
 	if(keys[SDL_SCANCODE_W])
 	{
-		player->direction.y = -1;
-		player->vel.y = player->direction.y * player->speed;
-		player->frame = 2;
-
-		//player->set = FALSE;
+		if(Camera_Intersect(player))
+		{
+			player->direction.y = -1;
+			player->vel.y = player->direction.y * player->speed;
+			player->frame = 2;
+		}
+		else
+		{
+			player->vel.y += 5;
+		}
 	}
 	else if(keys[SDL_SCANCODE_S])
 	{
-		player->direction.y = 1;
-		player->vel.y = player->direction.y * player->speed;
-		player->frame = 1;
-
-		//player->set = FALSE;
+		if(Camera_Intersect(player))
+		{
+			player->direction.y = 1;
+			player->vel.y = player->direction.y * player->speed;
+			player->frame = 1;
+		}
+		else
+		{
+			player->vel.y -= 5;
+		}
 	}
 	else
 	{
 		player->vel.y = 0;
 	}
+
 	if(keys[SDL_SCANCODE_A])
 	{
-		player->direction.x = -1;
-		player->vel.x = player->direction.x * player->speed;
-		player->frame = 3;
-		//player->set = FALSE;
+		if(Camera_Intersect(player))
+		{
+			player->direction.x = -1;
+			player->vel.x = player->direction.x * player->speed;
+			player->frame = 3;
+		}
+		else 
+		{
+			player->vel.x += 5;
+		}
 	}
 	else if(keys[SDL_SCANCODE_D])
 	{
-		player->direction.x = 1;
-		player->vel.x = player->direction.x * player->speed;
-		player->frame = 0;
-		//player->set = FALSE;
+		if(Camera_Intersect(player))
+		{
+			player->direction.x = 1;
+			player->vel.x = player->direction.x * player->speed;
+			player->frame = 0;
+		}
+		else
+		{
+			player->vel.x -= 5;
+		}
 	}
 	else
 	{
 		player->vel.x = 0;
 	}
-	if(!Camera_Intersect(player))
-	{
-		player->flag = 1;	
-	}
+	
 	vec2d_Add(player->pos, player->vel, player->pos);
-	slog("%f", player->health);
+	
 	Entity_IntersectAll(player);
 }
 void Player_Touch(Entity *player, Entity *other)
@@ -120,22 +140,22 @@ void Player_Attack()
 	{
 		if(player->frame == 1)
 		{
-			vec2d_Set(offset,30,player->sprite->frameSize.y);
+			vec2d_Set(offset,0,player->sprite->frameSize.y/2);
 		}
 		else if(player->frame == 2)
 		{
-			vec2d_Set(offset,30,-40);
+			vec2d_Set(offset,0,-32);
 		}
 		else if(player->frame == 0)
 		{
-			vec2d_Set(offset,player->sprite->frameSize.x,50);
+			vec2d_Set(offset,player->sprite->frameSize.x/2,0);
 		}
 		else if(player->frame == 3)
 		{
-			vec2d_Set(offset,-40, 50);
+			vec2d_Set(offset,-32, 0);
 		}
 
-		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, 40,40);
+		attack = rect(player->pos.x + offset.x,player->pos.y + offset.y, 64,64);
 		player->attack = attack;	
 	}
 }

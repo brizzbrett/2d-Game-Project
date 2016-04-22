@@ -8,7 +8,7 @@
 
 static Entity *entList; /**<static global Entity List*/
 static Uint32 entMax = 1000; /**<static unsigned 32-bit integer of maximum entities*/
-GList *g_entList;
+//GList *g_entList;
 Uint32 numEnt = 0; /**<unsigned 32-bit integer numEnt*/
 
 Entity *Entity_New(EntityType type, Vec2d pos)
@@ -55,6 +55,8 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		obj = cJSON_GetObjectItem(root, "boulder");
 	else if(type == BED)
 		obj = cJSON_GetObjectItem(root, "bed");
+	else if(type == KEY)
+		obj = cJSON_GetObjectItem(root, "key");
 	else if(type == SDOOR)
 		obj = cJSON_GetObjectItem(root, "south door");
 	else if(type == NDOOR)
@@ -69,6 +71,7 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 
 	ent->frame = cJSON_GetObjectItem(buf, "frame")->valueint;
 	ent->pos = pos;
+	ent->startPos = pos;
 	ent->sprite = sprite_Load(cJSON_GetObjectItem(buf, "file")->valuestring,cJSON_GetObjectItem(buf, "fw")->valueint,cJSON_GetObjectItem(buf, "fh")->valueint);		
 
 	buf = cJSON_GetObjectItem(obj, "bounds");
@@ -116,7 +119,7 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		entList[i].touch = NULL;
 
 		free(ent);
-		g_entList = g_list_append(g_entList, &entList[i]);
+		//g_entList = g_list_append(g_entList, &entList[i]);
 		return &entList[i];
 	}
 	return NULL;
@@ -152,14 +155,14 @@ void Entity_FreeByLevel(int level)
 			Entity_Free(&ent);
 		}
 	}
-	for (g = EntList_Get(); g != NULL; g = g->next)
+	/*for (g = EntList_Get(); g != NULL; g = g->next)
 	{
 		ent = (Entity *)(g->data);
         if(ent->levelin == level)
 		{
 			Entity_Free(&ent);
 		}
-	}
+	}*/
 }
 void Entity_CloseSystem()
 {
@@ -171,21 +174,21 @@ void Entity_CloseSystem()
 		ent = &entList[i];
         Entity_Free(&ent);
 	}
-	for (g = EntList_Get(); g != NULL; g = g->next)
+	/*for (g = EntList_Get(); g != NULL; g = g->next)
 	{
 		ent = (Entity *)(g->data);
         Entity_Free(&ent);
-	}
+	}*/
 	free(entList);
-	free(g);
-	g_entList = NULL;
+	//free(g);
+	//g_entList = NULL;
 	entList = NULL;	
 	numEnt = 0;
 }
-GList *EntList_Get()
+/*GList *EntList_Get()
 {
 	return g_entList;
-}
+}*/
 void Entity_InitSystem(Uint32 ent_Max)
 {
 	if(entMax == 0)
@@ -202,7 +205,7 @@ void Entity_InitSystem(Uint32 ent_Max)
 void Entity_DrawAll()
 {
 	Uint32 i;
-
+	Entity *player = NULL;
 	for(i = 0; i < entMax; i++)
 	{
 		if(!entList[i].inuse)
@@ -213,7 +216,16 @@ void Entity_DrawAll()
 		{
 			continue;
 		}
+		if(entList[i].type == PLAYER)
+		{
+			player = &entList[i];
+			continue;
+		}
 		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+	}
+	if(player)
+	{
+		player->draw(player->sprite, player->frame, Graphics_GetActiveRenderer(), player->pos);
 	}
 }
 
@@ -303,7 +315,7 @@ int Entity_Intersect(Entity *a, Entity *b)
 		return 0;
 	}
 	aB = rect(a->pos.x+a->bounds.x,a->pos.y+a->bounds.y,a->bounds.w, a->bounds.h);
-	bB = rect(b->pos.x,b->pos.y,b->bounds.w, b->bounds.h);
+	bB = rect(b->pos.x+b->bounds.x,b->pos.y+b->bounds.y,b->bounds.w, b->bounds.h);
 	if(rect_intersect(aB, bB))
 		return 1;
 	return 0;

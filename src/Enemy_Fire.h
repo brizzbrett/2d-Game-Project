@@ -9,7 +9,7 @@
  * @param owner	The entity that the bullet came from.
  * @param vel	The velocity of the bullet.
  */
-void Weapon_Fire(Entity *owner, Vec2d vel);
+void Weapon_Fire(Entity *owner, Vec2d vel, int frame);
 
 /**
  * @brief	Weapon Entity think.

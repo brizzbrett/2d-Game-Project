@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-static SDL_Rect _Camera = {0,0,1600,900};
+static SDL_Rect _Camera = {0,0,1000,703};
 
 SDL_Rect Camera_GetActiveCamera()
 {
@@ -31,10 +31,10 @@ void Camera_SetSize(Vec2d size)
 SDL_Rect Camera_Bounds()
 {
 	SDL_Rect bounds;
-	bounds.x = _Camera.x+70;
-	bounds.y = _Camera.y+70;
-	bounds.w = _Camera.w-210;
-	bounds.h = _Camera.h-210;
+	bounds.x = _Camera.x+130;
+	bounds.y = _Camera.y+150;
+	bounds.w = 745;
+	bounds.h = 400;
 	return bounds;
 }
 int Camera_Intersect(Entity *ent)
@@ -44,7 +44,7 @@ int Camera_Intersect(Entity *ent)
 	{
 		return 0;
 	}
-	bB = rect(ent->pos.x,ent->pos.y,ent->bounds.w, ent->bounds.h);
+	bB = rect(ent->pos.x+ent->bounds.x,ent->pos.y+ent->bounds.y,ent->bounds.w, ent->bounds.h);
 	if(rect_intersect(Camera_Bounds(), bB))
 	{
 		return 1;

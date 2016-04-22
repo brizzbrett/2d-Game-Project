@@ -31,6 +31,11 @@ typedef struct Room_T
 
 	int levelin;
 
+	int doors;
+	int keys;
+
+	int frame;
+
 	struct Room_T *nroom, *sroom, *eroom, *wroom;
 	Entity *north, *south, *east, *west;	/**<Door entities */
 
@@ -40,8 +45,6 @@ typedef struct Room_T
 
 typedef struct Level_S
 {
-	GList *g;
-	Room *r;
 	char *data;
 	FILE *f;
 	long len;
@@ -72,8 +75,8 @@ void Level_Load(Uint8 levelType);
 #define RTYPE_HUBH 7
 #define RTYPE_HUBM 8
 
-#define ROOM_WIDTH 1600
-#define ROOM_HEIGHT 900
+#define ROOM_WIDTH 1000
+#define ROOM_HEIGHT 703
 
 /**
  * @brief	Creates a new room.
@@ -82,10 +85,10 @@ void Level_Load(Uint8 levelType);
  * @param file	a string for the file that is being used to load the room background
  * @param rtype	an int that tells which room type is being used.
  */
-Room *Room_New(Vec2d pos, char *file, int rtype, int levelin);
+Room *Room_New(Vec2d pos, char *file, int levelin);
 void Room_Free(Room **r);
 void Room_FreeByLevel(int level);
-void Room_MobMaker(Room *r, int rtype, int levelin);
+void Room_MobMaker(Room *r, int levelin, int numEnemy);
 
 /**
  * @brief	Creates a new door entity.
@@ -142,6 +145,7 @@ void Room_DrawAll();
 void Hub_Create(char *file);
 
 GList *RoomList_Get();
-GList *LeafList_Get();
-void Door_Placer();
+GList *DeadEnds_Get();
+void Room_Populate(int levelin);
+void WinPath();
 #endif

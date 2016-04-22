@@ -35,7 +35,7 @@ Entity *Spider_Load(int x, int y, int levelin)
 void Spider_Think(Entity *spider)
 {	
 	Vec2d vel;
-	vec2d_Set(vel,1,1);
+	vec2d_Set(vel,.5,.5);
 	int randX;
 	int randY;
 
@@ -43,7 +43,7 @@ void Spider_Think(Entity *spider)
 	spider->target = Entity_GetByType(PLAYER);
 	if(SDL_GetTicks() >= spider->nextThink)
 	{
-		//srand(time(NULL));
+		srand(time(NULL));
 		randX = rand() % 4;
 		randY = rand() % 4;
 		if(randX % 2 == 0)
@@ -63,7 +63,7 @@ void Spider_Think(Entity *spider)
 
 	if(SDL_GetTicks() >= spider->nextFire)
 	{
-		Weapon_Fire(spider, vel);
+		Weapon_Fire(spider, vel, 0);
 		spider->nextFire = SDL_GetTicks() + spider->fireRate;
 	}
 }

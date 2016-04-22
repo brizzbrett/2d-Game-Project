@@ -92,6 +92,10 @@ float vec2d_GetLength(Vec2d vec)
 	return sqrt(vec.x*vec.x + vec.y*vec.y);
 }
 
+float vec2d_GetDistanceSquared(Vec2d vec, Vec2d vec2)
+{
+	return (vec.x-vec2.x)*(vec.x-vec2.x) + (vec.y-vec2.y)*(vec.y-vec2.y);
+}
 /**
  * @brief	Vector 3D get length.
  * @param	vec	The vector you want the length of.

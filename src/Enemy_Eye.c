@@ -36,14 +36,14 @@ void Eye_Think(Entity *eye)
 {	
 
 	Vec2d vel;
-	vec2d_Set(vel,5,5);
+	vec2d_Set(vel,3,3);
 	eye->target = Entity_GetByType(PLAYER);
 	vec2d_Subtract(eye->target->pos,eye->pos,eye->direction);
 	if(SDL_GetTicks() >= eye->nextThink)
 	{
-		if((eye->direction.x <= 500 && eye->direction.x >= -500) && (eye->direction.y <= 300 && eye->direction.y >= -300))
+		if((eye->direction.x <= 250 && eye->direction.x >= -250) && (eye->direction.y <= 150 && eye->direction.y >= -150))
 		{
-			Weapon_Fire(eye, vel);
+			Weapon_Fire(eye, vel, 0);
 			eye->nextThink = SDL_GetTicks() + eye->thinkRate;
 		}
 	}
