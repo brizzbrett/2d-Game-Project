@@ -4,10 +4,11 @@
 #include "Enemy_Glop.h"
 #include "Enemy_Eye.h"
 #include "Enemy_Spider.h"
+#include "Boss_Nightmare.h"
 #include "Items.h"
 
+static GList *hubList;
 static GList *roomList;
-
 
 Uint32 roomnum = 1;
 Uint32 length = 0;
@@ -58,8 +59,14 @@ Room *Room_New(Vec2d pos, char *file, int levelin)
 		slog("Player created!");
 		Camera_SetPosition(r->pos);
 	}	
-
-	roomList = g_list_append(roomList, r);
+	if(levelin == 0)
+	{
+		hubList = g_list_append(hubList, r);
+	}
+	else
+	{
+		roomList = g_list_append(roomList, r);
+	}
 	return r;
 }
 
@@ -90,7 +97,10 @@ GList *RoomList_Get()
 {
 	return roomList;
 }
-
+GList *HubList_Get()
+{
+	return hubList;
+}
 void WinPath()
 {
 	GList *it;
@@ -125,11 +135,20 @@ void WinPath()
 	}
 	if(p && !p->set)
 	{
-		p->pos.x = start->pos.x+478;
-		p->pos.y = start->pos.y+500;
-		start->type = RTYPE_START;
-		finish->type = RTYPE_BOSS;
-		finish->keys = keys - 2;
+		if(!start)
+		{
+			p->pos.x = r->pos.x+478;
+			p->pos.y = r->pos.y+500;
+			r->type = RTYPE_START;
+		}
+		else
+		{
+			p->pos.x = start->pos.x+478;
+			p->pos.y = start->pos.y+500;
+			start->type = RTYPE_START;
+			finish->type = RTYPE_BOSS;
+			finish->keys = keys - 2;
+		}
 		slog("\n\nSTART AND FINISH");
 		slog("\nROOM %c-------------\n\tPOSITION-- X: %.00f, Y: %.00f, Doors: %i, Type: %i", start->val+65, start->pos.x, start->pos.y, start->doors, start->type);
 		slog("\nROOM %c-------------\n\tPOSITION-- X: %.00f, Y: %.00f, Doors: %i, Type: %i", finish->val+65, finish->pos.x, finish->pos.y, finish->doors, finish->type);
@@ -146,21 +165,25 @@ void Room_Populate(int levelin)
 	Vec2d bed;
 	Vec2d key;
 	int i = 0;
+	Entity *boss;
+	for(g = hubList; g != NULL; g = g->next)
+	{
+		Room *r = (Room *)(g->data);
+		vec2d_Set(bed,r->pos.x+150,r->pos.y+400);
+		vec2d_Set(key,r->pos.x+484,r->pos.y+335);
+		if(r->type == RTYPE_HUBR)
+		{	
+			Item_Spawn(Bed_New(bed,bedlvl), levelin);
+			bedlvl++;
+		}
+	}
 	for (g = roomList; g != NULL; g = g->next)
 	{
 		Room *r = (Room *)(g->data);
 		vec2d_Set(bed,r->pos.x+150,r->pos.y+400);
 		vec2d_Set(key,r->pos.x+484,r->pos.y+335);
-		if(levelin == 0)
-		{
-			if(r->type == RTYPE_HUBR)
-			{
-				
-				Item_Spawn(Bed_New(bed,bedlvl), levelin);
-				bedlvl++;
-			}
-		}
-		else if(levelin == 1)
+		
+		if(levelin == 1)
 		{
 			if(r->type == RTYPE_START)
 			{
@@ -198,7 +221,10 @@ void Room_Populate(int levelin)
 			}
 			else if(r->type == RTYPE_KEY)
 			{
-				Item_Spawn(Key_New(key, i), levelin);
+				if(levelin == 1)
+				{
+					boss = Nightmare_Load(key.x,key.y,levelin);
+				}
 				i++;
 			}
 			else if(r->type == RTYPE_NORMAL)
@@ -206,7 +232,7 @@ void Room_Populate(int levelin)
 				Room_MobMaker(r, levelin, r->numEnemy);
 			}
 		}
-	} 
+	}
 }
 void Room_MobMaker(Room *r, int levelin, int numEnemy)
 {	
@@ -304,14 +330,9 @@ void Room_FreeByLevel(int level)
 	Room *r; /**<alias for *ent*/
 	GList *g;
 
-	for (g = RoomList_Get(); g != NULL; g = g->next)
-	{
-		r = (Room *)(g->data);
-        if(r->levelin == level)
-		{
-			Room_Free(&r);
-		}
-	}
+	//g_list_foreach(roomList, (GFunc)(g_free), NULL);
+	g_list_free(roomList);
+	roomList = NULL;
 }
 
 /////////////////////////////////////////////////////////
@@ -384,6 +405,11 @@ void Room_DrawAll()
 	Uint32 i;
 	GList *g;
 	Room *r;
+	for (g = HubList_Get(); g != NULL; g = g->next)
+	{
+		r = (Room *)(g->data);
+		r->draw(r->image, r->frame, Graphics_GetActiveRenderer(), r->pos);
+	}
 	for (g = RoomList_Get(); g != NULL; g = g->next)
 	{
 		r = (Room *)(g->data);

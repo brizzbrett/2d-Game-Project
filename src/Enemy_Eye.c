@@ -43,7 +43,7 @@ void Eye_Think(Entity *eye)
 	{
 		if((eye->direction.x <= 250 && eye->direction.x >= -250) && (eye->direction.y <= 150 && eye->direction.y >= -150))
 		{
-			Weapon_Fire(eye, vel, 0);
+			Weapon_Fire(eye, vel, 0, 0, 0);
 			eye->nextThink = SDL_GetTicks() + eye->thinkRate;
 		}
 	}

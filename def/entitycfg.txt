@@ -142,30 +142,30 @@
 		}
 	},
 	
-	"boss": 
+	"nightboss": 
 	{
 		"imagefiles": 
 		{
-			"file": "images/playersheet.png",
+			"file": "images/nightbosssheet.png",
 			"fw": 64,
 			"fh": 64,
 			"frame": 0
 		},
 		"bounds": 
 		{
-			"x": 38,
-			"y": 5,
-			"w": 52,
-			"h": 118
+			"x": 19,
+			"y": 3,
+			"w": 26,
+			"h": 59
 		},
 		"info": 
 		{
-			"health": 4.0,
-			"max health": 4,
+			"health": 30.0,
+			"max health": 30,
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,
-			"think rate": 100,
+			"think rate": 3500,
 			"next fire": 0,
 			"fire rate": 5500
 		}

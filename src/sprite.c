@@ -167,7 +167,7 @@ void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 
 	cam = Camera_GetActiveCamera();
 	camPos = Camera_GetPosition();
-	vec2d_Subtract(pos, camPos, posRel); 
+	vec2d_Subtract(pos, camPos,  posRel); 
 
 	src.x = frame%sprite->fpl * sprite->frameSize.x;
 	src.y = frame/sprite->fpl * sprite->frameSize.y;

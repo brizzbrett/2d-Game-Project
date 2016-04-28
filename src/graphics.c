@@ -72,6 +72,7 @@ void Graphics_Init(char *windowName,int renderW,int renderH,int fullscreen)
     
     SDL_SetRenderDrawColor(__graphics_renderer, 0, 0, 0, 255);
     SDL_RenderClear(__graphics_renderer);
+
     SDL_RenderPresent(__graphics_renderer);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(__graphics_renderer, renderW, renderH);

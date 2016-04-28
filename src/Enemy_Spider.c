@@ -63,7 +63,7 @@ void Spider_Think(Entity *spider)
 
 	if(SDL_GetTicks() >= spider->nextFire)
 	{
-		Weapon_Fire(spider, vel, 0);
+		Weapon_Fire(spider, vel, 0, 0, 0);
 		spider->nextFire = SDL_GetTicks() + spider->fireRate;
 	}
 }

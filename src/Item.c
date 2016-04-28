@@ -101,7 +101,7 @@ void Pickup_Heart_Touch(Entity *heart, Entity *other)
 		if(other->maxHealth - other->health >= 1)
 			other->health += 1;
 		else
-			other->health = other->maxHealth;
+			other->health = other->health;
 		Entity_Free(&heart);
 	}
 }
@@ -151,14 +151,14 @@ void Bed_Touch(Entity *bed, Entity *other)
 		{
 			Level_Load(4);
 		}
-
+		other->bedPos = bed->pos;
 		hub = bed;
 		inDream = TRUE;
 	}
 	else if(other == bed->target && inDream)
 	{
-		other->pos.y = hub->pos.y + 70;
-		other->pos.x = hub->pos.x + 50;
+		other->pos.y = other->bedPos.y + 70;
+		other->pos.x = other->bedPos.x + 50;
 		vec2d_Set(temp, hub->pos.x-150, hub->pos.y-400);
 		Camera_SetPosition(temp);
 		inDream = FALSE;

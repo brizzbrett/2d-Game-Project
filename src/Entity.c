@@ -45,8 +45,8 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		obj = cJSON_GetObjectItem(root, "spider");
 	else if(type == SHOT)
 		obj = cJSON_GetObjectItem(root, "shot");
-	else if(type == BOSS)
-		obj = cJSON_GetObjectItem(root, "boss");
+	else if(type == NIGHTBOSS)
+		obj = cJSON_GetObjectItem(root, "nightboss");
 	else if(type == PICKUP_HEART)
 		obj = cJSON_GetObjectItem(root, "pickup heart");
 	else if(type == PICKUP_TEMPHEART)
@@ -155,14 +155,6 @@ void Entity_FreeByLevel(int level)
 			Entity_Free(&ent);
 		}
 	}
-	/*for (g = EntList_Get(); g != NULL; g = g->next)
-	{
-		ent = (Entity *)(g->data);
-        if(ent->levelin == level)
-		{
-			Entity_Free(&ent);
-		}
-	}*/
 }
 void Entity_CloseSystem()
 {
@@ -174,21 +166,12 @@ void Entity_CloseSystem()
 		ent = &entList[i];
         Entity_Free(&ent);
 	}
-	/*for (g = EntList_Get(); g != NULL; g = g->next)
-	{
-		ent = (Entity *)(g->data);
-        Entity_Free(&ent);
-	}*/
 	free(entList);
-	//free(g);
-	//g_entList = NULL;
+
 	entList = NULL;	
 	numEnt = 0;
 }
-/*GList *EntList_Get()
-{
-	return g_entList;
-}*/
+
 void Entity_InitSystem(Uint32 ent_Max)
 {
 	if(entMax == 0)

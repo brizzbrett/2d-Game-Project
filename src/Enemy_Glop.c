@@ -85,7 +85,7 @@ void Glop_Update(Entity *glop)
 	Vec2d finalPos;
 
 	if(!glop)return;
-	vec2d_Set(glop->vel, sin(0.03f), sin(0.03f));
+	vec2d_Set(glop->vel, 0.03*sin(50*(float)time(NULL)), 0.03*sin(50*(float)time(NULL)));
 	glop->target = Entity_GetByType(PLAYER);
 	if(rect_intersect(rect(glop->pos.x+glop->bounds.x, glop->pos.y+glop->bounds.y,glop->bounds.w,glop->bounds.h), glop->target->attack))
 	{

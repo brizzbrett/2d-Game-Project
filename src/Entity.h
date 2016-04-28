@@ -22,7 +22,7 @@ enum EntityType
 	EYE,				/**<Eye entities */
 	SPIDER,				/**<Spider entities */
 	SHOT,				/**<Bullet entities */
-	BOSS,				/**<Boss entities */
+	NIGHTBOSS,			/**<Boss entities */
 	PICKUP_HEART,		/**<Heart pickup entities */
 	PICKUP_TEMPHEART,	/**<Temporary Heart pickup entities */
 	BOULDER,			/**<Boulder entities */
@@ -79,9 +79,12 @@ typedef struct Entity_S
 	int levelin;
 
 	int bedLevel;
+	Vec2d bedPos;
 
 	struct Entity_S *owner;		/**<The Entity that owns this entity, if it has one */
 	struct Entity_S *target;	/**<The Entity that this entity is targeting */
+
+	struct Entity_S *shot[8];
 
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);	/**<Draw function pointer */
 	void (*think)(struct Entity_S *self);										/**<Think function pointer */

@@ -5,7 +5,7 @@ Vec2d velocity;
 Vec2d pPos;
 int offsetX = 0;
 int offsetY = 0;
-void Weapon_Fire(Entity *owner, Vec2d v, int frame)
+Entity *Weapon_Fire(Entity *owner, Vec2d v, int dirX, int dirY, int frame)
 {	
 	Entity *shot;	
 
@@ -13,11 +13,11 @@ void Weapon_Fire(Entity *owner, Vec2d v, int frame)
 	vec2d_Set(pos, owner->pos.x + offsetX, owner->pos.y + offsetY);
 	if(!owner)
 	{
-		return;
+		return NULL;
 	}
 	shot = Entity_New(SHOT, pos); 
 	if(!shot)
-		return;
+		return NULL;
 	shot->think = &Weapon_Think;
 	shot->update = &Weapon_Update;
 	shot->touch = &Weapon_Touch;
@@ -30,12 +30,27 @@ void Weapon_Fire(Entity *owner, Vec2d v, int frame)
 	shot->target = Entity_GetByType(PLAYER);
 	shot->owner = owner; 
 
-	pPos = shot->target->pos;	
+	if(shot->owner->type == NIGHTBOSS)
+	{
+		shot->direction.x = dirX;
+		shot->direction.y = dirY;
+		vec2d_Multiply(shot->vel, shot->direction, shot->vel);
+	}
+	else
+	{
+		Weapon_TargetPlayer(shot);
+	}
+
+
+	return shot;
+}
+void Weapon_TargetPlayer(Entity *shot)
+{
+	pPos = shot->target->pos;
 	vec2d_Subtract(pPos,shot->pos,shot->direction);
 	vec2d_Normalize(&shot->direction);	
 	vec2d_Multiply(shot->vel,shot->direction,shot->vel);
 }
-
 void Weapon_Think(Entity *shot)
 {
 	if(!shot)
@@ -55,6 +70,8 @@ void Weapon_Think(Entity *shot)
 }
 void Weapon_Update(Entity *shot)
 {
+	Vec2d vel;
+	vec2d_Set(vel, 3,3);
 	if(!shot)
 	{
 		return;
@@ -68,8 +85,9 @@ void Weapon_Update(Entity *shot)
 	vec2d_Add(shot->pos, shot->vel, shot->pos);
 	if(rect_intersect(rect(shot->pos.x+shot->bounds.x, shot->pos.y+shot->bounds.y,shot->bounds.w,shot->bounds.h), shot->target->attack))
 	{
-		vec2d_Negate(shot->velocity9, shot->vel);
-		shot->vel = shot->velocity9;
+		vec2d_Negate(shot->direction,shot->direction);
+		vec2d_Multiply(shot->direction, vel, vel);
+		shot->vel = vel;
 		shot->target = shot->owner;
 		shot->owner = Entity_GetByType(PLAYER);
 	}

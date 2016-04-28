@@ -13,6 +13,7 @@ Level *currentLevel;
 static char *levelcfg = "def/levelcfg.txt";
 static int maxRooms = 14;
 static GList *deadEnds;
+
 Level *Level_New(char *file)
 {
 	Level *l;
@@ -66,9 +67,9 @@ void Level_Load(Uint8 levelType)
 		currentLevel->bk_music = Music_New("audio/nightmare.ogg",-1);
 		Music_Player(currentLevel->bk_music);
 
-		Level_Maker("images/room.png", COWBOY);
+		Level_Maker("images/cowboy.png", COWBOY);
 
-		Room_Populate(NIGHTMARE);
+		Room_Populate(COWBOY);
 	}
 	else if(levelType == FUTURE)
 	{
@@ -105,32 +106,70 @@ void Level_Load(Uint8 levelType)
 }
 void Level_Closer(int level)
 {
+	GList *it;
+	Room *rit;
 	Entity_FreeByLevel(level);
 	Music_Free(&currentLevel->bk_music);
+	g_list_free_full(deadEnds, g_free);
+	deadEnds = NULL;
 	Room_FreeByLevel(level);
 }
+Room *Room_GetByPosition(int x, int y)
+{
+	Room *rit;
+	GList *it;
 
+	for (it = RoomList_Get(); it != NULL; it = it->next)
+	{
+		rit = (Room *)(it->data);
+		if(rit->pos.x == x && rit->pos.y == y)
+		{
+			return rit;
+		}
+	}
+	return NULL;
+}
 void Level_Maker(char *file, int levelin)
 {
 	Room *currRoom;
 	Room *newRoom;
+	Room *tempRoom;
 	Room *rit;
 	GList *it;
 
 	int randPath;
 	int i;
 	Vec2d pos;
-	vec2d_Set(pos,25600,14400);
+	if(levelin == 1)
+	{
+		vec2d_Set(pos,-25600,-14400);
+	}
+	else if(levelin == 2)
+	{
+		vec2d_Set(pos,-25600,14400);
+	}
+	else
+	{
+		vec2d_Set(pos,25600, -14400);
+	}
 	currRoom = Room_New(pos, file, levelin);
 	for(i = 0; i < maxRooms; i++)
 	{
 		randPath = rand() % 4;
-
 		if(randPath == 0)
 		{
+			tempRoom = Room_GetByPosition(currRoom->pos.x, currRoom->pos.y-ROOM_HEIGHT-500);
 			if(currRoom->nroom)
 			{
 				currRoom = currRoom->nroom;
+				i--;
+			}
+			else if(tempRoom)
+			{
+				Room_Link(tempRoom, currRoom, SPLIT_HORIZONTAL, levelin);
+				currRoom->nroom = tempRoom;
+				tempRoom->sroom = currRoom;
+				currRoom = tempRoom;
 				i--;
 			}
 			else
@@ -146,9 +185,18 @@ void Level_Maker(char *file, int levelin)
 		}
 		else if(randPath == 1)
 		{
+			tempRoom = Room_GetByPosition(currRoom->pos.x, currRoom->pos.y+ROOM_HEIGHT+500);
 			if(currRoom->sroom)
 			{
 				currRoom = currRoom->sroom;
+				i--;
+			}
+			else if(tempRoom)
+			{
+				Room_Link(currRoom, tempRoom, SPLIT_HORIZONTAL, levelin);
+				currRoom->nroom = tempRoom;
+				tempRoom->sroom = currRoom;
+				currRoom = tempRoom;
 				i--;
 			}
 			else
@@ -164,9 +212,18 @@ void Level_Maker(char *file, int levelin)
 		}
 		else if(randPath == 2)
 		{
+			tempRoom = Room_GetByPosition(currRoom->pos.x-ROOM_WIDTH-500,currRoom->pos.y);
 			if(currRoom->wroom)
 			{
 				currRoom = currRoom->wroom;
+				i--;
+			}
+			else if(tempRoom)
+			{
+				Room_Link(tempRoom, currRoom, SPLIT_VERTICAL, levelin);
+				currRoom->wroom = tempRoom;
+				tempRoom->eroom = currRoom;
+				currRoom = tempRoom;
 				i--;
 			}
 			else
@@ -182,9 +239,18 @@ void Level_Maker(char *file, int levelin)
 		}
 		else
 		{
+			tempRoom = Room_GetByPosition(currRoom->pos.x+ROOM_WIDTH+500,currRoom->pos.y);
 			if(currRoom->eroom)
 			{
 				currRoom = currRoom->eroom;
+				i--;
+			}
+			else if(tempRoom)
+			{
+				Room_Link(tempRoom, currRoom, SPLIT_VERTICAL, levelin);
+				currRoom->eroom = tempRoom;
+				tempRoom->wroom = currRoom;
+				currRoom = tempRoom;
 				i--;
 			}
 			else
@@ -193,7 +259,7 @@ void Level_Maker(char *file, int levelin)
 				newRoom = Room_New(pos, file, levelin);
 				currRoom->eroom = newRoom;
 				newRoom->wroom = currRoom;
-				Room_Link(currRoom,newRoom, SPLIT_VERTICAL, levelin);
+				Room_Link(newRoom, currRoom, SPLIT_VERTICAL, levelin);
 				currRoom = newRoom;
 				newRoom = NULL;
 			}

@@ -3,8 +3,6 @@
 
 #include "Entity.h"
 
-typedef Entity Entity;
-
 /**
  * @brief	Glop Entity load.
  *
