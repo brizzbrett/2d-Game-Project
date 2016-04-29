@@ -246,10 +246,6 @@ void Entity_UpdateAll()
 		}
 		entList[i].update(&entList[i]);		
 
-		if(!Camera_Intersect(&entList[i]))
-		{
-			vec2d_Negate(entList[i].direction,entList[i].direction);	
-		}
 		Entity_DrawAll();
 		Entity_ThinkAll();
 	}

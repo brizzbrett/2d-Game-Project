@@ -166,6 +166,7 @@ void Room_Populate(int levelin)
 	Vec2d key;
 	int i = 0;
 	Entity *boss;
+
 	for(g = hubList; g != NULL; g = g->next)
 	{
 		Room *r = (Room *)(g->data);
@@ -329,7 +330,11 @@ void Room_FreeByLevel(int level)
 {
 	Room *r; /**<alias for *ent*/
 	GList *g;
-
+	for (g = roomList; g != NULL; g = g->next)
+	{
+		r = (Room *)(g->data);
+		Room_Free(&r);
+	}
 	//g_list_foreach(roomList, (GFunc)(g_free), NULL);
 	g_list_free(roomList);
 	roomList = NULL;

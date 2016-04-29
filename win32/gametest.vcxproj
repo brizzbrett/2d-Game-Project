@@ -27,6 +27,7 @@
     <ClCompile Include="..\src\Level_HUB.c" />
     <ClCompile Include="..\src\Level_Loader.c" />
     <ClCompile Include="..\src\Level_Rooms.c" />
+    <ClCompile Include="..\src\Menu.c" />
     <ClCompile Include="..\src\Player.c" />
     <ClCompile Include="..\src\Save.c" />
     <ClCompile Include="..\src\simple_logger.c" />
@@ -47,6 +48,7 @@
     <ClInclude Include="..\src\HUD.h" />
     <ClInclude Include="..\src\Items.h" />
     <ClInclude Include="..\src\Level.h" />
+    <ClInclude Include="..\src\Menu.h" />
     <ClInclude Include="..\src\Player.h" />
     <ClInclude Include="..\src\Save.h" />
     <ClInclude Include="..\src\simple_logger.h" />

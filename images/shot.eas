@@ -1,0 +1,46 @@
+﻿{"frames": [
+
+{
+   "filename": "Layer 0",
+   "frame": {"x":0, "y":0,"w":50 , "h":50 },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {"x":0,"y":0,"w":50 , "h":50 },
+   "sourceSize": {"w":50 ,"h":50 }
+}
+,{
+   "filename": "Layer 3",
+   "frame": {"x":50, "y":0,"w":50 , "h":50 },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {"x":0,"y":0,"w":50 , "h":50 },
+   "sourceSize": {"w":50 ,"h":50 }
+}
+,{
+   "filename": "Layer 2",
+   "frame": {"x":0, "y":50,"w":50 , "h":50 },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {"x":0,"y":0,"w":50 , "h":50 },
+   "sourceSize": {"w":50 ,"h":50 }
+}
+,{
+   "filename": "Layer 1",
+   "frame": {"x":50, "y":50,"w":50 , "h":50 },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {"x":0,"y":0,"w":50 , "h":50 },
+   "sourceSize": {"w":50 ,"h":50 }
+}
+],
+"meta": {
+   "app": "Adobe Flash Professional",
+   "version": "14.0",
+   "Target": "Edge Animate",
+   "Target Version": "4.0",
+   "image": "shot.png",
+   "format": "RGBA8888",
+   "size": {"w":100 ,"h":100 },
+   "scale": "1"
+}
+}

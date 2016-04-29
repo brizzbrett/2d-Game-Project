@@ -21,7 +21,7 @@ Entity *Weapon_Fire(Entity *owner, Vec2d v, int dirX, int dirY, int frame)
 	shot->think = &Weapon_Think;
 	shot->update = &Weapon_Update;
 	shot->touch = &Weapon_Touch;
-
+	shot->frame = 3;
 	shot->nextThink = SDL_GetTicks() + shot->thinkRate;
 
 	vec2d_Set(vel, v.x, v.y);
@@ -53,18 +53,36 @@ void Weapon_TargetPlayer(Entity *shot)
 }
 void Weapon_Think(Entity *shot)
 {
+	int up_or_down = 0;
 	if(!shot)
 	{
 		return;
 	}
-	shot->nextThink = SDL_GetTicks() + shot->thinkRate;
+	if(shot->owner->type == NIGHTBOSS)
+	{
+		if(shot->frame == 0)
+		{
+			up_or_down = 1;
+		}
+		else if(shot->frame == 3)
+		{
+			up_or_down = 0;
+		}
+		if(up_or_down == 1 && SDL_GetTicks() >= shot->nextThink)
+		{
+			shot->frame++;
+			shot->nextThink = SDL_GetTicks() + 100;
+		}
+		else if(up_or_down == 0 && SDL_GetTicks() >= shot->nextThink)
+		{
+			shot->frame--;
+			shot->nextThink = SDL_GetTicks() + 100;
+		}
+	}
+	//shot->nextThink = SDL_GetTicks() + shot->thinkRate;
 	if(!Camera_Intersect(shot))
 	{
 		Entity_Free(&shot);
-	}
-	if(shot && SDL_GetTicks() >= shot->nextThink)
-	{	
-		Entity_Free(&shot);	
 	}
 	
 }

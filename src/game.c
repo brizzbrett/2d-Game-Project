@@ -14,13 +14,15 @@
 #include "Camera.h"
 #include "Level.h"
 #include "HUD.h"
+#include "Menu.h"
 
 static int gametime;
 void Init_All();
-void Update_All();
+void Update_Game();
 TTF_Font *font2 =  NULL;
 TTF_Font *font =  NULL;
-HUD *hud;
+HUD *hud;	
+Menu *menu;
 /**
  * @brief	Main entry-point for this application.
  * @param	argc	Number of command-line arguments.
@@ -30,8 +32,9 @@ HUD *hud;
 int main(int argc, char *argv[])
 {
 	int done;
+	int menuPress;
 	const Uint8 *keys;
-	
+
 
 	if( TTF_Init() == -1)
     {
@@ -48,13 +51,24 @@ int main(int argc, char *argv[])
     }
 
 	Init_All();
-	
+	menuPress = 0;
 	done = 0;
 	do
 	{
-		gametime = SDL_GetTicks();
-		Update_All();
-		
+		SDL_RenderClear(Graphics_GetActiveRenderer());
+
+		if(Menu_StartGame() || menuPress == 1)
+		{
+			Update_Game();
+			menuPress = 1;
+		}
+		else
+		{
+			Menu_Draw(menu);
+		}
+	
+		NextFrame();		
+		SDL_PumpEvents();
 		keys = SDL_GetKeyboardState(NULL);
 		if(keys[SDL_SCANCODE_ESCAPE])done = 1;
 	}while(!done);
@@ -65,23 +79,19 @@ int main(int argc, char *argv[])
 /** @brief	Initialises all. */
 void Init_All()
 {
-	
 	sprite_InitSystem();
 	Audio_InitSystem(128,3);
 	Entity_InitSystem(10000);
 	
 	Graphics_Init("Dream a Way Out",1000,703,0);
 	Level_Load(0);
-	hud = InitHUD();
+	hud = HUD_Init();
+	menu = Menu_Init();
 }
 /** @brief	Updates all every frame */
-void Update_All()
+void Update_Game()
 {
-		SDL_RenderClear(Graphics_GetActiveRenderer());
-
-		Room_DrawAll();
-		Entity_UpdateAll();
-		DrawGui(hud);
-		NextFrame();		
-		SDL_PumpEvents();
+	Room_DrawAll();
+	Entity_UpdateAll();
+	HUD_Draw(hud);
 }

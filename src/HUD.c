@@ -7,12 +7,13 @@
 #include "SDL_image.h"
 #include "chipmunk.h"
 
-HUD *InitHUD()
+HUD *HUD_Init()
 {
-	Vec2d initHeartPos;
-	vec2d_Set(initHeartPos, 100, 50);
-
 	HUD *temp;
+	Vec2d initHeartPos;
+	
+	vec2d_Set(initHeartPos, 100, 50);
+	
 	temp = (HUD *)malloc(sizeof(HUD));
 	temp->player = Entity_GetByType(PLAYER);
 	temp->playerHearts = sprite_Load("images/heart2.png",100,100);
@@ -22,14 +23,16 @@ HUD *InitHUD()
 	return temp;
 }
 
-void DrawGui(HUD *hud)
+void HUD_Draw(HUD *hud)
 {
 	int i;
 	int k;
 	int m;
 	Vec2d j;
 	Vec2d temp;
+
 	vec2d_Set(j, Camera_GetPosition().x+25, Camera_GetPosition().y+50);
+
 	for(i = 0; i < hud->player->health; i++)
 	{
 		

@@ -110,9 +110,15 @@ void Level_Closer(int level)
 	Room *rit;
 	Entity_FreeByLevel(level);
 	Music_Free(&currentLevel->bk_music);
-	g_list_free_full(deadEnds, g_free);
-	deadEnds = NULL;
+	/*for (it = deadEnds; it != NULL; it = it->next)
+	{
+		rit = (Room *)(it->data);
+		Room_Free(&rit);
+	}*/
+	
 	Room_FreeByLevel(level);
+	g_list_free(deadEnds);
+	deadEnds = NULL;
 }
 Room *Room_GetByPosition(int x, int y)
 {
@@ -166,7 +172,7 @@ void Level_Maker(char *file, int levelin)
 			}
 			else if(tempRoom)
 			{
-				Room_Link(tempRoom, currRoom, SPLIT_HORIZONTAL, levelin);
+				Room_Link(currRoom, tempRoom, SPLIT_HORIZONTAL, levelin);
 				currRoom->nroom = tempRoom;
 				tempRoom->sroom = currRoom;
 				currRoom = tempRoom;
@@ -193,7 +199,7 @@ void Level_Maker(char *file, int levelin)
 			}
 			else if(tempRoom)
 			{
-				Room_Link(currRoom, tempRoom, SPLIT_HORIZONTAL, levelin);
+				Room_Link(tempRoom, currRoom, SPLIT_HORIZONTAL, levelin);
 				currRoom->nroom = tempRoom;
 				tempRoom->sroom = currRoom;
 				currRoom = tempRoom;
@@ -247,7 +253,7 @@ void Level_Maker(char *file, int levelin)
 			}
 			else if(tempRoom)
 			{
-				Room_Link(tempRoom, currRoom, SPLIT_VERTICAL, levelin);
+				Room_Link(currRoom, tempRoom, SPLIT_VERTICAL, levelin);
 				currRoom->eroom = tempRoom;
 				tempRoom->wroom = currRoom;
 				currRoom = tempRoom;
@@ -259,7 +265,7 @@ void Level_Maker(char *file, int levelin)
 				newRoom = Room_New(pos, file, levelin);
 				currRoom->eroom = newRoom;
 				newRoom->wroom = currRoom;
-				Room_Link(newRoom, currRoom, SPLIT_VERTICAL, levelin);
+				Room_Link(currRoom, newRoom, SPLIT_VERTICAL, levelin);
 				currRoom = newRoom;
 				newRoom = NULL;
 			}
