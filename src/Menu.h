@@ -1,7 +1,14 @@
 #ifndef __MENU_H__
 #define __MENU_H__
 
-#include "Entity.h"
+void Menu_TitleScreenDraw();
+void Menu_MainDraw();
+void levelSelect();
+void Editor();
+void Results(int rank, int level);
+
+#endif
+/*#include "Entity.h"
 
 typedef struct Menu_S
 {
@@ -16,4 +23,4 @@ int Menu_StartGame();
 
 
 
-#endif
+#endif*/

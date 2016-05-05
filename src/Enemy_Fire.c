@@ -60,7 +60,7 @@ void Weapon_Think(Entity *shot)
 	}
 	if(shot->owner->type == NIGHTBOSS)
 	{
-		if(shot->frame == 0)
+		if(shot->frame == 1)
 		{
 			up_or_down = 1;
 		}

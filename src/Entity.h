@@ -87,6 +87,7 @@ typedef struct Entity_S
 	struct Entity_S *shot[8];
 
 	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);	/**<Draw function pointer */
+	void (*drawbloom)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, Vec3d rgb, int sz);	/**<Draw function pointer */
 	void (*think)(struct Entity_S *self);										/**<Think function pointer */
 	void (*update)(struct Entity_S *self);										/**<Update function pointer */
 	void (*touch)(struct Entity_S *self, struct Entity_S *other);				/**<Touch function pointer */

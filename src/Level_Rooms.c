@@ -55,7 +55,7 @@ Room *Room_New(Vec2d pos, char *file, int levelin)
 	
 	if(!p)
 	{
-		p = Player_Load(r->pos.x+478,r->pos.y+500);
+		p = Player_Load(r->pos.x+468,r->pos.y+325);
 		slog("Player created!");
 		Camera_SetPosition(r->pos);
 	}	

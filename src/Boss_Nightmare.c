@@ -91,7 +91,7 @@ void Nightmare_PhaseOne(Entity *nightmare)
 	{	
 		if(SDL_GetTicks() >= nightmare->nextFire)
 		{
-			vec2d_Set(nightmare->shot[i]->vel,3,3);
+			vec2d_Set(nightmare->shot[i]->vel,4,4);
 			vec2d_Subtract(nightmare->target->pos,nightmare->shot[i]->pos,nightmare->shot[i]->direction);
 			vec2d_Normalize(&nightmare->shot[i]->direction);	
 			vec2d_Multiply(nightmare->shot[i]->vel,nightmare->shot[i]->direction,nightmare->shot[i]->vel);

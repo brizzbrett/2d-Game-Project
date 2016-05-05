@@ -19,10 +19,10 @@
 static int gametime;
 void Init_All();
 void Update_Game();
-TTF_Font *font2 =  NULL;
-TTF_Font *font =  NULL;
+//TTF_Font *font2 =  NULL;
+//TTF_Font *font =  NULL;
 HUD *hud;	
-Menu *menu;
+//Menu *menu;
 /**
  * @brief	Main entry-point for this application.
  * @param	argc	Number of command-line arguments.
@@ -40,15 +40,6 @@ int main(int argc, char *argv[])
     {
         return false;    
     }
-    
-	font2 = TTF_OpenFont( "fonts/font1.ttf", 36 );
-	
-	font = TTF_OpenFont( "fonts/font.ttf", 36 );
-	if( font == NULL )
-    {
-		slog("font not loaded properly");
-		return false;
-    }
 
 	Init_All();
 	menuPress = 0;
@@ -57,15 +48,8 @@ int main(int argc, char *argv[])
 	{
 		SDL_RenderClear(Graphics_GetActiveRenderer());
 
-		if(Menu_StartGame() || menuPress == 1)
-		{
-			Update_Game();
-			menuPress = 1;
-		}
-		else
-		{
-			Menu_Draw(menu);
-		}
+		Update_Game();
+		menuPress = 1;
 	
 		NextFrame();		
 		SDL_PumpEvents();
@@ -84,9 +68,9 @@ void Init_All()
 	Entity_InitSystem(10000);
 	
 	Graphics_Init("Dream a Way Out",1000,703,0);
-	Level_Load(0);
+	Menu_TitleScreenDraw();
+	Menu_MainDraw();
 	hud = HUD_Init();
-	menu = Menu_Init();
 }
 /** @brief	Updates all every frame */
 void Update_Game()

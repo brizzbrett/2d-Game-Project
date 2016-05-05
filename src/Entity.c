@@ -112,8 +112,14 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 			fprintf(stderr, "Maximum Sprites Reached.\n");
 			exit(1);
 		}
-
-		entList[i].draw = &sprite_Draw;
+		if(entList[i].type == SHOT)
+		{
+			entList[i].drawbloom = &sprite_BloomDraw;
+		}
+		else
+		{
+			entList[i].draw = &sprite_Draw;
+		}
 		entList[i].update = NULL;
 		entList[i].think = NULL;
 		entList[i].touch = NULL;
@@ -189,6 +195,8 @@ void Entity_DrawAll()
 {
 	Uint32 i;
 	Entity *player = NULL;
+	Vec3d color;
+	vec3d_Set(color,255,0,0);
 	for(i = 0; i < entMax; i++)
 	{
 		if(!entList[i].inuse)
@@ -204,7 +212,16 @@ void Entity_DrawAll()
 			player = &entList[i];
 			continue;
 		}
-		entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+		if(entList[i].type == SHOT)
+		{
+			entList[i].drawbloom(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos, color, 20);
+		}
+		else
+		{
+			entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+		}
+
+		
 	}
 	if(player)
 	{

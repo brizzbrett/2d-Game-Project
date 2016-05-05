@@ -118,8 +118,8 @@
 		"imagefiles": 
 		{
 			"file": "images/shot.png",
-			"fw": 50,
-			"fh": 50,
+			"fw": 49,
+			"fh": 49,
 			"frame": 0
 		},
 		"bounds": 

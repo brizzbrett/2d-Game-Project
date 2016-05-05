@@ -24,6 +24,7 @@ Entity *Player_Load(int x, int y)
 
 		player->keys = 0;
 		player->levelin = NULL;
+		player->frame = 1;
 		return player;
 	}
 	return NULL;
