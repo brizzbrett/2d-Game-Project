@@ -3,6 +3,8 @@
 #include <time.h>
 #include <random>
 
+#include "Items.h"
+
 #define HUB 0
 #define NIGHTMARE 1
 #define COWBOY 2
@@ -28,13 +30,12 @@ Level *Level_New(char *file)
 	return l;
 
 }
-void Level_Load(Uint8 levelType)
+void Level_Load(Uint8 levelType, int save)
 {
 	Room *r;
 	GList *g;
 	currentLevel = Level_New(levelcfg);
 	cJSON *json, *root, *obj;
-
 	srand(time(NULL));
 	if(!levelcfg)return;
 
@@ -47,12 +48,21 @@ void Level_Load(Uint8 levelType)
 	currentLevel->data=(char*)malloc(currentLevel->len+1);
 	fread(currentLevel->data,1,currentLevel->len,currentLevel->f);
 	fclose(currentLevel->f);
-
+	
 	json = cJSON_Parse(currentLevel->data);
+	
 	if(!json)return;
+
 	if(levelType == HUB)
 	{
-		Hub_Create(levelcfg);
+		if(save)
+		{
+			Hub_Create(levelcfg, 1);
+		}
+		else
+		{
+			Hub_Create(levelcfg, 0);
+		}
 	}
 	else if(levelType == NIGHTMARE)
 	{
@@ -110,11 +120,6 @@ void Level_Closer(int level)
 	Room *rit;
 	Entity_FreeByLevel(level);
 	Music_Free(&currentLevel->bk_music);
-	/*for (it = deadEnds; it != NULL; it = it->next)
-	{
-		rit = (Room *)(it->data);
-		Room_Free(&rit);
-	}*/
 	
 	Room_FreeByLevel(level);
 	g_list_free(deadEnds);
@@ -290,7 +295,29 @@ void Level_Maker(char *file, int levelin)
 	}
 	WinPath();
 }
+void Level_Save()
+{
+	FILE *f;
+	long len;
+	char *data;
+	cJSON *json, *root;
 
+	json = cJSON_CreateObject();
+	cJSON_AddItemToObject(json, "save", root=cJSON_CreateObject());
+	cJSON_AddNumberToObject(root, "nightbed", Bed_GetByBedLevel(1)->flag);
+	cJSON_AddNumberToObject(root, "cowbed", Bed_GetByBedLevel(2)->flag);
+	cJSON_AddNumberToObject(root, "futbed", Bed_GetByBedLevel(3)->flag);
+	cJSON_AddNumberToObject(root, "medbed", Bed_GetByBedLevel(4)->flag);
+
+	data = cJSON_Print(json);
+	cJSON_Delete(json);
+	
+	f=fopen("def/savecfg.txt","w");
+	if(!f)return;
+
+	fprintf(f, data);
+	fclose(f);
+}
 GList *DeadEnds_Get()
 {
 	return deadEnds;

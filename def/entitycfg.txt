@@ -160,8 +160,8 @@
 		},
 		"info": 
 		{
-			"health": 30.0,
-			"max health": 30,
+			"health": 10.0,
+			"max health": 10,
 			"strength": 3,
 			"speed": 5,
 			"next think": 0,

@@ -7,8 +7,13 @@
 typedef struct
 {
 	Entity *player;
+	Entity *boss;
+
 	Sprite *playerHearts;
+	Sprite *bossHearts;
+
 	Sprite *playerTempHearts;
+
 	Vec2d initHeartPos;
 }HUD;
 

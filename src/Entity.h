@@ -60,6 +60,8 @@ typedef struct Entity_S
 	SDL_Rect bounds;	/**<The collision bounds */
 	SDL_Rect attack;	/**<The attacking bounds (for player) */
 
+	cJSON *root;
+
 	int frame;			/**<The current frame of the sprite */
 
 	float health;		/**<Entity health, if have */
@@ -181,4 +183,5 @@ Entity *Entity_GetByType(EntityType type);
 int Entity_GetNum();
 
 GList *EntList_Get();
+Entity *Bed_GetByBedLevel(int levelin);
 #endif

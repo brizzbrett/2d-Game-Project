@@ -341,3 +341,18 @@ Entity *Entity_GetByType(EntityType type)
 	}
 	return NULL;
 }
+Entity *Bed_GetByBedLevel(int levelin)
+{
+	Uint32 i;
+	for(i=0; i < numEnt; i++)
+	{
+		if(entList[i].type == BED)
+		{
+			if(entList[i].bedLevel == levelin)
+			{
+				return &entList[i];
+			}
+		}
+	}
+	return NULL;
+}

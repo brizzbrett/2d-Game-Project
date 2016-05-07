@@ -60,7 +60,7 @@ typedef struct Level_S
  * @param file	a string for the file that is being used to load the level
  * @param level	an int that tells the Level_Loader which level to load.
  */
-void Level_Load(Uint8 levelType);
+void Level_Load(Uint8 levelType, int save);
 
 ////////////////////////////////////////////////////////////
 /////////////////////ROOM FUNCTIONS/////////////////////////
@@ -142,10 +142,11 @@ void Room_DrawAll();
  *
  * @param file	The file that the HUB is being loaded from.
  */
-void Hub_Create(char *file);
+void Hub_Create(char *file, int save);
 
 GList *RoomList_Get();
 GList *DeadEnds_Get();
 void Room_Populate(int levelin);
 void WinPath();
+void Level_Save();
 #endif

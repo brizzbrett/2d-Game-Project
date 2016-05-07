@@ -16,6 +16,7 @@ HUD *HUD_Init()
 	
 	temp = (HUD *)malloc(sizeof(HUD));
 	temp->player = Entity_GetByType(PLAYER);
+	temp->boss = Entity_GetByType(NIGHTBOSS);
 	temp->playerHearts = sprite_Load("images/heart2.png",100,100);
 	temp->playerTempHearts = sprite_Load("images/tempheart2.png",100,100);
 	temp->initHeartPos = initHeartPos;
@@ -26,26 +27,41 @@ HUD *HUD_Init()
 void HUD_Draw(HUD *hud)
 {
 	int i;
-	int k;
 	int m;
-	Vec2d j;
-	Vec2d temp;
+	Vec2d playerHeart;
+	Vec2d bossHeart;
 
-	vec2d_Set(j, Camera_GetPosition().x+25, Camera_GetPosition().y+50);
+	vec2d_Set(playerHeart, Camera_GetPosition().x+25, Camera_GetPosition().y+50);
+	vec2d_Set(bossHeart, Camera_GetPosition().x+10, Camera_GetPosition().y+620);
 
 	for(i = 0; i < hud->player->health; i++)
 	{
 		
 		if(i < hud->player->maxHealth)
 		{
-			j.x = j.x+40;
-			sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),j);
+			playerHeart.x = playerHeart.x+40;
+			sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),playerHeart);
 		}
 
 	}		
 	for(m = hud->player->maxHealth; m < hud->player->health; m++)
 	{
-		j.x = j.x+40;
-		sprite_Draw(hud->playerTempHearts,0,Graphics_GetActiveRenderer(),j);	
+		playerHeart.x = playerHeart.x+40;
+		sprite_Draw(hud->playerTempHearts,0,Graphics_GetActiveRenderer(),playerHeart);	
+	}
+
+	hud->boss = Entity_GetByType(NIGHTBOSS);
+	if(hud->boss && hud->boss->think != NULL)
+	{
+		for(i = 0; i < hud->boss->health; i++)
+		{
+		
+			if(i < hud->boss->maxHealth)
+			{
+				bossHeart.x = bossHeart.x+40;
+				sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),bossHeart);
+			}
+
+		}		
 	}
 }	

@@ -46,6 +46,7 @@ Entity *Boulder_New(Vec2d pos)
 Entity *Bed_New(Vec2d pos, int bedlvl)
 {
 	Entity *bed;
+
 	bed = Entity_New(BED, pos);
 	if(!bed)return NULL;
 	bed->touch = &Bed_Touch;
@@ -84,6 +85,10 @@ void Item_Update(Entity *item)
 {
 	item->target = Entity_GetByType(PLAYER);
 	Entity_IntersectAll(item);
+	/*if(item->type == BED)
+	{
+		if(
+	}*/
 }
 void Pickup_Think(Entity *item)
 {
@@ -137,38 +142,45 @@ void Bed_Touch(Entity *bed, Entity *other)
 	{
 		if(bed->bedLevel == 1)
 		{
-			Level_Load(1);
+			Level_Load(1, 0);
+			bed->touch = NULL;
 		}
 		if(bed->bedLevel == 2)
 		{
-			Level_Load(3);
+			Level_Load(2, 0);
+			bed->touch = NULL;
 		}
 		if(bed->bedLevel == 3)
 		{
-			Level_Load(2);
+			Level_Load(3, 0);
+			bed->touch = NULL;
 		}
 		if(bed->bedLevel == 4)
 		{
-			Level_Load(4);
+			Level_Load(4, 0);
+			bed->touch = NULL;
 		}
 		other->bedPos = bed->pos;
 		hub = bed;
 		inDream = TRUE;
+		
 	}
 	else if(other == bed->target && inDream)
 	{
-		other->pos.y = other->bedPos.y + 70;
+		other->pos.y = other->bedPos.y + 80;
 		other->pos.x = other->bedPos.x + 50;
+		other->set = FALSE;
 		vec2d_Set(temp, hub->pos.x-150, hub->pos.y-400);
+		hub->flag = 1;
 		Camera_SetPosition(temp);
 		inDream = FALSE;
+		Level_Save();
 		Level_Closer(hub->bedLevel);
 	}
 	else
 	{
-		vec2d_Set(other->vel,0,0);
+		vec2d_Set(other->vel,0.1,0.1);
 	}
-	bed->touch = NULL;
 }
 void Key_Touch(Entity *key, Entity *other)
 {

@@ -7,16 +7,24 @@
 #include <time.h>
 
 #include "Player.h"
+#include "Items.h"
 
-void Hub_Create(char *file)
+void Hub_Create(char *file, int save)
 {
 	Room *r[11];
 	char *data;
 	FILE *f;
 	long len;
+
+	FILE *saveFile;
+	char *savedata;
+	int savelen;
 	Vec2d tVec;
 	bool door[12];
 	cJSON *json, *root, *obj, *room, *buf;
+	cJSON *save_json, *save_root;
+	Vec2d bed;
+	int nightbed=0,cowbed=0,futbed=0,medbed=0;
 
 	f = fopen(file, "rb");
 
@@ -30,6 +38,27 @@ void Hub_Create(char *file)
 	fread(data,1,len,f);
 	fclose(f);
 
+	if(save)
+	{
+		saveFile = fopen("def/savecfg.txt", "rb");
+		if(!saveFile)return;
+
+		fseek(saveFile,0,SEEK_END);
+		savelen=ftell(saveFile);
+		fseek(saveFile,0,SEEK_SET);
+
+		savedata=(char*)malloc(savelen+1);
+		fread(savedata,1,savelen,saveFile);
+		fclose(saveFile);
+
+		save_json = cJSON_Parse(savedata);
+		save_root = cJSON_GetObjectItem(save_json, "save");
+		nightbed = cJSON_GetObjectItem(save_root, "nightbed")->valueint;
+		cowbed = cJSON_GetObjectItem(save_root, "cowbed")->valueint;
+		futbed = cJSON_GetObjectItem(save_root, "futbed")->valueint;
+		medbed = cJSON_GetObjectItem(save_root, "medbed")->valueint;
+	}
+	
 	json = cJSON_Parse(data);
 	if(!json)return;
 	root = cJSON_GetObjectItem(json, "HUB");
@@ -43,6 +72,13 @@ void Hub_Create(char *file)
 	);
 	r[0] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[0]->type = RTYPE_HUBR;
+	vec2d_Set(bed,r[0]->pos.x+150,r[0]->pos.y+400);
+	Item_Spawn(Bed_New(bed,1), 0);
+	if(nightbed == 1)
+	{
+		Bed_GetByBedLevel(1)->touch = NULL;
+		Bed_GetByBedLevel(1)->flag = 1;
+	}
 	room = cJSON_GetObjectItem(obj, "hall1");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -50,6 +86,7 @@ void Hub_Create(char *file)
 	);
 	r[1] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[1]->type = RTYPE_HUBH;
+
 	room = cJSON_GetObjectItem(obj, "hall2");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -57,6 +94,7 @@ void Hub_Create(char *file)
 	);
 	r[2] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[2]->type = RTYPE_HUBH;
+
 	room = cJSON_GetObjectItem(obj, "hall3");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -64,6 +102,7 @@ void Hub_Create(char *file)
 	);
 	r[3] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[3]->type = RTYPE_HUBH;
+
 	room = cJSON_GetObjectItem(obj, "hall4");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -71,6 +110,7 @@ void Hub_Create(char *file)
 	);
 	r[4] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[4]->type = RTYPE_HUBH;
+
 	room = cJSON_GetObjectItem(obj, "cowboy room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -78,6 +118,14 @@ void Hub_Create(char *file)
 	);
 	r[5] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[5]->type = RTYPE_HUBR;
+	vec2d_Set(bed,r[5]->pos.x+150,r[5]->pos.y+400);
+	Item_Spawn(Bed_New(bed,3), 0);
+	if(cowbed == 1)
+	{
+		Bed_GetByBedLevel(3)->touch = NULL;
+		Bed_GetByBedLevel(3)->flag = 1;
+	}
+
 	room = cJSON_GetObjectItem(obj, "future room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -85,6 +133,14 @@ void Hub_Create(char *file)
 	);
 	r[6] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[6]->type = RTYPE_HUBR;
+	vec2d_Set(bed,r[6]->pos.x+150,r[6]->pos.y+400);
+	Item_Spawn(Bed_New(bed,2), 0);
+	if(futbed == 1)
+	{
+		Bed_GetByBedLevel(2)->touch = NULL;
+		Bed_GetByBedLevel(2)->flag = 1;
+	}
+
 	room = cJSON_GetObjectItem(obj, "medieval room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -92,6 +148,14 @@ void Hub_Create(char *file)
 	);
 	r[7] = Room_New(tVec, cJSON_GetObjectItem(room, "room look")->valuestring, NULL);
 	r[7]->type = RTYPE_HUBR;
+	vec2d_Set(bed,r[7]->pos.x+150,r[7]->pos.y+400);
+	Item_Spawn(Bed_New(bed,4), 0);
+	if(medbed == 1)
+	{
+		Bed_GetByBedLevel(4)->touch = NULL;
+		Bed_GetByBedLevel(4)->flag = 1;
+	}
+
 	room = cJSON_GetObjectItem(obj, "final room");
 	vec2d_Set(tVec, 
 			  cJSON_GetObjectItem(room, "posx")->valueint, 
@@ -125,8 +189,6 @@ void Hub_Create(char *file)
 	Room_Link(r[4],r[3],SPLIT_HORIZONTAL, NULL);/**<Hall 4 to Hall 3*/
 	Room_Link(r[8],r[4],SPLIT_VERTICAL, NULL);/**<Final Room to Hall 4*/
 	Room_Link(r[7],r[4],SPLIT_HORIZONTAL, NULL);/**<Medieval Room to Hall 4*/
-
-	Room_Populate(0);
 
 	free(data);
 	json = NULL;

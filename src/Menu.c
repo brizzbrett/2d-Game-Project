@@ -216,12 +216,12 @@ void Menu_MainDraw()
 						switch(select)
 						{
 						case 0:
-							Level_Load(0);
+							Level_Load(0, 0);
 							done = 1;
 							break;
 						case 1:
 		
-							Level_Load(1);
+							Level_Load(0, 1);
 							done = 1;
 							break;
 						case 2:

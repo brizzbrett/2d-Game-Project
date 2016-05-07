@@ -51,7 +51,6 @@ void sprite_Free(Sprite **sprite)
 	target->refCount--;
 	if(target->refCount == 0)
 	{
-		strcpy(target->filename,"\0");
 
 		if(target->image != NULL)
 			SDL_DestroyTexture(target->image);

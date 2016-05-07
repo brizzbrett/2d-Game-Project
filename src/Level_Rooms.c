@@ -167,24 +167,13 @@ void Room_Populate(int levelin)
 	int i = 0;
 	Entity *boss;
 
-	for(g = hubList; g != NULL; g = g->next)
-	{
-		Room *r = (Room *)(g->data);
-		vec2d_Set(bed,r->pos.x+150,r->pos.y+400);
-		vec2d_Set(key,r->pos.x+484,r->pos.y+335);
-		if(r->type == RTYPE_HUBR)
-		{	
-			Item_Spawn(Bed_New(bed,bedlvl), levelin);
-			bedlvl++;
-		}
-	}
 	for (g = roomList; g != NULL; g = g->next)
 	{
 		Room *r = (Room *)(g->data);
 		vec2d_Set(bed,r->pos.x+150,r->pos.y+400);
 		vec2d_Set(key,r->pos.x+484,r->pos.y+335);
 		
-		if(levelin == 1)
+		if(levelin != 0)
 		{
 			if(r->type == RTYPE_START)
 			{
@@ -219,13 +208,12 @@ void Room_Populate(int levelin)
 					r->west->target->frame = 1;
 				}
 				slog("Keys: %i", r->keys);
+				boss = Nightmare_Load(key.x,key.y,levelin);
 			}
 			else if(r->type == RTYPE_KEY)
 			{
-				if(levelin == 1)
-				{
-					boss = Nightmare_Load(key.x,key.y,levelin);
-				}
+
+				boss = Nightmare_Load(key.x,key.y,levelin);
 				i++;
 			}
 			else if(r->type == RTYPE_NORMAL)
