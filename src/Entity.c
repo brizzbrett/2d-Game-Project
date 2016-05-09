@@ -119,6 +119,7 @@ Entity *Entity_New(EntityType type, Vec2d pos)
 		else
 		{
 			entList[i].draw = &sprite_Draw;
+			entList[i].cdraw = &csprite_DrawAll;
 		}
 		entList[i].update = NULL;
 		entList[i].think = NULL;
@@ -218,14 +219,14 @@ void Entity_DrawAll()
 		}
 		else
 		{
-			entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos);
+			entList[i].draw(entList[i].sprite, entList[i].frame, Graphics_GetActiveRenderer(), entList[i].pos,1);
 		}
 
 		
 	}
 	if(player)
 	{
-		player->draw(player->sprite, player->frame, Graphics_GetActiveRenderer(), player->pos);
+		player->cdraw(player->csprite, player->frame, Graphics_GetActiveRenderer(), player->pos,1);
 	}
 }
 

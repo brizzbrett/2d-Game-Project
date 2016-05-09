@@ -12,9 +12,7 @@ int spriteMax = 10000;
 int numSprites = 0;
 
 void sprite_CloseSystem();
-/**   
- * @brief	Initialises the Sprite System by allocating a block of memory. 
- */
+
 void sprite_InitSystem()
 {
 	int i;
@@ -38,10 +36,6 @@ void sprite_InitSystem()
 	atexit(sprite_CloseSystem);
 }
 
-/**
- * @brief	Frees up the memory allocated by the pointer to the sprite pointer.
- * @param	**sprite	If not null, a pointer to the sprite pointer.
- */
 void sprite_Free(Sprite **sprite)
 {
 	Sprite *target = *sprite;
@@ -61,10 +55,6 @@ void sprite_Free(Sprite **sprite)
 	*sprite = NULL;
 }
 
-
-/**   
- * @brief	Closes the Sprite System by freeing any memory used by the system
- */
 void sprite_CloseSystem()
 {
 	int i;
@@ -79,13 +69,6 @@ void sprite_CloseSystem()
 	numSprites = 0;
 }
 
-/**
- * @brief	Loads a new empty Sprite
- * @param	file	The file that holds the spritesheet for the sprite.
- * @param	fw  	The frame width.
- * @param	fh  	The frame height.
- * @return	the new Sprite.
- */
 Sprite *sprite_Load(char *file, int fw, int fh)
 {
 	int i;
@@ -146,15 +129,22 @@ Sprite *sprite_Load(char *file, int fw, int fh)
 	
 	return &spriteList[i];	
 }
+CSprite *csprite_Load(char *hair, char *face, char *shirt, char *jacket)
+{
+	CSprite *csprite;
 
-/**
- * @brief	Draws a sprite to the screen
- * @param	*sprite  			If not null, the sprite being drawn.
- * @param	frame				The frame of the spritesheet being rendered.
- * @param	*renderer			If not null, the renderer being drawn to.
- * @param	pos					The position on the screen the sprite will show up.
- */
-void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
+	csprite = (CSprite *)malloc(sizeof(CSprite));
+	memset(csprite,0,sizeof(CSprite));
+
+	csprite->hair = sprite_Load(hair, 64, 64);
+	csprite->face = sprite_Load(face, 64, 64);
+	csprite->shirt = sprite_Load(shirt, 64, 64);
+	csprite->jacket = sprite_Load(jacket, 64, 64);
+
+	return csprite;
+}
+
+void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, int sz)
 {
 	SDL_Rect src,dest;
 	Vec2d posRel;
@@ -174,10 +164,24 @@ void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos)
 
 	dest.x = posRel.x;
 	dest.y = posRel.y;
-	dest.w = sprite->frameSize.x;
-	dest.h = sprite->frameSize.y;
+	dest.w = sprite->frameSize.x*sz;
+	dest.h = sprite->frameSize.y*sz;
 
 	SDL_RenderCopy(renderer,sprite->image, &src, &dest);
+}
+void csprite_DrawAll(CSprite *csprite,int frame, SDL_Renderer *renderer, Vec2d pos, int sz)
+{
+	sprite_Draw(csprite->hair, frame, renderer, pos,sz);
+	sprite_Draw(csprite->face, frame, renderer, pos,sz);
+	sprite_Draw(csprite->shirt, frame, renderer, pos,sz);
+	sprite_Draw(csprite->jacket, frame, renderer, pos,sz);
+}
+void csprite_Draw(CSprite *csprite, int hframe, int fframe, int sframe, int jframe, SDL_Renderer *renderer, Vec2d pos, int sz)
+{
+	sprite_Draw(csprite->hair, hframe, renderer, pos,sz);
+	sprite_Draw(csprite->face, fframe, renderer, pos,sz);
+	sprite_Draw(csprite->shirt, sframe, renderer, pos,sz);
+	sprite_Draw(csprite->jacket, jframe, renderer, pos,sz);
 }
 
 void sprite_BloomDraw(Sprite *bloom, int frame, SDL_Renderer *renderer, Vec2d pos, Vec3d rgb, int sz)

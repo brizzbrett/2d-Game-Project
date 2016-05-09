@@ -39,7 +39,7 @@ typedef struct Room_T
 	struct Room_T *nroom, *sroom, *eroom, *wroom;
 	Entity *north, *south, *east, *west;	/**<Door entities */
 
-	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
+	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, int sz);
 	void (*touch)(struct Room_T *r, Entity *other);
 }Room;
 

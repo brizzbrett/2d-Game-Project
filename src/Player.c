@@ -16,12 +16,13 @@ Entity *Player_Load(int x, int y)
 		player->update = &Player_Update;
 
 		player->attack = rect(0,0,0,0);
-
+		player->csprite = NULL;
 		player->owner = NULL;
 		player->target = NULL;
 		player->sound = Sound_New("audio/punch.ogg",0,PLAYER_FX);
 		player->set = FALSE;
 
+		player->id = PLAYER;
 		player->keys = 0;
 		player->levelin = NULL;
 		player->frame = 1;

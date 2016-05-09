@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "Vector.h"
+#include <glib.h>
 
 /** @brief	Defines an alias representing the sprite t. */
 typedef struct Sprite_T
@@ -17,6 +18,15 @@ typedef struct Sprite_T
 	int fpl;
 
 }Sprite;
+
+typedef struct CSprite_T
+{
+	Sprite *hair;
+	Sprite *face;
+	Sprite *shirt;
+	Sprite *jacket;
+	
+}CSprite;
 
 typedef Sprite Text;
 /**   
@@ -37,6 +47,9 @@ void sprite_CloseSystem();
  * @return	the new Sprite.
  */
 Sprite *sprite_Load(char *file, int fw, int fh);
+
+CSprite *csprite_Load(char *hair, char *face, char *shirt, char *jacket);
+
 Sprite* sprite_LoadText(TTF_Font *font, char *text, SDL_Color color);
 
 /**
@@ -52,7 +65,9 @@ void sprite_Free(Sprite **sprite);
  * @param	*renderer			If not null, the renderer being drawn to.
  * @param	pos					The position on the screen the sprite will show up.
  */
-void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);
+void sprite_Draw(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, int sz);
+void csprite_DrawAll(CSprite *csprite,int frame, SDL_Renderer *renderer, Vec2d pos, int sz);
+void csprite_Draw(CSprite *csprite, int hframe, int fframe, int sframe, int jframe, SDL_Renderer *renderer, Vec2d pos, int sz);
 void sprite_BloomDraw(Sprite *bloom, int frame, SDL_Renderer *renderer, Vec2d pos, Vec3d rgb, int sz);
 void sprite_TextDraw(Sprite *text, Vec2d drawPos, int alpha);
 #endif

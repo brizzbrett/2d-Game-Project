@@ -40,14 +40,14 @@ void HUD_Draw(HUD *hud)
 		if(i < hud->player->maxHealth)
 		{
 			playerHeart.x = playerHeart.x+40;
-			sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),playerHeart);
+			sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),playerHeart,1);
 		}
 
 	}		
 	for(m = hud->player->maxHealth; m < hud->player->health; m++)
 	{
 		playerHeart.x = playerHeart.x+40;
-		sprite_Draw(hud->playerTempHearts,0,Graphics_GetActiveRenderer(),playerHeart);	
+		sprite_Draw(hud->playerTempHearts,0,Graphics_GetActiveRenderer(),playerHeart,1);	
 	}
 
 	hud->boss = Entity_GetByType(NIGHTBOSS);
@@ -59,7 +59,7 @@ void HUD_Draw(HUD *hud)
 			if(i < hud->boss->maxHealth)
 			{
 				bossHeart.x = bossHeart.x+40;
-				sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),bossHeart);
+				sprite_Draw(hud->playerHearts,0,Graphics_GetActiveRenderer(),bossHeart,1);
 			}
 
 		}		

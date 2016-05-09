@@ -55,6 +55,7 @@ typedef struct Entity_S
 	Vec2d force;		/**<Forec in vector 2d */
 
 	Sprite *sprite;		/**<Entity sprite info */
+	CSprite *csprite;
 	Sound *sound;
 
 	SDL_Rect bounds;	/**<The collision bounds */
@@ -88,7 +89,8 @@ typedef struct Entity_S
 
 	struct Entity_S *shot[8];
 
-	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos);	/**<Draw function pointer */
+	void (*draw)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos,int sz);	/**<Draw function pointer */
+	void (*cdraw)(CSprite *csprite, int frame, SDL_Renderer *renderer, Vec2d pos,int sz);
 	void (*drawbloom)(Sprite *sprite, int frame, SDL_Renderer *renderer, Vec2d pos, Vec3d rgb, int sz);	/**<Draw function pointer */
 	void (*think)(struct Entity_S *self);										/**<Think function pointer */
 	void (*update)(struct Entity_S *self);										/**<Update function pointer */

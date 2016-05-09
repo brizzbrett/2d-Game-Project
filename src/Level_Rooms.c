@@ -6,6 +6,7 @@
 #include "Enemy_Spider.h"
 #include "Boss_Nightmare.h"
 #include "Items.h"
+#include "Menu.h"
 
 static GList *hubList;
 static GList *roomList;
@@ -13,6 +14,7 @@ static GList *roomList;
 Uint32 roomnum = 1;
 Uint32 length = 0;
 int bedlvl = 1;
+
 Entity *p;
 
 Room *Room_New(Vec2d pos, char *file, int levelin)
@@ -52,13 +54,20 @@ Room *Room_New(Vec2d pos, char *file, int levelin)
 	}
 	r->draw = &sprite_Draw;
 	roomnum += 1;
-	
-	if(!p)
+	p = Entity_GetByID(PLAYER);
+	if(p == NULL)
 	{
 		p = Player_Load(r->pos.x+468,r->pos.y+325);
+		p->csprite = csprite_Load("images/playersheet/whitehair.png","images/playersheet/blackface.png","images/playersheet/purpleshirt.png","images/playersheet/tealjack.png");
 		slog("Player created!");
 		Camera_SetPosition(r->pos);
-	}	
+	}
+	else if(p && hubList == NULL)
+	{
+		//p->pos.x = r->pos.x+468;
+		//p->pos.x = r->pos.y+325;
+		Camera_SetPosition(r->pos);
+	}
 	if(levelin == 0)
 	{
 		hubList = g_list_append(hubList, r);
@@ -401,11 +410,11 @@ void Room_DrawAll()
 	for (g = HubList_Get(); g != NULL; g = g->next)
 	{
 		r = (Room *)(g->data);
-		r->draw(r->image, r->frame, Graphics_GetActiveRenderer(), r->pos);
+		r->draw(r->image, r->frame, Graphics_GetActiveRenderer(), r->pos,1);
 	}
 	for (g = RoomList_Get(); g != NULL; g = g->next)
 	{
 		r = (Room *)(g->data);
-		r->draw(r->image, r->frame, Graphics_GetActiveRenderer(), r->pos);
+		r->draw(r->image, r->frame, Graphics_GetActiveRenderer(), r->pos,1);
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"save":	{
 		"nightbed":	1,
-		"cowbed":	-842150451,
+		"cowbed":	1,
 		"futbed":	-842150451,
 		"medbed":	-842150451
 	}

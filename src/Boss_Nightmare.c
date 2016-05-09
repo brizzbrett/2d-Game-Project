@@ -140,9 +140,7 @@ void Nightmare_Update(Entity *nightmare)
 			Item_Spawn(Key_New(finalPos, keyColor),0);
 			keyColor++;
 			Entity_Free(&nightmare);
-			
 		}
-
 	}
 	if(Camera_Intersect(nightmare))
 	{

@@ -39,6 +39,7 @@ void Music_Free(Music **music)
 		Mix_FreeMusic((*music)->music);
 	}
 	numMusics--;
+
 	*music = NULL;
 }
 

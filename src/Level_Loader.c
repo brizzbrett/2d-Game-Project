@@ -98,21 +98,8 @@ void Level_Load(Uint8 levelType, int save)
 		Level_Maker("images/room.png", MEDIEVAL);
 
 		Room_Populate(NIGHTMARE);
-	}		
-	slog("ALL ROOMS");
-	for (g = RoomList_Get(); g != NULL; g = g->next)
-	{
-		r = (Room *)(g->data);
+	}	
 
-		slog("\nROOM %c-------------\n\tPOSITION-- X: %.00f, Y: %.00f, Doors: %i, Type: %i", r->val+65, r->pos.x, r->pos.y, r->doors, r->type);
-	}
-	slog("\n\nDEAD ENDS");
-	for (g = DeadEnds_Get(); g != NULL; g = g->next)
-	{
-		r = (Room *)(g->data);
-		
-		slog("\nROOM %c-------------\n\tPOSITION-- X: %.00f, Y: %.00f, Doors: %i, Type: %i", r->val+65, r->pos.x, r->pos.y, r->doors, r->type);
-	}
 }
 void Level_Closer(int level)
 {
